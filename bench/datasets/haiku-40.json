@@ -1,0 +1,247 @@
+{
+ "name": "haiku-40",
+ "tabs": [
+  {
+   "id": 2000,
+   "title": "Fix token refresh race condition by jdoe · Pull Request #412 · acme/api",
+   "url": "https://github.com/acme/api/pull/412"
+  },
+  {
+   "id": 2003,
+   "title": "Chill Mix - YouTube Music",
+   "url": "https://music.youtube.com/playlist?list=PL1chill"
+  },
+  {
+   "id": 2006,
+   "title": "Coroutines and Tasks — Python 3.13.1 documentation",
+   "url": "https://docs.python.org/3/library/asyncio-task.html"
+  },
+  {
+   "id": 2009,
+   "title": "Singapore to Hanoi | Google Flights",
+   "url": "https://www.google.com/travel/flights/search?tfs=SIN-HAN"
+  },
+  {
+   "id": 2012,
+   "title": "azurerm_linux_virtual_machine | Resources | hashicorp/azurerm | Terraform Registry",
+   "url": "https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine"
+  },
+  {
+   "id": 2015,
+   "title": "ENG-1422 Token refresh fails after sleep - Linear",
+   "url": "https://linear.app/acme/issue/ENG-1422"
+  },
+  {
+   "id": 2018,
+   "title": "Anker USB-C Charger 65W, 3-Port GaN : Electronics - Amazon.com",
+   "url": "https://www.amazon.com/dp/B0CHX1W1XY"
+  },
+  {
+   "id": 2021,
+   "title": "Async IO in Python: A Complete Walkthrough – Real Python",
+   "url": "https://realpython.com/async-io-python/"
+  },
+  {
+   "id": 2024,
+   "title": "Ha Long Bay Overnight Cruise - Agoda",
+   "url": "https://www.agoda.com/halong-bay-cruise/hotel/ha-long-vn.html"
+  },
+  {
+   "id": 2027,
+   "title": "Calendar - Outlook",
+   "url": "https://outlook.office.com/calendar/view/week"
+  },
+  {
+   "id": 2030,
+   "title": "Machines - Tailscale",
+   "url": "https://login.tailscale.com/admin/machines"
+  },
+  {
+   "id": 2033,
+   "title": "Rate limiter drops requests under load · Issue #301 · acme/api",
+   "url": "https://github.com/acme/api/issues/301"
+  },
+  {
+   "id": 2036,
+   "title": "Library | Last.fm",
+   "url": "https://www.last.fm/user/me/library"
+  },
+  {
+   "id": 2039,
+   "title": "PEP 789 – Preventing task-cancellation bugs by limiting yield in async generators",
+   "url": "https://peps.python.org/pep-0789/"
+  },
+  {
+   "id": 2042,
+   "title": "THE 15 BEST Things to Do in Hanoi (2026) - Tripadvisor",
+   "url": "https://www.tripadvisor.com/Attractions-g293924-Activities-Hanoi.html"
+  },
+  {
+   "id": 2045,
+   "title": "Re: Q4 invoice approval - me@example.com - Gmail",
+   "url": "https://mail.google.com/mail/u/0/#inbox/FMfcgzQ"
+  },
+  {
+   "id": 2048,
+   "title": "Virtual machines - Microsoft Azure",
+   "url": "https://portal.azure.com/#view/HubsExtension/BrowseResource/resourceType/Microsoft.Compute%2FVirtualMachines"
+  },
+  {
+   "id": 2051,
+   "title": "Add dark mode toggle · Pull Request #88 · acme/web · Files changed",
+   "url": "https://github.com/acme/web/pull/88/files"
+  },
+  {
+   "id": 2054,
+   "title": "Deep Focus | Spotify Playlist",
+   "url": "https://open.spotify.com/playlist/37i9dQZF1DWZeKCadgRdKQ"
+  },
+  {
+   "id": 2057,
+   "title": "python - asyncio.gather and exception handling - Stack Overflow",
+   "url": "https://stackoverflow.com/questions/44982/asyncio-gather-exceptions"
+  },
+  {
+   "id": 2060,
+   "title": "Hanoi Old Quarter Boutique Hotel, Hanoi – Updated 2026 Prices",
+   "url": "https://www.booking.com/hotel/vn/hanoi-old-quarter-boutique.html"
+  },
+  {
+   "id": 2063,
+   "title": "Inbox (14) - me@example.com - Gmail",
+   "url": "https://mail.google.com/mail/u/0/#inbox"
+  },
+  {
+   "id": 2066,
+   "title": "acme_api - SonarCloud",
+   "url": "https://sonarcloud.io/project/overview?id=acme_api"
+  },
+  {
+   "id": 2069,
+   "title": "Oliver Burkeman - Wikipedia",
+   "url": "https://en.wikipedia.org/wiki/Oliver_Burkeman"
+  },
+  {
+   "id": 2072,
+   "title": "lofi hip hop radio 📚 beats to relax/study to - YouTube",
+   "url": "https://www.youtube.com/watch?v=jfKfPfyJRdk"
+  },
+  {
+   "id": 2075,
+   "title": "7 day Hanoi + Ha Long itinerary, feedback? : r/VietNam",
+   "url": "https://www.reddit.com/r/VietNam/comments/xyz/hanoi_itinerary_7_days/"
+  },
+  {
+   "id": 2078,
+   "title": "Event Types | Calendly",
+   "url": "https://calendly.com/event_types/user/me"
+  },
+  {
+   "id": 2081,
+   "title": "DNS Records | example.com | Cloudflare",
+   "url": "https://dash.cloudflare.com/abc/example.com/dns/records"
+  },
+  {
+   "id": 2084,
+   "title": "Review requests · GitHub",
+   "url": "https://github.com/pulls/review-requested"
+  },
+  {
+   "id": 2087,
+   "title": "Typhoon Makes Landfall in the Philippines - The New York Times",
+   "url": "https://www.nytimes.com/2026/11/14/world/asia/typhoon-philippines.html"
+  },
+  {
+   "id": 2090,
+   "title": "Trio's core functionality — Trio 0.27 documentation",
+   "url": "https://trio.readthedocs.io/en/stable/reference-core.html"
+  },
+  {
+   "id": 2093,
+   "title": "Vietnam National E-Visa System",
+   "url": "https://evisa.gov.vn/"
+  },
+  {
+   "id": 2096,
+   "title": "Google Calendar - Week of November 16, 2026",
+   "url": "https://calendar.google.com/calendar/u/0/r/week"
+  },
+  {
+   "id": 2099,
+   "title": "Bills | Billing and Cost Management",
+   "url": "https://console.aws.amazon.com/billing/home#/bills"
+  },
+  {
+   "id": 2102,
+   "title": "CI · acme/api@3f2a1c9 · GitHub Actions",
+   "url": "https://github.com/acme/api/actions/runs/9912"
+  },
+  {
+   "id": 2105,
+   "title": "Ambient | Bandcamp Discover",
+   "url": "https://bandcamp.com/discover/ambient"
+  },
+  {
+   "id": 2108,
+   "title": "Synchronization Primitives — Python 3.13.1 documentation",
+   "url": "https://docs.python.org/3/library/asyncio-sync.html"
+  },
+  {
+   "id": 2111,
+   "title": "Hoan Kiem Lake - Google Maps",
+   "url": "https://www.google.com/maps/place/Hoan+Kiem+Lake"
+  },
+  {
+   "id": 2114,
+   "title": "Mail - Outlook",
+   "url": "https://outlook.office.com/mail/"
+  },
+  {
+   "id": 2117,
+   "title": "Instances | EC2 | ap-southeast-1",
+   "url": "https://console.aws.amazon.com/ec2/home?region=ap-southeast-1#Instances:"
+  }
+ ],
+ "expected": {
+  "2000": "code-review",
+  "2003": "music",
+  "2006": "python-async",
+  "2009": "vietnam-trip",
+  "2012": "cloud-infra",
+  "2015": "code-review",
+  "2018": "stray",
+  "2021": "python-async",
+  "2024": "vietnam-trip",
+  "2027": "email-calendar",
+  "2030": "cloud-infra",
+  "2033": "code-review",
+  "2036": "music",
+  "2039": "python-async",
+  "2042": "vietnam-trip",
+  "2045": "email-calendar",
+  "2048": "cloud-infra",
+  "2051": "code-review",
+  "2054": "music",
+  "2057": "python-async",
+  "2060": "vietnam-trip",
+  "2063": "email-calendar",
+  "2066": "code-review",
+  "2069": "stray",
+  "2072": "music",
+  "2075": "vietnam-trip",
+  "2078": "email-calendar",
+  "2081": "cloud-infra",
+  "2084": "code-review",
+  "2087": "stray",
+  "2090": "python-async",
+  "2093": "vietnam-trip",
+  "2096": "email-calendar",
+  "2099": "cloud-infra",
+  "2102": "code-review",
+  "2105": "music",
+  "2108": "python-async",
+  "2111": "vietnam-trip",
+  "2114": "email-calendar",
+  "2117": "cloud-infra"
+ }
+}

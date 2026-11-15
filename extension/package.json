@@ -1,0 +1,11 @@
+{
+  "name": "tidy-tabs-extension",
+  "private": true,
+  "type": "module",
+  "description": "No runtime deps. package.json only exists so node treats lib/*.js as ES modules for tests.",
+  "scripts": {
+    "test": "node --test",
+    "test:unit": "node --test test/core.test.js test/two-pass.test.js",
+    "test:live": "TIDY_LIVE=1 node --test test/integration.test.js test/integration-two-pass.test.js"
+  }
+}

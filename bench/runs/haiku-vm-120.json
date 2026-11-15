@@ -1,0 +1,612 @@
+{
+ "backend": "haiku",
+ "tag": "",
+ "dataset": "vm-120",
+ "provenance": {
+  "extVersion": "0.2.3 (2026-11-15 19:47)",
+  "coreSha1": "5bd336e67b",
+  "systemPrompt": "You tidy a browser window. Group the tabs by the task or activity the user is in the middle of: one group per thing they are working on, not one group per website, product, or brand. Prefer fewer, broader groups: aim for about 5 groups, never more than 8. Every group must contain at least 2 tabs. Put tabs that do not share a task with any other tab in \"ungrouped\". Every tab id must appear exactly once: in one group or in \"ungrouped\". Use only the ids given. Labels are at most 3 words and name the task (e.g. \"Extension setup\", \"Vietnam trip\", \"Code review\"), not a product or site (not \"Password Management\", not \"GitHub Tools\"). Input: one tab per line as id|host|title. Reply with JSON: {\"groups\":[{\"label\":string,\"tabIds\":[int]}],\"ungrouped\":[int]}."
+ },
+ "runs": [
+  {
+   "run": 1,
+   "cold": true,
+   "startedAt": "2026-11-15T14:21:08.534Z",
+   "groups": [
+    {
+     "label": "Vietnam trip",
+     "tabIds": [
+      19,
+      23,
+      35,
+      44,
+      45,
+      66,
+      72,
+      75,
+      81,
+      82,
+      87,
+      95,
+      96,
+      97,
+      98,
+      102,
+      104,
+      105,
+      115,
+      22
+     ]
+    },
+    {
+     "label": "Python reference",
+     "tabIds": [
+      4,
+      7,
+      11,
+      15,
+      28,
+      47,
+      59,
+      68,
+      84,
+      88,
+      90,
+      91,
+      94,
+      103,
+      106,
+      109,
+      114
+     ]
+    },
+    {
+     "label": "Tidytabs development",
+     "tabIds": [
+      1,
+      12,
+      14,
+      20,
+      32,
+      38,
+      40,
+      41,
+      46,
+      55,
+      57,
+      60,
+      76,
+      93,
+      119
+     ]
+    },
+    {
+     "label": "acme API review",
+     "tabIds": [
+      25,
+      34,
+      42,
+      58,
+      89,
+      101
+     ]
+    },
+    {
+     "label": "Cloud infrastructure",
+     "tabIds": [
+      2,
+      6,
+      9,
+      16,
+      17,
+      21,
+      26,
+      27,
+      31,
+      33,
+      49,
+      51,
+      52,
+      53,
+      63,
+      64,
+      74,
+      85,
+      86,
+      92,
+      108
+     ]
+    },
+    {
+     "label": "Email catch-up",
+     "tabIds": [
+      8,
+      18,
+      24,
+      29,
+      30,
+      37,
+      39,
+      43,
+      48,
+      56,
+      67,
+      69,
+      71,
+      73,
+      78,
+      79,
+      80,
+      107,
+      110,
+      116
+     ]
+    },
+    {
+     "label": "Music listening",
+     "tabIds": [
+      0,
+      3,
+      5,
+      13,
+      36,
+      50,
+      54,
+      61,
+      62,
+      70,
+      77,
+      83,
+      99,
+      111,
+      112,
+      113,
+      117,
+      118
+     ]
+    },
+    {
+     "label": "Other",
+     "tabIds": [
+      10,
+      65,
+      100
+     ]
+    }
+   ],
+   "wallMs": 14403,
+   "timing": {
+    "totalMs": 14339,
+    "apiMs": 13309,
+    "claudeMs": 13548,
+    "turns": 2,
+    "model": "claude-haiku-5-5"
+   },
+   "strictErrors": [],
+   "repair": {
+    "unknown": [],
+    "duplicates": [],
+    "missing": [],
+    "singletons": []
+   },
+   "fallback": false,
+   "metrics": {
+    "valid": true,
+    "purity": 1,
+    "cohesion": 0.94,
+    "groupCount": 8,
+    "singletons": 0,
+    "names": [
+     "Vietnam trip (20: vietnam/stray)",
+     "Python reference (17: python)",
+     "Tidytabs development (15: github)",
+     "acme API review (6: github)",
+     "Cloud infrastructure (21: cloud)",
+     "Email catch-up (20: email)",
+     "Music listening (18: music)",
+     "Other (3: github/stray)"
+    ]
+   }
+  },
+  {
+   "run": 2,
+   "cold": false,
+   "startedAt": "2026-11-15T14:21:22.938Z",
+   "groups": [
+    {
+     "label": "Vietnam trip",
+     "tabIds": [
+      19,
+      22,
+      23,
+      35,
+      44,
+      45,
+      66,
+      72,
+      75,
+      81,
+      82,
+      87,
+      95,
+      96,
+      97,
+      98,
+      102,
+      104,
+      105,
+      115
+     ]
+    },
+    {
+     "label": "Extension PRs",
+     "tabIds": [
+      1,
+      12,
+      14,
+      20,
+      32,
+      38,
+      40,
+      41,
+      46,
+      55,
+      57,
+      60,
+      76,
+      93,
+      119
+     ]
+    },
+    {
+     "label": "Cloud infrastructure",
+     "tabIds": [
+      2,
+      6,
+      9,
+      16,
+      17,
+      21,
+      26,
+      27,
+      31,
+      33,
+      49,
+      51,
+      52,
+      53,
+      63,
+      64,
+      74,
+      85,
+      86,
+      92,
+      108
+     ]
+    },
+    {
+     "label": "Email triage",
+     "tabIds": [
+      8,
+      18,
+      24,
+      29,
+      30,
+      37,
+      39,
+      43,
+      48,
+      56,
+      67,
+      69,
+      71,
+      73,
+      78,
+      79,
+      80,
+      107,
+      110,
+      116
+     ]
+    },
+    {
+     "label": "Python research",
+     "tabIds": [
+      4,
+      7,
+      11,
+      15,
+      28,
+      47,
+      59,
+      68,
+      84,
+      88,
+      90,
+      91,
+      94,
+      103,
+      106,
+      109,
+      114
+     ]
+    },
+    {
+     "label": "API code review",
+     "tabIds": [
+      25,
+      34,
+      42,
+      58,
+      89,
+      101
+     ]
+    },
+    {
+     "label": "Music and videos",
+     "tabIds": [
+      0,
+      3,
+      5,
+      13,
+      36,
+      50,
+      54,
+      61,
+      62,
+      70,
+      77,
+      83,
+      99,
+      111,
+      112,
+      113,
+      117,
+      118
+     ]
+    },
+    {
+     "label": "Other",
+     "tabIds": [
+      10,
+      65,
+      100
+     ]
+    }
+   ],
+   "wallMs": 12879,
+   "timing": {
+    "totalMs": 12812,
+    "apiMs": 11791,
+    "claudeMs": 12034,
+    "turns": 2,
+    "model": "claude-haiku-5-5"
+   },
+   "strictErrors": [],
+   "repair": {
+    "unknown": [],
+    "duplicates": [],
+    "missing": [],
+    "singletons": []
+   },
+   "fallback": false,
+   "metrics": {
+    "valid": true,
+    "purity": 1,
+    "cohesion": 0.94,
+    "groupCount": 8,
+    "singletons": 0,
+    "names": [
+     "Vietnam trip (20: vietnam/stray)",
+     "Extension PRs (15: github)",
+     "Cloud infrastructure (21: cloud)",
+     "Email triage (20: email)",
+     "Python research (17: python)",
+     "API code review (6: github)",
+     "Music and videos (18: music)",
+     "Other (3: github/stray)"
+    ]
+   }
+  },
+  {
+   "run": 3,
+   "cold": false,
+   "startedAt": "2026-11-15T14:21:35.818Z",
+   "groups": [
+    {
+     "label": "Vietnam trip",
+     "tabIds": [
+      19,
+      23,
+      35,
+      44,
+      45,
+      66,
+      72,
+      75,
+      81,
+      82,
+      87,
+      95,
+      96,
+      97,
+      98,
+      102,
+      104,
+      105,
+      115,
+      22
+     ]
+    },
+    {
+     "label": "Python research",
+     "tabIds": [
+      4,
+      7,
+      11,
+      68,
+      84,
+      94,
+      114,
+      28,
+      47,
+      91,
+      109,
+      15,
+      59,
+      88,
+      90,
+      103,
+      106
+     ]
+    },
+    {
+     "label": "Tidytabs extension",
+     "tabIds": [
+      1,
+      12,
+      14,
+      20,
+      32,
+      38,
+      40,
+      41,
+      46,
+      55,
+      57,
+      60,
+      76,
+      93,
+      119
+     ]
+    },
+    {
+     "label": "Acme API review",
+     "tabIds": [
+      25,
+      34,
+      42,
+      58,
+      89,
+      101
+     ]
+    },
+    {
+     "label": "Cloud infrastructure",
+     "tabIds": [
+      2,
+      6,
+      9,
+      16,
+      17,
+      21,
+      26,
+      27,
+      31,
+      33,
+      49,
+      51,
+      52,
+      53,
+      63,
+      64,
+      74,
+      85,
+      86,
+      92,
+      108
+     ]
+    },
+    {
+     "label": "Email triage",
+     "tabIds": [
+      8,
+      18,
+      24,
+      29,
+      30,
+      37,
+      39,
+      43,
+      48,
+      56,
+      67,
+      69,
+      71,
+      73,
+      78,
+      79,
+      80,
+      107,
+      110,
+      116
+     ]
+    },
+    {
+     "label": "Music listening",
+     "tabIds": [
+      0,
+      3,
+      5,
+      13,
+      36,
+      50,
+      54,
+      61,
+      62,
+      70,
+      77,
+      83,
+      99,
+      111,
+      112,
+      113,
+      117,
+      118
+     ]
+    },
+    {
+     "label": "Other",
+     "tabIds": [
+      10,
+      65,
+      100
+     ]
+    }
+   ],
+   "wallMs": 11687,
+   "timing": {
+    "totalMs": 11619,
+    "apiMs": 10600,
+    "claudeMs": 10845,
+    "turns": 2,
+    "model": "claude-haiku-5-5"
+   },
+   "strictErrors": [],
+   "repair": {
+    "unknown": [],
+    "duplicates": [],
+    "missing": [],
+    "singletons": []
+   },
+   "fallback": false,
+   "metrics": {
+    "valid": true,
+    "purity": 1,
+    "cohesion": 0.94,
+    "groupCount": 8,
+    "singletons": 0,
+    "names": [
+     "Vietnam trip (20: vietnam/stray)",
+     "Python research (17: python)",
+     "Tidytabs extension (15: github)",
+     "Acme API review (6: github)",
+     "Cloud infrastructure (21: cloud)",
+     "Email triage (20: email)",
+     "Music listening (18: music)",
+     "Other (3: github/stray)"
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tidy Tabs Options</title>
+<style>
+  :root { color-scheme: light dark; --fg:#1f2328; --muted:#656d76; --bg:#ffffff; --card:#f6f8fa; --border:#d0d7de; --accent:#2563eb; }
+  @media (prefers-color-scheme: dark) { :root { --fg:#e6edf3; --muted:#9198a1; --bg:#0d1117; --card:#161b22; --border:#30363d; --accent:#60a5fa; } }
+  body { font: 14px/1.5 system-ui, -apple-system, sans-serif; color: var(--fg); background: var(--bg); max-width: 720px; margin: 24px auto; padding: 0 16px; }
+  h1 { font-size: 20px; } h2 { font-size: 15px; margin-top: 28px; }
+  label { display: block; margin: 12px 0 4px; font-weight: 600; }
+  input[type=text], input[type=number], select { width: 100%; box-sizing: border-box; padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); color: var(--fg); }
+  .check { display: flex; gap: 8px; align-items: flex-start; font-weight: 400; }
+  .hint { color: var(--muted); font-size: 12px; margin: 2px 0 0; }
+  button { margin: 16px 8px 0 0; padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); background: var(--card); color: var(--fg); cursor: pointer; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  #status { margin-left: 8px; color: var(--muted); }
+  table { border-collapse: collapse; width: 100%; font-size: 12px; } th, td { border: 1px solid var(--border); padding: 3px 6px; text-align: left; vertical-align: top; }
+  td.verified { color: #16a34a; } td.moves-failed { color: #d97706; } td.backend-failed, td.error { color: #dc2626; }
+  pre { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 10px; overflow: auto; max-height: 360px; font-size: 12px; white-space: pre-wrap; word-break: break-word; }
+</style>
+</head>
+<body>
+<h1>Tidy Tabs</h1>
+
+<label for="backend">Backend</label>
+<select id="backend">
+  <option value="claude-haiku">Claude Haiku (subscription, via local Claude Code CLI)</option>
+  <option value="ollama">Ollama (Tailscale VM / localhost)</option>
+  <option value="gemini-nano">Gemini Nano (built-in LanguageModel API, Chrome only)</option>
+</select>
+<p class="hint">Claude needs <code>./install.sh</code> run once (native messaging host). It uses your Claude subscription through <code>claude -p</code>; no API key.</p>
+
+<label for="claudeModel">Claude model</label>
+<input id="claudeModel" type="text" placeholder="haiku">
+
+<h2>Ollama</h2>
+<label for="endpoint">Ollama endpoint</label>
+<input id="endpoint" type="text" placeholder="http://localhost:11434">
+<p class="hint">Pre-approved: http://localhost:11434. Any other endpoint (e.g. a Tailscale VM) is requested as an optional permission when you click Save.</p>
+
+<label for="model">Ollama model</label>
+<input id="model" type="text" placeholder="qwen3:1.7b">
+
+<h2>Clustering</h2>
+<label for="strategy">Strategy</label>
+<select id="strategy">
+  <option value="auto">Auto: single-pass for Claude, two-pass for local models (default)</option>
+  <option value="two-pass">Two-pass: propose labels, then assign each tab</option>
+  <option value="single-pass">Single-pass: groups in one request</option>
+</select>
+<p class="hint">Two-pass constrains every tab to exactly one label via the schema, so small models drop and duplicate fewer ids.</p>
+
+<label for="timeoutMs">Timeout for the whole run (ms)</label>
+<input id="timeoutMs" type="number" min="2000" step="1000">
+<p class="hint">After this, the extension falls back to grouping by domain. Covers both passes. Claude Haiku: ~5–10 s per call. CPU Ollama single-pass: 20–40 s for qwen3:1.7b, ~75 s for gemma3:4b.</p>
+
+<h2>Behavior</h2>
+<label class="check"><input id="createTabGroups" type="checkbox"> Create a named, colored tab group per cluster (re-tidy reuses/renames its own groups)</label>
+<label class="check"><input id="collapseGroups" type="checkbox"> Collapse the groups after tidying</label>
+<label class="check"><input id="debugLogging" type="checkbox"> Debug logging (include tab titles and hosts in run history and log files)</label>
+<label class="check"><input id="notify" type="checkbox"> Show a notification on fallback or failed moves</label>
+
+<div>
+  <button id="save" class="primary">Save</button>
+  <button id="test">Test connection</button>
+  <button id="run">Tidy last focused window now</button>
+  <span id="status"></span>
+</div>
+
+<h2>Environment</h2>
+<pre id="env"></pre>
+
+<h2>Recent runs (last 10)</h2>
+<table id="recent"><tr><th>when</th><th>status</th><th>backend</th><th>move strategy</th><th>errors</th><th>summary</th></tr></table>
+
+<h2>Last run (full record)</h2>
+<pre id="report">No runs yet.</pre>
+<p class="hint">The same record is written to <code>~/Library/Logs/tidy-tabs/last-run.json</code> (and appended to <code>runs.jsonl</code>) by the native host.</p>
+
+<script src="dev-reload.js"></script>
+<script src="build-badge.js"></script>
+<script type="module" src="options.js"></script>
+</body>
+</html>

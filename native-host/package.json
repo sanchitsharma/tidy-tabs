@@ -1,0 +1,9 @@
+{
+  "name": "tidy-tabs-native-host",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "test:live": "TIDY_CLAUDE_LIVE=1 node --test test/host-live.test.js"
+  }
+}

@@ -1,0 +1,578 @@
+{
+ "backend": "vm",
+ "tag": "",
+ "dataset": "vm-120",
+ "runs": [
+  {
+   "run": 1,
+   "cold": true,
+   "startedAt": "2026-11-15T14:18:49.818Z",
+   "loadedAfterUnload": [],
+   "groups": [
+    {
+     "label": "GitHub Extensions",
+     "tabIds": [
+      1,
+      10,
+      12,
+      14,
+      20,
+      25,
+      32,
+      34,
+      38,
+      40,
+      41,
+      42,
+      46,
+      55,
+      57,
+      58,
+      60,
+      76,
+      89,
+      93,
+      101,
+      119
+     ]
+    },
+    {
+     "label": "Azure Management",
+     "tabIds": [
+      2,
+      6,
+      9,
+      16,
+      17,
+      21,
+      26,
+      27,
+      31,
+      33,
+      49,
+      51,
+      52,
+      53,
+      63,
+      64,
+      74,
+      85,
+      86,
+      92,
+      108
+     ]
+    },
+    {
+     "label": "Gmail and News",
+     "tabIds": [
+      8,
+      18,
+      24,
+      29,
+      30,
+      37,
+      39,
+      43,
+      48,
+      56,
+      65,
+      67,
+      69,
+      71,
+      73,
+      78,
+      79,
+      80,
+      107,
+      110,
+      116
+     ]
+    },
+    {
+     "label": "Booking and Travel",
+     "tabIds": [
+      19,
+      23,
+      35,
+      44,
+      45,
+      66,
+      72,
+      75,
+      81,
+      82,
+      87,
+      95,
+      96,
+      97,
+      98,
+      102,
+      104,
+      105,
+      115
+     ]
+    },
+    {
+     "label": "YouTube Music",
+     "tabIds": [
+      0,
+      3,
+      5,
+      13,
+      36,
+      50,
+      54,
+      61,
+      62,
+      70,
+      77,
+      83,
+      99,
+      111,
+      112,
+      113,
+      117,
+      118
+     ]
+    },
+    {
+     "label": "Python Documentation and",
+     "tabIds": [
+      4,
+      7,
+      11,
+      15,
+      28,
+      47,
+      59,
+      68,
+      84,
+      88,
+      90,
+      91,
+      94,
+      103,
+      106,
+      109,
+      114
+     ]
+    },
+    {
+     "label": "Misc",
+     "tabIds": [
+      22,
+      100
+     ]
+    }
+   ],
+   "wallMs": 11395,
+   "timing": {
+    "embed_s": 4.982,
+    "embed_load_s": 1.034,
+    "cluster_s": 0.261,
+    "k": 8,
+    "silhouette": 0.448,
+    "name_s": 5.973,
+    "name_load_s": 1.58,
+    "total_s": 11.216
+   },
+   "namedBy": "qwen3:1.7b",
+   "metrics": {
+    "valid": true,
+    "purity": 1,
+    "cohesion": 1,
+    "groupCount": 7,
+    "singletons": 0,
+    "names": [
+     "GitHub Extensions (22: github)",
+     "Azure Management (21: cloud)",
+     "Gmail and News (21: email/stray)",
+     "Booking and Travel (19: vietnam)",
+     "YouTube Music (18: music)",
+     "Python Documentation and (17: python)",
+     "Misc (2: stray)"
+    ]
+   }
+  },
+  {
+   "run": 2,
+   "cold": false,
+   "startedAt": "2026-11-15T14:19:01.215Z",
+   "groups": [
+    {
+     "label": "GitHub Extensions",
+     "tabIds": [
+      1,
+      10,
+      12,
+      14,
+      20,
+      25,
+      32,
+      34,
+      38,
+      40,
+      41,
+      42,
+      46,
+      55,
+      57,
+      58,
+      60,
+      76,
+      89,
+      93,
+      101,
+      119
+     ]
+    },
+    {
+     "label": "Azure Management",
+     "tabIds": [
+      2,
+      6,
+      9,
+      16,
+      17,
+      21,
+      26,
+      27,
+      31,
+      33,
+      49,
+      51,
+      52,
+      53,
+      63,
+      64,
+      74,
+      85,
+      86,
+      92,
+      108
+     ]
+    },
+    {
+     "label": "Gmail and News",
+     "tabIds": [
+      8,
+      18,
+      24,
+      29,
+      30,
+      37,
+      39,
+      43,
+      48,
+      56,
+      65,
+      67,
+      69,
+      71,
+      73,
+      78,
+      79,
+      80,
+      107,
+      110,
+      116
+     ]
+    },
+    {
+     "label": "Booking and Travel",
+     "tabIds": [
+      19,
+      23,
+      35,
+      44,
+      45,
+      66,
+      72,
+      75,
+      81,
+      82,
+      87,
+      95,
+      96,
+      97,
+      98,
+      102,
+      104,
+      105,
+      115
+     ]
+    },
+    {
+     "label": "YouTube Music",
+     "tabIds": [
+      0,
+      3,
+      5,
+      13,
+      36,
+      50,
+      54,
+      61,
+      62,
+      70,
+      77,
+      83,
+      99,
+      111,
+      112,
+      113,
+      117,
+      118
+     ]
+    },
+    {
+     "label": "Python Documentation and",
+     "tabIds": [
+      4,
+      7,
+      11,
+      15,
+      28,
+      47,
+      59,
+      68,
+      84,
+      88,
+      90,
+      91,
+      94,
+      103,
+      106,
+      109,
+      114
+     ]
+    },
+    {
+     "label": "Misc",
+     "tabIds": [
+      22,
+      100
+     ]
+    }
+   ],
+   "wallMs": 12206,
+   "timing": {
+    "embed_s": 5.342,
+    "embed_load_s": 1.133,
+    "cluster_s": 0.261,
+    "k": 8,
+    "silhouette": 0.448,
+    "name_s": 6.448,
+    "name_load_s": 1.843,
+    "total_s": 12.051
+   },
+   "namedBy": "qwen3:1.7b",
+   "metrics": {
+    "valid": true,
+    "purity": 1,
+    "cohesion": 1,
+    "groupCount": 7,
+    "singletons": 0,
+    "names": [
+     "GitHub Extensions (22: github)",
+     "Azure Management (21: cloud)",
+     "Gmail and News (21: email/stray)",
+     "Booking and Travel (19: vietnam)",
+     "YouTube Music (18: music)",
+     "Python Documentation and (17: python)",
+     "Misc (2: stray)"
+    ]
+   }
+  },
+  {
+   "run": 3,
+   "cold": false,
+   "startedAt": "2026-11-15T14:19:13.422Z",
+   "groups": [
+    {
+     "label": "GitHub Extensions",
+     "tabIds": [
+      1,
+      10,
+      12,
+      14,
+      20,
+      25,
+      32,
+      34,
+      38,
+      40,
+      41,
+      42,
+      46,
+      55,
+      57,
+      58,
+      60,
+      76,
+      89,
+      93,
+      101,
+      119
+     ]
+    },
+    {
+     "label": "Azure Management",
+     "tabIds": [
+      2,
+      6,
+      9,
+      16,
+      17,
+      21,
+      26,
+      27,
+      31,
+      33,
+      49,
+      51,
+      52,
+      53,
+      63,
+      64,
+      74,
+      85,
+      86,
+      92,
+      108
+     ]
+    },
+    {
+     "label": "Gmail and News",
+     "tabIds": [
+      8,
+      18,
+      24,
+      29,
+      30,
+      37,
+      39,
+      43,
+      48,
+      56,
+      65,
+      67,
+      69,
+      71,
+      73,
+      78,
+      79,
+      80,
+      107,
+      110,
+      116
+     ]
+    },
+    {
+     "label": "Booking and Travel",
+     "tabIds": [
+      19,
+      23,
+      35,
+      44,
+      45,
+      66,
+      72,
+      75,
+      81,
+      82,
+      87,
+      95,
+      96,
+      97,
+      98,
+      102,
+      104,
+      105,
+      115
+     ]
+    },
+    {
+     "label": "YouTube Music",
+     "tabIds": [
+      0,
+      3,
+      5,
+      13,
+      36,
+      50,
+      54,
+      61,
+      62,
+      70,
+      77,
+      83,
+      99,
+      111,
+      112,
+      113,
+      117,
+      118
+     ]
+    },
+    {
+     "label": "Python Documentation and",
+     "tabIds": [
+      4,
+      7,
+      11,
+      15,
+      28,
+      47,
+      59,
+      68,
+      84,
+      88,
+      90,
+      91,
+      94,
+      103,
+      106,
+      109,
+      114
+     ]
+    },
+    {
+     "label": "Misc",
+     "tabIds": [
+      22,
+      100
+     ]
+    }
+   ],
+   "wallMs": 12130,
+   "timing": {
+    "embed_s": 5.519,
+    "embed_load_s": 1.135,
+    "cluster_s": 0.265,
+    "k": 8,
+    "silhouette": 0.448,
+    "name_s": 6.257,
+    "name_load_s": 1.829,
+    "total_s": 12.041
+   },
+   "namedBy": "qwen3:1.7b",
+   "metrics": {
+    "valid": true,
+    "purity": 1,
+    "cohesion": 1,
+    "groupCount": 7,
+    "singletons": 0,
+    "names": [
+     "GitHub Extensions (22: github)",
+     "Azure Management (21: cloud)",
+     "Gmail and News (21: email/stray)",
+     "Booking and Travel (19: vietnam)",
+     "YouTube Music (18: music)",
+     "Python Documentation and (17: python)",
+     "Misc (2: stray)"
+    ]
+   }
+  }
+ ]
+}

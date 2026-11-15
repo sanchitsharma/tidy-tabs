@@ -1,0 +1,372 @@
+{
+ "backend": "haiku",
+ "tag": "",
+ "dataset": "vm-40",
+ "provenance": {
+  "extVersion": "0.2.3 (2026-11-15 19:47)",
+  "coreSha1": "5bd336e67b",
+  "systemPrompt": "You tidy a browser window. Group the tabs by the task or activity the user is in the middle of: one group per thing they are working on, not one group per website, product, or brand. Prefer fewer, broader groups: aim for about 5 groups, never more than 8. Every group must contain at least 2 tabs. Put tabs that do not share a task with any other tab in \"ungrouped\". Every tab id must appear exactly once: in one group or in \"ungrouped\". Use only the ids given. Labels are at most 3 words and name the task (e.g. \"Extension setup\", \"Vietnam trip\", \"Code review\"), not a product or site (not \"Password Management\", not \"GitHub Tools\"). Input: one tab per line as id|host|title. Reply with JSON: {\"groups\":[{\"label\":string,\"tabIds\":[int]}],\"ungrouped\":[int]}."
+ },
+ "runs": [
+  {
+   "run": 1,
+   "cold": true,
+   "startedAt": "2026-11-15T14:20:43.605Z",
+   "groups": [
+    {
+     "label": "Vietnam trip",
+     "tabIds": [
+      4,
+      6,
+      11,
+      17,
+      21,
+      23,
+      31
+     ]
+    },
+    {
+     "label": "Tidytabs extension",
+     "tabIds": [
+      28,
+      29,
+      32,
+      33,
+      38
+     ]
+    },
+    {
+     "label": "Code review",
+     "tabIds": [
+      1,
+      8
+     ]
+    },
+    {
+     "label": "Python research",
+     "tabIds": [
+      3,
+      9,
+      15,
+      16,
+      27
+     ]
+    },
+    {
+     "label": "Cloud infrastructure",
+     "tabIds": [
+      0,
+      2,
+      7,
+      14,
+      34,
+      39
+     ]
+    },
+    {
+     "label": "Email and meetings",
+     "tabIds": [
+      13,
+      18,
+      25,
+      35,
+      36,
+      37
+     ]
+    },
+    {
+     "label": "Music listening",
+     "tabIds": [
+      5,
+      10,
+      12,
+      19,
+      20,
+      24
+     ]
+    },
+    {
+     "label": "Other",
+     "tabIds": [
+      22,
+      26,
+      30
+     ]
+    }
+   ],
+   "wallMs": 8006,
+   "timing": {
+    "totalMs": 7940,
+    "apiMs": 6608,
+    "claudeMs": 7169,
+    "turns": 2,
+    "model": "claude-haiku-5-5"
+   },
+   "strictErrors": [],
+   "repair": {
+    "unknown": [],
+    "duplicates": [],
+    "missing": [],
+    "singletons": []
+   },
+   "fallback": false,
+   "metrics": {
+    "valid": true,
+    "purity": 1,
+    "cohesion": 0.946,
+    "groupCount": 8,
+    "singletons": 0,
+    "names": [
+     "Vietnam trip (7: vietnam)",
+     "Tidytabs extension (5: github)",
+     "Code review (2: github)",
+     "Python research (5: python)",
+     "Cloud infrastructure (6: cloud)",
+     "Email and meetings (6: email)",
+     "Music listening (6: music)",
+     "Other (3: stray)"
+    ]
+   }
+  },
+  {
+   "run": 2,
+   "cold": false,
+   "startedAt": "2026-11-15T14:20:51.612Z",
+   "groups": [
+    {
+     "label": "Vietnam trip",
+     "tabIds": [
+      4,
+      6,
+      11,
+      17,
+      21,
+      22,
+      23,
+      31
+     ]
+    },
+    {
+     "label": "Python research",
+     "tabIds": [
+      3,
+      9,
+      15,
+      16,
+      27
+     ]
+    },
+    {
+     "label": "Tidy Tabs dev",
+     "tabIds": [
+      28,
+      29,
+      32,
+      33,
+      38
+     ]
+    },
+    {
+     "label": "Code review",
+     "tabIds": [
+      1,
+      8
+     ]
+    },
+    {
+     "label": "Cloud consoles",
+     "tabIds": [
+      0,
+      2,
+      7,
+      14,
+      34,
+      39
+     ]
+    },
+    {
+     "label": "Email and meetings",
+     "tabIds": [
+      13,
+      18,
+      25,
+      35,
+      36,
+      37
+     ]
+    },
+    {
+     "label": "Music listening",
+     "tabIds": [
+      5,
+      10,
+      12,
+      19,
+      20,
+      24
+     ]
+    },
+    {
+     "label": "Other",
+     "tabIds": [
+      26,
+      30
+     ]
+    }
+   ],
+   "wallMs": 8739,
+   "timing": {
+    "totalMs": 8673,
+    "apiMs": 7368,
+    "claudeMs": 7901,
+    "turns": 2,
+    "model": "claude-haiku-5-5"
+   },
+   "strictErrors": [],
+   "repair": {
+    "unknown": [],
+    "duplicates": [],
+    "missing": [],
+    "singletons": []
+   },
+   "fallback": false,
+   "metrics": {
+    "valid": true,
+    "purity": 1,
+    "cohesion": 0.946,
+    "groupCount": 8,
+    "singletons": 0,
+    "names": [
+     "Vietnam trip (8: vietnam/stray)",
+     "Python research (5: python)",
+     "Tidy Tabs dev (5: github)",
+     "Code review (2: github)",
+     "Cloud consoles (6: cloud)",
+     "Email and meetings (6: email)",
+     "Music listening (6: music)",
+     "Other (2: stray)"
+    ]
+   }
+  },
+  {
+   "run": 3,
+   "cold": false,
+   "startedAt": "2026-11-15T14:21:00.352Z",
+   "groups": [
+    {
+     "label": "Vietnam trip",
+     "tabIds": [
+      4,
+      6,
+      11,
+      17,
+      21,
+      22,
+      23,
+      31
+     ]
+    },
+    {
+     "label": "Cloud infrastructure",
+     "tabIds": [
+      0,
+      2,
+      7,
+      14,
+      34,
+      39
+     ]
+    },
+    {
+     "label": "Tidytabs extension dev",
+     "tabIds": [
+      28,
+      29,
+      32,
+      33,
+      38
+     ]
+    },
+    {
+     "label": "Python reference",
+     "tabIds": [
+      3,
+      9,
+      15,
+      16,
+      27
+     ]
+    },
+    {
+     "label": "Code review",
+     "tabIds": [
+      1,
+      8
+     ]
+    },
+    {
+     "label": "Email and meetings",
+     "tabIds": [
+      13,
+      18,
+      25,
+      35,
+      36,
+      37
+     ]
+    },
+    {
+     "label": "Music listening",
+     "tabIds": [
+      5,
+      10,
+      12,
+      19,
+      20,
+      24
+     ]
+    },
+    {
+     "label": "Other",
+     "tabIds": [
+      26,
+      30
+     ]
+    }
+   ],
+   "wallMs": 8180,
+   "timing": {
+    "totalMs": 8112,
+    "apiMs": 6987,
+    "claudeMs": 7327,
+    "turns": 2,
+    "model": "claude-haiku-5-5"
+   },
+   "strictErrors": [],
+   "repair": {
+    "unknown": [],
+    "duplicates": [],
+    "missing": [],
+    "singletons": []
+   },
+   "fallback": false,
+   "metrics": {
+    "valid": true,
+    "purity": 1,
+    "cohesion": 0.946,
+    "groupCount": 8,
+    "singletons": 0,
+    "names": [
+     "Vietnam trip (8: vietnam/stray)",
+     "Cloud infrastructure (6: cloud)",
+     "Tidytabs extension dev (5: github)",
+     "Python reference (5: python)",
+     "Code review (2: github)",
+     "Email and meetings (6: email)",
+     "Music listening (6: music)",
+     "Other (2: stray)"
+    ]
+   }
+  }
+ ]
+}

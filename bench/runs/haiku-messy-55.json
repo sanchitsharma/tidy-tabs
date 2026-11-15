@@ -1,0 +1,417 @@
+{
+ "backend": "haiku",
+ "tag": "",
+ "dataset": "messy-55",
+ "provenance": {
+  "extVersion": "0.2.3 (2026-11-15 19:47)",
+  "coreSha1": "5bd336e67b",
+  "systemPrompt": "You tidy a browser window. Group the tabs by the task or activity the user is in the middle of: one group per thing they are working on, not one group per website, product, or brand. Prefer fewer, broader groups: aim for about 5 groups, never more than 8. Every group must contain at least 2 tabs. Put tabs that do not share a task with any other tab in \"ungrouped\". Every tab id must appear exactly once: in one group or in \"ungrouped\". Use only the ids given. Labels are at most 3 words and name the task (e.g. \"Extension setup\", \"Vietnam trip\", \"Code review\"), not a product or site (not \"Password Management\", not \"GitHub Tools\"). Input: one tab per line as id|host|title. Reply with JSON: {\"groups\":[{\"label\":string,\"tabIds\":[int]}],\"ungrouped\":[int]}."
+ },
+ "runs": [
+  {
+   "run": 1,
+   "cold": true,
+   "startedAt": "2026-11-15T14:22:28.401Z",
+   "groups": [
+    {
+     "label": "Japan trip",
+     "tabIds": [
+      500,
+      507,
+      512,
+      518,
+      523,
+      529,
+      535,
+      542,
+      548,
+      553
+     ]
+    },
+    {
+     "label": "Refresh token fix",
+     "tabIds": [
+      501,
+      508,
+      513,
+      521,
+      527,
+      532,
+      538,
+      543,
+      550
+     ]
+    },
+    {
+     "label": "Backend hiring",
+     "tabIds": [
+      502,
+      509,
+      514,
+      522,
+      528,
+      534,
+      547
+     ]
+    },
+    {
+     "label": "Standing desk shopping",
+     "tabIds": [
+      503,
+      510,
+      517,
+      524,
+      531,
+      537,
+      545,
+      551
+     ]
+    },
+    {
+     "label": "Tax filing FY25-26",
+     "tabIds": [
+      506,
+      515,
+      525,
+      536,
+      544,
+      549
+     ]
+    },
+    {
+     "label": "LLM reading",
+     "tabIds": [
+      519,
+      533,
+      546
+     ]
+    },
+    {
+     "label": "Essays reading",
+     "tabIds": [
+      504,
+      511,
+      539,
+      554
+     ]
+    },
+    {
+     "label": "Other",
+     "tabIds": [
+      505,
+      516,
+      520,
+      526,
+      530,
+      540,
+      541,
+      552
+     ]
+    }
+   ],
+   "wallMs": 11343,
+   "timing": {
+    "totalMs": 11282,
+    "apiMs": 9959,
+    "claudeMs": 10505,
+    "turns": 2,
+    "model": "claude-haiku-5-5"
+   },
+   "strictErrors": [],
+   "repair": {
+    "unknown": [],
+    "duplicates": [],
+    "missing": [],
+    "singletons": []
+   },
+   "fallback": false,
+   "metrics": {
+    "valid": true,
+    "purity": 0.96,
+    "cohesion": 0.88,
+    "groupCount": 8,
+    "singletons": 0,
+    "names": [
+     "Japan trip (10: japan-trip)",
+     "Refresh token fix (9: auth-bug)",
+     "Backend hiring (7: hiring)",
+     "Standing desk shopping (8: desk-shopping)",
+     "Tax filing FY25-26 (6: taxes)",
+     "LLM reading (3: reading)",
+     "Essays reading (4: reading)",
+     "Other (8: stray/auth-bug/reading/hiring)"
+    ]
+   }
+  },
+  {
+   "run": 2,
+   "cold": false,
+   "startedAt": "2026-11-15T14:22:39.744Z",
+   "groups": [
+    {
+     "label": "Japan trip",
+     "tabIds": [
+      500,
+      507,
+      512,
+      518,
+      523,
+      529,
+      535,
+      542,
+      548,
+      553
+     ]
+    },
+    {
+     "label": "Standing desk shopping",
+     "tabIds": [
+      503,
+      510,
+      517,
+      524,
+      531,
+      537,
+      545,
+      551
+     ]
+    },
+    {
+     "label": "Backend hiring",
+     "tabIds": [
+      502,
+      509,
+      514,
+      522,
+      528,
+      534,
+      547
+     ]
+    },
+    {
+     "label": "Refresh token fix",
+     "tabIds": [
+      501,
+      508,
+      513,
+      521,
+      527,
+      532,
+      543,
+      550,
+      538,
+      516
+     ]
+    },
+    {
+     "label": "Tax filing FY25-26",
+     "tabIds": [
+      506,
+      515,
+      525,
+      536,
+      544,
+      549
+     ]
+    },
+    {
+     "label": "Reading list",
+     "tabIds": [
+      504,
+      511,
+      539,
+      554
+     ]
+    },
+    {
+     "label": "ML learning",
+     "tabIds": [
+      519,
+      533,
+      546
+     ]
+    },
+    {
+     "label": "Other",
+     "tabIds": [
+      505,
+      520,
+      526,
+      530,
+      540,
+      541,
+      552
+     ]
+    }
+   ],
+   "wallMs": 12087,
+   "timing": {
+    "totalMs": 12018,
+    "apiMs": 10992,
+    "claudeMs": 11211,
+    "turns": 2,
+    "model": "claude-haiku-5-5"
+   },
+   "strictErrors": [],
+   "repair": {
+    "unknown": [],
+    "duplicates": [],
+    "missing": [],
+    "singletons": []
+   },
+   "fallback": false,
+   "metrics": {
+    "valid": true,
+    "purity": 0.98,
+    "cohesion": 0.9,
+    "groupCount": 8,
+    "singletons": 0,
+    "names": [
+     "Japan trip (10: japan-trip)",
+     "Standing desk shopping (8: desk-shopping)",
+     "Backend hiring (7: hiring)",
+     "Refresh token fix (10: auth-bug)",
+     "Tax filing FY25-26 (6: taxes)",
+     "Reading list (4: reading)",
+     "ML learning (3: reading)",
+     "Other (7: stray/reading/hiring)"
+    ]
+   }
+  },
+  {
+   "run": 3,
+   "cold": false,
+   "startedAt": "2026-11-15T14:22:51.832Z",
+   "groups": [
+    {
+     "label": "Japan trip",
+     "tabIds": [
+      500,
+      507,
+      512,
+      518,
+      523,
+      529,
+      535,
+      542,
+      548,
+      553
+     ]
+    },
+    {
+     "label": "Standing desk pick",
+     "tabIds": [
+      503,
+      510,
+      517,
+      524,
+      531,
+      537,
+      545,
+      551
+     ]
+    },
+    {
+     "label": "Refresh token fix",
+     "tabIds": [
+      501,
+      508,
+      513,
+      521,
+      527,
+      532,
+      538,
+      543,
+      550
+     ]
+    },
+    {
+     "label": "Backend hiring",
+     "tabIds": [
+      502,
+      509,
+      514,
+      522,
+      528,
+      534,
+      541,
+      547
+     ]
+    },
+    {
+     "label": "Tax filing",
+     "tabIds": [
+      506,
+      515,
+      525,
+      544,
+      549
+     ]
+    },
+    {
+     "label": "Reading list",
+     "tabIds": [
+      504,
+      511,
+      539,
+      554
+     ]
+    },
+    {
+     "label": "LLM study",
+     "tabIds": [
+      519,
+      533,
+      546
+     ]
+    },
+    {
+     "label": "Other",
+     "tabIds": [
+      505,
+      516,
+      520,
+      526,
+      530,
+      536,
+      540,
+      552
+     ]
+    }
+   ],
+   "wallMs": 9639,
+   "timing": {
+    "totalMs": 9588,
+    "apiMs": 8555,
+    "claudeMs": 8827,
+    "turns": 2,
+    "model": "claude-haiku-5-5"
+   },
+   "strictErrors": [],
+   "repair": {
+    "unknown": [],
+    "duplicates": [],
+    "missing": [],
+    "singletons": []
+   },
+   "fallback": false,
+   "metrics": {
+    "valid": true,
+    "purity": 0.96,
+    "cohesion": 0.88,
+    "groupCount": 8,
+    "singletons": 0,
+    "names": [
+     "Japan trip (10: japan-trip)",
+     "Standing desk pick (8: desk-shopping)",
+     "Refresh token fix (9: auth-bug)",
+     "Backend hiring (8: hiring)",
+     "Tax filing (5: taxes)",
+     "Reading list (4: reading)",
+     "LLM study (3: reading)",
+     "Other (8: stray/auth-bug/reading/taxes)"
+    ]
+   }
+  }
+ ]
+}

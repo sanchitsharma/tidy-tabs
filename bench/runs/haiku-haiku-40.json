@@ -1,0 +1,378 @@
+{
+ "backend": "haiku",
+ "tag": "",
+ "dataset": "haiku-40",
+ "provenance": {
+  "extVersion": "0.2.3 (2026-11-15 19:47)",
+  "coreSha1": "5bd336e67b",
+  "systemPrompt": "You tidy a browser window. Group the tabs by the task or activity the user is in the middle of: one group per thing they are working on, not one group per website, product, or brand. Prefer fewer, broader groups: aim for about 5 groups, never more than 8. Every group must contain at least 2 tabs. Put tabs that do not share a task with any other tab in \"ungrouped\". Every tab id must appear exactly once: in one group or in \"ungrouped\". Use only the ids given. Labels are at most 3 words and name the task (e.g. \"Extension setup\", \"Vietnam trip\", \"Code review\"), not a product or site (not \"Password Management\", not \"GitHub Tools\"). Input: one tab per line as id|host|title. Reply with JSON: {\"groups\":[{\"label\":string,\"tabIds\":[int]}],\"ungrouped\":[int]}."
+ },
+ "runs": [
+  {
+   "run": 1,
+   "cold": true,
+   "startedAt": "2026-11-15T14:21:47.508Z",
+   "groups": [
+    {
+     "label": "Token refresh fix",
+     "tabIds": [
+      2000,
+      2015
+     ]
+    },
+    {
+     "label": "Code review",
+     "tabIds": [
+      2033,
+      2051,
+      2066,
+      2084,
+      2102
+     ]
+    },
+    {
+     "label": "Async Python study",
+     "tabIds": [
+      2006,
+      2021,
+      2039,
+      2057,
+      2090,
+      2108
+     ]
+    },
+    {
+     "label": "Vietnam trip",
+     "tabIds": [
+      2009,
+      2024,
+      2042,
+      2060,
+      2075,
+      2093,
+      2111
+     ]
+    },
+    {
+     "label": "Inbox and calendar",
+     "tabIds": [
+      2027,
+      2045,
+      2063,
+      2078,
+      2096,
+      2114
+     ]
+    },
+    {
+     "label": "Focus music",
+     "tabIds": [
+      2003,
+      2036,
+      2054,
+      2072,
+      2105
+     ]
+    },
+    {
+     "label": "Cloud infrastructure",
+     "tabIds": [
+      2012,
+      2030,
+      2048,
+      2081,
+      2099,
+      2117
+     ]
+    },
+    {
+     "label": "Other",
+     "tabIds": [
+      2018,
+      2069,
+      2087
+     ]
+    }
+   ],
+   "wallMs": 8465,
+   "timing": {
+    "totalMs": 8399,
+    "apiMs": 7003,
+    "claudeMs": 7632,
+    "turns": 2,
+    "model": "claude-haiku-5-5"
+   },
+   "strictErrors": [],
+   "repair": {
+    "unknown": [],
+    "duplicates": [],
+    "missing": [],
+    "singletons": []
+   },
+   "fallback": false,
+   "metrics": {
+    "valid": true,
+    "purity": 1,
+    "cohesion": 0.946,
+    "groupCount": 8,
+    "singletons": 0,
+    "names": [
+     "Token refresh fix (2: code-review)",
+     "Code review (5: code-review)",
+     "Async Python study (6: python-async)",
+     "Vietnam trip (7: vietnam-trip)",
+     "Inbox and calendar (6: email-calendar)",
+     "Focus music (5: music)",
+     "Cloud infrastructure (6: cloud-infra)",
+     "Other (3: stray)"
+    ]
+   }
+  },
+  {
+   "run": 2,
+   "cold": false,
+   "startedAt": "2026-11-15T14:21:55.973Z",
+   "groups": [
+    {
+     "label": "Token refresh fix",
+     "tabIds": [
+      2000,
+      2015
+     ]
+    },
+    {
+     "label": "Rate limiter issue",
+     "tabIds": [
+      2033,
+      2102
+     ]
+    },
+    {
+     "label": "Vietnam trip",
+     "tabIds": [
+      2009,
+      2024,
+      2042,
+      2060,
+      2075,
+      2093,
+      2111
+     ]
+    },
+    {
+     "label": "Python async study",
+     "tabIds": [
+      2006,
+      2021,
+      2039,
+      2057,
+      2090,
+      2108
+     ]
+    },
+    {
+     "label": "Azure VM setup",
+     "tabIds": [
+      2012,
+      2048,
+      2117,
+      2099
+     ]
+    },
+    {
+     "label": "Code review",
+     "tabIds": [
+      2051,
+      2066,
+      2084
+     ]
+    },
+    {
+     "label": "Music focus",
+     "tabIds": [
+      2003,
+      2054,
+      2072,
+      2105,
+      2036
+     ]
+    },
+    {
+     "label": "Email and calendar",
+     "tabIds": [
+      2027,
+      2045,
+      2063,
+      2078,
+      2096,
+      2114
+     ]
+    },
+    {
+     "label": "Other",
+     "tabIds": [
+      2018,
+      2030,
+      2069,
+      2081,
+      2087
+     ]
+    }
+   ],
+   "wallMs": 3949,
+   "timing": {
+    "totalMs": 3893,
+    "apiMs": 2483,
+    "claudeMs": 2819,
+    "turns": 2,
+    "model": "claude-haiku-5-5"
+   },
+   "strictErrors": [],
+   "repair": {
+    "unknown": [],
+    "duplicates": [],
+    "missing": [],
+    "singletons": []
+   },
+   "fallback": false,
+   "metrics": {
+    "valid": true,
+    "purity": 1,
+    "cohesion": 0.838,
+    "groupCount": 9,
+    "singletons": 0,
+    "names": [
+     "Token refresh fix (2: code-review)",
+     "Rate limiter issue (2: code-review)",
+     "Vietnam trip (7: vietnam-trip)",
+     "Python async study (6: python-async)",
+     "Azure VM setup (4: cloud-infra)",
+     "Code review (3: code-review)",
+     "Music focus (5: music)",
+     "Email and calendar (6: email-calendar)",
+     "Other (5: stray/cloud-infra)"
+    ]
+   }
+  },
+  {
+   "run": 3,
+   "cold": false,
+   "startedAt": "2026-11-15T14:21:59.923Z",
+   "groups": [
+    {
+     "label": "API bug fixes",
+     "tabIds": [
+      2000,
+      2015,
+      2033,
+      2066,
+      2102
+     ]
+    },
+    {
+     "label": "Code review",
+     "tabIds": [
+      2051,
+      2084
+     ]
+    },
+    {
+     "label": "Async Python study",
+     "tabIds": [
+      2006,
+      2021,
+      2039,
+      2057,
+      2090,
+      2108
+     ]
+    },
+    {
+     "label": "Vietnam trip",
+     "tabIds": [
+      2009,
+      2024,
+      2042,
+      2060,
+      2075,
+      2093,
+      2111
+     ]
+    },
+    {
+     "label": "Music and focus",
+     "tabIds": [
+      2003,
+      2036,
+      2054,
+      2072,
+      2105
+     ]
+    },
+    {
+     "label": "Email and calendar",
+     "tabIds": [
+      2027,
+      2045,
+      2063,
+      2078,
+      2096,
+      2114
+     ]
+    },
+    {
+     "label": "Cloud infrastructure",
+     "tabIds": [
+      2012,
+      2030,
+      2048,
+      2081,
+      2099,
+      2117
+     ]
+    },
+    {
+     "label": "Other",
+     "tabIds": [
+      2018,
+      2069,
+      2087
+     ]
+    }
+   ],
+   "wallMs": 7689,
+   "timing": {
+    "totalMs": 7621,
+    "apiMs": 6553,
+    "claudeMs": 6867,
+    "turns": 2,
+    "model": "claude-haiku-5-5"
+   },
+   "strictErrors": [],
+   "repair": {
+    "unknown": [],
+    "duplicates": [],
+    "missing": [],
+    "singletons": []
+   },
+   "fallback": false,
+   "metrics": {
+    "valid": true,
+    "purity": 1,
+    "cohesion": 0.946,
+    "groupCount": 8,
+    "singletons": 0,
+    "names": [
+     "API bug fixes (5: code-review)",
+     "Code review (2: code-review)",
+     "Async Python study (6: python-async)",
+     "Vietnam trip (7: vietnam-trip)",
+     "Music and focus (5: music)",
+     "Email and calendar (6: email-calendar)",
+     "Cloud infrastructure (6: cloud-infra)",
+     "Other (3: stray)"
+    ]
+   }
+  }
+ ]
+}

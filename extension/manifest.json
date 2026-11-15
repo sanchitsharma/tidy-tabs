@@ -1,0 +1,57 @@
+{
+  "manifest_version": 3,
+  "name": "Tidy Tabs (LLM)",
+  "version": "0.2.4",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA8bRt+UOQmwa7ncj7mnC4rjg1C4Cs8ef0oR2FNt2Cruy4ODLhPf92DgfRz4WMlDAynQcLU94BB0gxhc07buNwCajran03bB8eSw87xiHn0qMCyG+RtMIY0mwdC621lylN1VMqgveZnzsr8MY0xb9Ip0UOiVqn2kKQVjwxXge+VTf9K5hqiIn+gUMPdSnm/7t8XueovRdINJU04e4OLZftQilHV9ekBFNDbEH5iAgo62ndjL6lP9d+q8fIewNIlhgNdSzlONP6aRWVwTZYK/W0wqiaf9fHBA36YP4yOHIEH2Z6CREER2QqSXlVVVoJ/FXg4m7GbkvaHV58pP0r0bAj0wIDAQAB",
+  "description": "Group the current window's tabs by topic with a local LLM and reorder them so related tabs sit together.",
+  "minimum_chrome_version": "116",
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Tidy Tabs",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "commands": {
+    "tidy-tabs": {
+      "suggested_key": {
+        "default": "Alt+Shift+T",
+        "mac": "Alt+Shift+T"
+      },
+      "description": "Tidy tabs in the current window"
+    }
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "permissions": [
+    "tabs",
+    "storage",
+    "tabGroups",
+    "notifications",
+    "nativeMessaging"
+  ],
+  "host_permissions": [
+    "http://localhost:11434/*"
+  ],
+  "optional_host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "version_name": "0.2.4 (2026-11-15 20:52)",
+  "incognito": "not_allowed"
+}

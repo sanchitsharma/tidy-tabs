@@ -1,0 +1,356 @@
+{
+ "backend": "vm",
+ "tag": "maxloaded2",
+ "dataset": "vm-40",
+ "runs": [
+  {
+   "run": 1,
+   "cold": true,
+   "startedAt": "2026-11-15T14:23:53.628Z",
+   "loadedAfterUnload": [],
+   "groups": [
+    {
+     "label": "Code Review & CI/CD",
+     "tabIds": [
+      1,
+      8,
+      28,
+      29,
+      32,
+      33,
+      38
+     ]
+    },
+    {
+     "label": "Travel & Tourism",
+     "tabIds": [
+      4,
+      6,
+      11,
+      17,
+      21,
+      23,
+      31
+     ]
+    },
+    {
+     "label": "Cloud & Infrastructure",
+     "tabIds": [
+      0,
+      2,
+      7,
+      14,
+      34,
+      39
+     ]
+    },
+    {
+     "label": "Video & Music",
+     "tabIds": [
+      5,
+      10,
+      12,
+      19,
+      20,
+      24
+     ]
+    },
+    {
+     "label": "Email & Messaging",
+     "tabIds": [
+      13,
+      18,
+      25,
+      35,
+      36,
+      37
+     ]
+    },
+    {
+     "label": "Python & Development",
+     "tabIds": [
+      3,
+      9,
+      15,
+      16,
+      27
+     ]
+    },
+    {
+     "label": "News & Entertainment",
+     "tabIds": [
+      26,
+      30
+     ]
+    },
+    {
+     "label": "Misc",
+     "tabIds": [
+      22
+     ]
+    }
+   ],
+   "wallMs": 8918,
+   "timing": {
+    "embed_s": 2.333,
+    "embed_load_s": 1.035,
+    "cluster_s": 0.029,
+    "k": 8,
+    "silhouette": 0.35,
+    "name_s": 6.465,
+    "name_load_s": 1.546,
+    "total_s": 8.827
+   },
+   "namedBy": "qwen3:1.7b",
+   "metrics": {
+    "valid": true,
+    "purity": 1,
+    "cohesion": 1,
+    "groupCount": 8,
+    "singletons": 1,
+    "names": [
+     "Code Review & CI/CD (7: github)",
+     "Travel & Tourism (7: vietnam)",
+     "Cloud & Infrastructure (6: cloud)",
+     "Video & Music (6: music)",
+     "Email & Messaging (6: email)",
+     "Python & Development (5: python)",
+     "News & Entertainment (2: stray)",
+     "Misc (1: stray)"
+    ]
+   }
+  },
+  {
+   "run": 2,
+   "cold": false,
+   "startedAt": "2026-11-15T14:24:02.548Z",
+   "groups": [
+    {
+     "label": "Code Review & CI",
+     "tabIds": [
+      1,
+      8,
+      28,
+      29,
+      32,
+      33,
+      38
+     ]
+    },
+    {
+     "label": "Travel & Tourism",
+     "tabIds": [
+      4,
+      6,
+      11,
+      17,
+      21,
+      23,
+      31
+     ]
+    },
+    {
+     "label": "Cloud & Infrastructure",
+     "tabIds": [
+      0,
+      2,
+      7,
+      14,
+      34,
+      39
+     ]
+    },
+    {
+     "label": "Video & Music",
+     "tabIds": [
+      5,
+      10,
+      12,
+      19,
+      20,
+      24
+     ]
+    },
+    {
+     "label": "Email & Messaging",
+     "tabIds": [
+      13,
+      18,
+      25,
+      35,
+      36,
+      37
+     ]
+    },
+    {
+     "label": "Python & Development",
+     "tabIds": [
+      3,
+      9,
+      15,
+      16,
+      27
+     ]
+    },
+    {
+     "label": "News & E-commerce",
+     "tabIds": [
+      26,
+      30
+     ]
+    },
+    {
+     "label": "Misc",
+     "tabIds": [
+      22
+     ]
+    }
+   ],
+   "wallMs": 5236,
+   "timing": {
+    "embed_s": 1.422,
+    "embed_load_s": 0.002,
+    "cluster_s": 0.04,
+    "k": 8,
+    "silhouette": 0.35,
+    "name_s": 3.641,
+    "name_load_s": 0.001,
+    "total_s": 5.103
+   },
+   "namedBy": "qwen3:1.7b",
+   "metrics": {
+    "valid": true,
+    "purity": 1,
+    "cohesion": 1,
+    "groupCount": 8,
+    "singletons": 1,
+    "names": [
+     "Code Review & CI (7: github)",
+     "Travel & Tourism (7: vietnam)",
+     "Cloud & Infrastructure (6: cloud)",
+     "Video & Music (6: music)",
+     "Email & Messaging (6: email)",
+     "Python & Development (5: python)",
+     "News & E-commerce (2: stray)",
+     "Misc (1: stray)"
+    ]
+   }
+  },
+  {
+   "run": 3,
+   "cold": false,
+   "startedAt": "2026-11-15T14:24:07.785Z",
+   "groups": [
+    {
+     "label": "Code Review & CI",
+     "tabIds": [
+      1,
+      8,
+      28,
+      29,
+      32,
+      33,
+      38
+     ]
+    },
+    {
+     "label": "Travel & Tourism",
+     "tabIds": [
+      4,
+      6,
+      11,
+      17,
+      21,
+      23,
+      31
+     ]
+    },
+    {
+     "label": "Cloud & Infrastructure",
+     "tabIds": [
+      0,
+      2,
+      7,
+      14,
+      34,
+      39
+     ]
+    },
+    {
+     "label": "Video & Music",
+     "tabIds": [
+      5,
+      10,
+      12,
+      19,
+      20,
+      24
+     ]
+    },
+    {
+     "label": "Email & Messaging",
+     "tabIds": [
+      13,
+      18,
+      25,
+      35,
+      36,
+      37
+     ]
+    },
+    {
+     "label": "Python & Development",
+     "tabIds": [
+      3,
+      9,
+      15,
+      16,
+      27
+     ]
+    },
+    {
+     "label": "News & E-commerce",
+     "tabIds": [
+      26,
+      30
+     ]
+    },
+    {
+     "label": "Misc",
+     "tabIds": [
+      22
+     ]
+    }
+   ],
+   "wallMs": 4849,
+   "timing": {
+    "embed_s": 1.386,
+    "embed_load_s": 0.001,
+    "cluster_s": 0.04,
+    "k": 8,
+    "silhouette": 0.35,
+    "name_s": 3.329,
+    "name_load_s": 0.002,
+    "total_s": 4.755
+   },
+   "namedBy": "qwen3:1.7b",
+   "metrics": {
+    "valid": true,
+    "purity": 1,
+    "cohesion": 1,
+    "groupCount": 8,
+    "singletons": 1,
+    "names": [
+     "Code Review & CI (7: github)",
+     "Travel & Tourism (7: vietnam)",
+     "Cloud & Infrastructure (6: cloud)",
+     "Video & Music (6: music)",
+     "Email & Messaging (6: email)",
+     "Python & Development (5: python)",
+     "News & E-commerce (2: stray)",
+     "Misc (1: stray)"
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,247 @@
+{
+ "name": "vm-40",
+ "tabs": [
+  {
+   "id": 0,
+   "title": "EC2 Management Console",
+   "url": "https://us-east-1.console.aws.amazon.com/"
+  },
+  {
+   "id": 1,
+   "title": "Bump vite from 5.2.0 to 5.4.1 by dependabot · Pull Request #420",
+   "url": "https://github.com/"
+  },
+  {
+   "id": 2,
+   "title": "S3 bucket tidytabs-assets - Objects",
+   "url": "https://s3.console.aws.amazon.com/"
+  },
+  {
+   "id": 3,
+   "title": "dataclasses — Data Classes — Python 3.12 documentation",
+   "url": "https://docs.python.org/"
+  },
+  {
+   "id": 4,
+   "title": "Cheap flights Delhi to Hanoi - Google Flights",
+   "url": "https://www.google.com/"
+  },
+  {
+   "id": 5,
+   "title": "Coldplay live at Glastonbury - YouTube",
+   "url": "https://www.youtube.com/"
+  },
+  {
+   "id": 6,
+   "title": "Things to do in Ho Chi Minh City - Lonely Planet",
+   "url": "https://www.lonelyplanet.com/"
+  },
+  {
+   "id": 7,
+   "title": "Cost Management + Billing - Microsoft Azure",
+   "url": "https://portal.azure.com/"
+  },
+  {
+   "id": 8,
+   "title": "Review requested: refactor storage layer · Pull Request #77 · acme/api",
+   "url": "https://github.com/"
+  },
+  {
+   "id": 9,
+   "title": "asyncio — Asynchronous I/O — Python 3.12 documentation",
+   "url": "https://docs.python.org/"
+  },
+  {
+   "id": 10,
+   "title": "Chill Jazz Playlist 2026 - YouTube",
+   "url": "https://www.youtube.com/"
+  },
+  {
+   "id": 11,
+   "title": "Hoi An Ancient Town - Google Maps",
+   "url": "https://www.google.com/"
+  },
+  {
+   "id": 12,
+   "title": "Tame Impala - The Less I Know The Better (Official Video) - YouTube",
+   "url": "https://www.youtube.com/"
+  },
+  {
+   "id": 13,
+   "title": "Calendar invite: Design review Thu 3pm - Outlook",
+   "url": "https://outlook.office.com/"
+  },
+  {
+   "id": 14,
+   "title": "IAM Roles | IAM | Global",
+   "url": "https://us-east-1.console.aws.amazon.com/"
+  },
+  {
+   "id": 15,
+   "title": "json — JSON encoder and decoder — Python 3.12 documentation",
+   "url": "https://docs.python.org/"
+  },
+  {
+   "id": 16,
+   "title": "python - urllib.request timeout not working - Stack Overflow",
+   "url": "https://stackoverflow.com/"
+  },
+  {
+   "id": 17,
+   "title": "Hotel de l'Opera Hanoi - Booking.com",
+   "url": "https://www.booking.com/"
+  },
+  {
+   "id": 18,
+   "title": "Inbox (23) - alex@example.com - Gmail",
+   "url": "https://mail.google.com/"
+  },
+  {
+   "id": 19,
+   "title": "YouTube Music - Liked songs",
+   "url": "https://music.youtube.com/"
+  },
+  {
+   "id": 20,
+   "title": "Daft Punk - Discovery (Full Album) - YouTube",
+   "url": "https://www.youtube.com/"
+  },
+  {
+   "id": 21,
+   "title": "Hanoi to Da Nang train tickets - 12Go",
+   "url": "https://12go.asia/"
+  },
+  {
+   "id": 22,
+   "title": "Weather forecast - New Delhi",
+   "url": "https://weather.com/"
+  },
+  {
+   "id": 23,
+   "title": "Vietnam e-visa application - Official portal",
+   "url": "https://evisa.gov.vn/"
+  },
+  {
+   "id": 24,
+   "title": "Lofi hip hop radio - beats to relax/study to - YouTube",
+   "url": "https://www.youtube.com/"
+  },
+  {
+   "id": 25,
+   "title": "Meeting notes: sprint planning - Outlook",
+   "url": "https://outlook.office.com/"
+  },
+  {
+   "id": 26,
+   "title": "Wordle - The New York Times",
+   "url": "https://www.nytimes.com/"
+  },
+  {
+   "id": 27,
+   "title": "python - How to merge two dictionaries in a single expression? - Stack Overflow",
+   "url": "https://stackoverflow.com/"
+  },
+  {
+   "id": 28,
+   "title": "Pull requests · tidytabs/extension",
+   "url": "https://github.com/"
+  },
+  {
+   "id": 29,
+   "title": "Fix race condition in tab sync by alex · Pull Request #412 · tidytabs/extension",
+   "url": "https://github.com/"
+  },
+  {
+   "id": 30,
+   "title": "Amazon.in: wireless mouse",
+   "url": "https://www.amazon.in/"
+  },
+  {
+   "id": 31,
+   "title": "Ha Long Bay 2-day cruise reviews - Tripadvisor",
+   "url": "https://www.tripadvisor.com/"
+  },
+  {
+   "id": 32,
+   "title": "Actions · CI failed on main · tidytabs/extension",
+   "url": "https://github.com/"
+  },
+  {
+   "id": 33,
+   "title": "Issue #389: Groups lost after browser restart · tidytabs/extension",
+   "url": "https://github.com/"
+  },
+  {
+   "id": 34,
+   "title": "dev-vm | Networking - Microsoft Azure",
+   "url": "https://portal.azure.com/"
+  },
+  {
+   "id": 35,
+   "title": "Re: Q4 invoice follow-up - Gmail",
+   "url": "https://mail.google.com/"
+  },
+  {
+   "id": 36,
+   "title": "Mail - Outlook",
+   "url": "https://outlook.office.com/"
+  },
+  {
+   "id": 37,
+   "title": "Drafts - Gmail",
+   "url": "https://mail.google.com/"
+  },
+  {
+   "id": 38,
+   "title": "Add JSON schema validation for groups · Pull Request #418 · tidytabs/extension",
+   "url": "https://github.com/"
+  },
+  {
+   "id": 39,
+   "title": "Virtual machines - Microsoft Azure",
+   "url": "https://portal.azure.com/"
+  }
+ ],
+ "expected": {
+  "0": "cloud",
+  "1": "github",
+  "2": "cloud",
+  "3": "python",
+  "4": "vietnam",
+  "5": "music",
+  "6": "vietnam",
+  "7": "cloud",
+  "8": "github",
+  "9": "python",
+  "10": "music",
+  "11": "vietnam",
+  "12": "music",
+  "13": "email",
+  "14": "cloud",
+  "15": "python",
+  "16": "python",
+  "17": "vietnam",
+  "18": "email",
+  "19": "music",
+  "20": "music",
+  "21": "vietnam",
+  "22": "stray",
+  "23": "vietnam",
+  "24": "music",
+  "25": "email",
+  "26": "stray",
+  "27": "python",
+  "28": "github",
+  "29": "github",
+  "30": "stray",
+  "31": "vietnam",
+  "32": "github",
+  "33": "github",
+  "34": "cloud",
+  "35": "email",
+  "36": "email",
+  "37": "email",
+  "38": "github",
+  "39": "cloud"
+ }
+}

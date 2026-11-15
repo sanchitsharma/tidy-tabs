@@ -1,0 +1,322 @@
+[
+ {
+  "id": 2000,
+  "index": 0,
+  "pinned": false,
+  "url": "https://github.com/acme/api/pull/412",
+  "title": "Fix token refresh race condition by jdoe \u00b7 Pull Request #412 \u00b7 acme/api",
+  "topic": "code-review"
+ },
+ {
+  "id": 2003,
+  "index": 1,
+  "pinned": false,
+  "url": "https://music.youtube.com/playlist?list=PL1chill",
+  "title": "Chill Mix - YouTube Music",
+  "topic": "music"
+ },
+ {
+  "id": 2006,
+  "index": 2,
+  "pinned": false,
+  "url": "https://docs.python.org/3/library/asyncio-task.html",
+  "title": "Coroutines and Tasks \u2014 Python 3.13.1 documentation",
+  "topic": "python-async"
+ },
+ {
+  "id": 2009,
+  "index": 3,
+  "pinned": false,
+  "url": "https://www.google.com/travel/flights/search?tfs=SIN-HAN",
+  "title": "Singapore to Hanoi | Google Flights",
+  "topic": "vietnam-trip"
+ },
+ {
+  "id": 2012,
+  "index": 4,
+  "pinned": false,
+  "url": "https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine",
+  "title": "azurerm_linux_virtual_machine | Resources | hashicorp/azurerm | Terraform Registry",
+  "topic": "cloud-infra"
+ },
+ {
+  "id": 2015,
+  "index": 5,
+  "pinned": false,
+  "url": "https://linear.app/acme/issue/ENG-1422",
+  "title": "ENG-1422 Token refresh fails after sleep - Linear",
+  "topic": "code-review"
+ },
+ {
+  "id": 2018,
+  "index": 6,
+  "pinned": false,
+  "url": "https://www.amazon.com/dp/B0CHX1W1XY",
+  "title": "Anker USB-C Charger 65W, 3-Port GaN : Electronics - Amazon.com",
+  "topic": "stray"
+ },
+ {
+  "id": 2021,
+  "index": 7,
+  "pinned": false,
+  "url": "https://realpython.com/async-io-python/",
+  "title": "Async IO in Python: A Complete Walkthrough \u2013 Real Python",
+  "topic": "python-async"
+ },
+ {
+  "id": 2024,
+  "index": 8,
+  "pinned": false,
+  "url": "https://www.agoda.com/halong-bay-cruise/hotel/ha-long-vn.html",
+  "title": "Ha Long Bay Overnight Cruise - Agoda",
+  "topic": "vietnam-trip"
+ },
+ {
+  "id": 2027,
+  "index": 9,
+  "pinned": false,
+  "url": "https://outlook.office.com/calendar/view/week",
+  "title": "Calendar - Outlook",
+  "topic": "email-calendar"
+ },
+ {
+  "id": 2030,
+  "index": 10,
+  "pinned": false,
+  "url": "https://login.tailscale.com/admin/machines",
+  "title": "Machines - Tailscale",
+  "topic": "cloud-infra"
+ },
+ {
+  "id": 2033,
+  "index": 11,
+  "pinned": false,
+  "url": "https://github.com/acme/api/issues/301",
+  "title": "Rate limiter drops requests under load \u00b7 Issue #301 \u00b7 acme/api",
+  "topic": "code-review"
+ },
+ {
+  "id": 2036,
+  "index": 12,
+  "pinned": false,
+  "url": "https://www.last.fm/user/me/library",
+  "title": "Library | Last.fm",
+  "topic": "music"
+ },
+ {
+  "id": 2039,
+  "index": 13,
+  "pinned": false,
+  "url": "https://peps.python.org/pep-0789/",
+  "title": "PEP 789 \u2013 Preventing task-cancellation bugs by limiting yield in async generators",
+  "topic": "python-async"
+ },
+ {
+  "id": 2042,
+  "index": 14,
+  "pinned": false,
+  "url": "https://www.tripadvisor.com/Attractions-g293924-Activities-Hanoi.html",
+  "title": "THE 15 BEST Things to Do in Hanoi (2026) - Tripadvisor",
+  "topic": "vietnam-trip"
+ },
+ {
+  "id": 2045,
+  "index": 15,
+  "pinned": false,
+  "url": "https://mail.google.com/mail/u/0/#inbox/FMfcgzQ",
+  "title": "Re: Q4 invoice approval - me@example.com - Gmail",
+  "topic": "email-calendar"
+ },
+ {
+  "id": 2048,
+  "index": 16,
+  "pinned": false,
+  "url": "https://portal.azure.com/#view/HubsExtension/BrowseResource/resourceType/Microsoft.Compute%2FVirtualMachines",
+  "title": "Virtual machines - Microsoft Azure",
+  "topic": "cloud-infra"
+ },
+ {
+  "id": 2051,
+  "index": 17,
+  "pinned": false,
+  "url": "https://github.com/acme/web/pull/88/files",
+  "title": "Add dark mode toggle \u00b7 Pull Request #88 \u00b7 acme/web \u00b7 Files changed",
+  "topic": "code-review"
+ },
+ {
+  "id": 2054,
+  "index": 18,
+  "pinned": false,
+  "url": "https://open.spotify.com/playlist/37i9dQZF1DWZeKCadgRdKQ",
+  "title": "Deep Focus | Spotify Playlist",
+  "topic": "music"
+ },
+ {
+  "id": 2057,
+  "index": 19,
+  "pinned": false,
+  "url": "https://stackoverflow.com/questions/44982/asyncio-gather-exceptions",
+  "title": "python - asyncio.gather and exception handling - Stack Overflow",
+  "topic": "python-async"
+ },
+ {
+  "id": 2060,
+  "index": 20,
+  "pinned": false,
+  "url": "https://www.booking.com/hotel/vn/hanoi-old-quarter-boutique.html",
+  "title": "Hanoi Old Quarter Boutique Hotel, Hanoi \u2013 Updated 2026 Prices",
+  "topic": "vietnam-trip"
+ },
+ {
+  "id": 2063,
+  "index": 21,
+  "pinned": false,
+  "url": "https://mail.google.com/mail/u/0/#inbox",
+  "title": "Inbox (14) - me@example.com - Gmail",
+  "topic": "email-calendar"
+ },
+ {
+  "id": 2066,
+  "index": 22,
+  "pinned": false,
+  "url": "https://sonarcloud.io/project/overview?id=acme_api",
+  "title": "acme_api - SonarCloud",
+  "topic": "code-review"
+ },
+ {
+  "id": 2069,
+  "index": 23,
+  "pinned": false,
+  "url": "https://en.wikipedia.org/wiki/Oliver_Burkeman",
+  "title": "Oliver Burkeman - Wikipedia",
+  "topic": "stray"
+ },
+ {
+  "id": 2072,
+  "index": 24,
+  "pinned": false,
+  "url": "https://www.youtube.com/watch?v=jfKfPfyJRdk",
+  "title": "lofi hip hop radio \ud83d\udcda beats to relax/study to - YouTube",
+  "topic": "music"
+ },
+ {
+  "id": 2075,
+  "index": 25,
+  "pinned": false,
+  "url": "https://www.reddit.com/r/VietNam/comments/xyz/hanoi_itinerary_7_days/",
+  "title": "7 day Hanoi + Ha Long itinerary, feedback? : r/VietNam",
+  "topic": "vietnam-trip"
+ },
+ {
+  "id": 2078,
+  "index": 26,
+  "pinned": false,
+  "url": "https://calendly.com/event_types/user/me",
+  "title": "Event Types | Calendly",
+  "topic": "email-calendar"
+ },
+ {
+  "id": 2081,
+  "index": 27,
+  "pinned": false,
+  "url": "https://dash.cloudflare.com/abc/example.com/dns/records",
+  "title": "DNS Records | example.com | Cloudflare",
+  "topic": "cloud-infra"
+ },
+ {
+  "id": 2084,
+  "index": 28,
+  "pinned": false,
+  "url": "https://github.com/pulls/review-requested",
+  "title": "Review requests \u00b7 GitHub",
+  "topic": "code-review"
+ },
+ {
+  "id": 2087,
+  "index": 29,
+  "pinned": false,
+  "url": "https://www.nytimes.com/2026/11/14/world/asia/typhoon-philippines.html",
+  "title": "Typhoon Makes Landfall in the Philippines - The New York Times",
+  "topic": "stray"
+ },
+ {
+  "id": 2090,
+  "index": 30,
+  "pinned": false,
+  "url": "https://trio.readthedocs.io/en/stable/reference-core.html",
+  "title": "Trio's core functionality \u2014 Trio 0.27 documentation",
+  "topic": "python-async"
+ },
+ {
+  "id": 2093,
+  "index": 31,
+  "pinned": false,
+  "url": "https://evisa.gov.vn/",
+  "title": "Vietnam National E-Visa System",
+  "topic": "vietnam-trip"
+ },
+ {
+  "id": 2096,
+  "index": 32,
+  "pinned": false,
+  "url": "https://calendar.google.com/calendar/u/0/r/week",
+  "title": "Google Calendar - Week of November 16, 2026",
+  "topic": "email-calendar"
+ },
+ {
+  "id": 2099,
+  "index": 33,
+  "pinned": false,
+  "url": "https://console.aws.amazon.com/billing/home#/bills",
+  "title": "Bills | Billing and Cost Management",
+  "topic": "cloud-infra"
+ },
+ {
+  "id": 2102,
+  "index": 34,
+  "pinned": false,
+  "url": "https://github.com/acme/api/actions/runs/9912",
+  "title": "CI \u00b7 acme/api@3f2a1c9 \u00b7 GitHub Actions",
+  "topic": "code-review"
+ },
+ {
+  "id": 2105,
+  "index": 35,
+  "pinned": false,
+  "url": "https://bandcamp.com/discover/ambient",
+  "title": "Ambient | Bandcamp Discover",
+  "topic": "music"
+ },
+ {
+  "id": 2108,
+  "index": 36,
+  "pinned": false,
+  "url": "https://docs.python.org/3/library/asyncio-sync.html",
+  "title": "Synchronization Primitives \u2014 Python 3.13.1 documentation",
+  "topic": "python-async"
+ },
+ {
+  "id": 2111,
+  "index": 37,
+  "pinned": false,
+  "url": "https://www.google.com/maps/place/Hoan+Kiem+Lake",
+  "title": "Hoan Kiem Lake - Google Maps",
+  "topic": "vietnam-trip"
+ },
+ {
+  "id": 2114,
+  "index": 38,
+  "pinned": false,
+  "url": "https://outlook.office.com/mail/",
+  "title": "Mail - Outlook",
+  "topic": "email-calendar"
+ },
+ {
+  "id": 2117,
+  "index": 39,
+  "pinned": false,
+  "url": "https://console.aws.amazon.com/ec2/home?region=ap-southeast-1#Instances:",
+  "title": "Instances | EC2 | ap-southeast-1",
+  "topic": "cloud-infra"
+ }
+]

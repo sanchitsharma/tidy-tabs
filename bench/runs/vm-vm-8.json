@@ -1,0 +1,170 @@
+{
+ "backend": "vm",
+ "tag": "",
+ "dataset": "vm-8",
+ "runs": [
+  {
+   "run": 1,
+   "cold": true,
+   "startedAt": "2026-11-15T14:18:04.341Z",
+   "loadedAfterUnload": [],
+   "groups": [
+    {
+     "label": "Code Review",
+     "tabIds": [
+      0,
+      1,
+      2
+     ]
+    },
+    {
+     "label": "Travel Booking",
+     "tabIds": [
+      3,
+      4,
+      5
+     ]
+    },
+    {
+     "label": "Music Streaming",
+     "tabIds": [
+      6,
+      7
+     ]
+    }
+   ],
+   "wallMs": 5932,
+   "timing": {
+    "embed_s": 1.578,
+    "embed_load_s": 1.288,
+    "cluster_s": 0.001,
+    "k": 3,
+    "silhouette": 0.477,
+    "name_s": 4.254,
+    "name_load_s": 1.829,
+    "total_s": 5.833
+   },
+   "namedBy": "qwen3:1.7b",
+   "metrics": {
+    "valid": true,
+    "purity": 1,
+    "cohesion": 1,
+    "groupCount": 3,
+    "singletons": 0,
+    "names": [
+     "Code Review (3: github)",
+     "Travel Booking (3: vietnam)",
+     "Music Streaming (2: music)"
+    ]
+   }
+  },
+  {
+   "run": 2,
+   "cold": false,
+   "startedAt": "2026-11-15T14:18:10.276Z",
+   "groups": [
+    {
+     "label": "Code Review",
+     "tabIds": [
+      0,
+      1,
+      2
+     ]
+    },
+    {
+     "label": "Travel Booking",
+     "tabIds": [
+      3,
+      4,
+      5
+     ]
+    },
+    {
+     "label": "Music Streaming",
+     "tabIds": [
+      6,
+      7
+     ]
+    }
+   ],
+   "wallMs": 5639,
+   "timing": {
+    "embed_s": 1.422,
+    "embed_load_s": 1.134,
+    "cluster_s": 0.002,
+    "k": 3,
+    "silhouette": 0.477,
+    "name_s": 4.122,
+    "name_load_s": 1.844,
+    "total_s": 5.545
+   },
+   "namedBy": "qwen3:1.7b",
+   "metrics": {
+    "valid": true,
+    "purity": 1,
+    "cohesion": 1,
+    "groupCount": 3,
+    "singletons": 0,
+    "names": [
+     "Code Review (3: github)",
+     "Travel Booking (3: vietnam)",
+     "Music Streaming (2: music)"
+    ]
+   }
+  },
+  {
+   "run": 3,
+   "cold": false,
+   "startedAt": "2026-11-15T14:18:15.915Z",
+   "groups": [
+    {
+     "label": "Code Review",
+     "tabIds": [
+      0,
+      1,
+      2
+     ]
+    },
+    {
+     "label": "Travel Booking",
+     "tabIds": [
+      3,
+      4,
+      5
+     ]
+    },
+    {
+     "label": "Music Streaming",
+     "tabIds": [
+      6,
+      7
+     ]
+    }
+   ],
+   "wallMs": 5550,
+   "timing": {
+    "embed_s": 1.395,
+    "embed_load_s": 1.136,
+    "cluster_s": 0.001,
+    "k": 3,
+    "silhouette": 0.477,
+    "name_s": 4.06,
+    "name_load_s": 1.83,
+    "total_s": 5.457
+   },
+   "namedBy": "qwen3:1.7b",
+   "metrics": {
+    "valid": true,
+    "purity": 1,
+    "cohesion": 1,
+    "groupCount": 3,
+    "singletons": 0,
+    "names": [
+     "Code Review (3: github)",
+     "Travel Booking (3: vietnam)",
+     "Music Streaming (2: music)"
+    ]
+   }
+  }
+ ]
+}

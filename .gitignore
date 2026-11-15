@@ -1,0 +1,5 @@
+.keys/
+native-host/tidy-tabs-host
+node_modules/
+.DS_Store
+*.log

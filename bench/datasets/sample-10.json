@@ -1,0 +1,56 @@
+{
+ "name": "sample-10",
+ "tabs": [
+  {
+   "id": 100,
+   "title": "Page Edit (Design Mode) :: MyBrowserAddon",
+   "url": "https://mybrowseraddon.com/"
+  },
+  {
+   "id": 101,
+   "title": "Chrome Issues | Authenticator",
+   "url": "https://authenticator.cc/"
+  },
+  {
+   "id": 102,
+   "title": "octotree",
+   "url": "https://octotree.io/"
+  },
+  {
+   "id": 103,
+   "title": "Install",
+   "url": "https://adblock-for-y.com/"
+  },
+  {
+   "id": 104,
+   "title": "Release v0.15.0 · ruifigueira/playwright-crx · GitHub",
+   "url": "https://github.com/"
+  },
+  {
+   "id": 105,
+   "title": "Volume Master - how to | Peta Sittek",
+   "url": "https://petasittek.com/"
+  },
+  {
+   "id": 106,
+   "title": "Welcome - Unhook",
+   "url": "https://unhook.app/"
+  },
+  {
+   "id": 107,
+   "title": "Sign up | Glasp",
+   "url": "https://glasp.co/"
+  },
+  {
+   "id": 108,
+   "title": "Browser Extension Getting Started | Bitwarden",
+   "url": "https://bitwarden.com/"
+  },
+  {
+   "id": 109,
+   "title": "Get Started with Buyhatke Extension | Buyhatke",
+   "url": "https://buyhatke.com/"
+  }
+ ],
+ "expected": null
+}

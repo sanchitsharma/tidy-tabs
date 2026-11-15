@@ -1,0 +1,55 @@
+{
+ "name": "vm-8",
+ "tabs": [
+  {
+   "id": 0,
+   "title": "Fix race condition in tab sync by alex · Pull Request #412 · tidytabs/extension",
+   "url": "https://github.com/"
+  },
+  {
+   "id": 1,
+   "title": "Add JSON schema validation for groups · Pull Request #418 · tidytabs/extension",
+   "url": "https://github.com/"
+  },
+  {
+   "id": 2,
+   "title": "Pull requests · tidytabs/extension",
+   "url": "https://github.com/"
+  },
+  {
+   "id": 3,
+   "title": "Cheap flights Delhi to Hanoi - Google Flights",
+   "url": "https://www.google.com/"
+  },
+  {
+   "id": 4,
+   "title": "Hotel de l'Opera Hanoi - Booking.com",
+   "url": "https://www.booking.com/"
+  },
+  {
+   "id": 5,
+   "title": "Hoi An Ancient Town - Google Maps",
+   "url": "https://www.google.com/"
+  },
+  {
+   "id": 6,
+   "title": "Lofi hip hop radio - beats to relax/study to - YouTube",
+   "url": "https://www.youtube.com/"
+  },
+  {
+   "id": 7,
+   "title": "Daft Punk - Discovery (Full Album) - YouTube",
+   "url": "https://www.youtube.com/"
+  }
+ ],
+ "expected": {
+  "0": "github",
+  "1": "github",
+  "2": "github",
+  "3": "vietnam",
+  "4": "vietnam",
+  "5": "vietnam",
+  "6": "music",
+  "7": "music"
+ }
+}

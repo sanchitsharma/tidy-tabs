@@ -1,0 +1,186 @@
+{
+ "backend": "haiku",
+ "tag": "",
+ "dataset": "vm-8",
+ "provenance": {
+  "extVersion": "0.2.3 (2026-11-15 19:47)",
+  "coreSha1": "5bd336e67b",
+  "systemPrompt": "You tidy a browser window. Group the tabs by the task or activity the user is in the middle of: one group per thing they are working on, not one group per website, product, or brand. Prefer fewer, broader groups: aim for about 5 groups, never more than 8. Every group must contain at least 2 tabs. Put tabs that do not share a task with any other tab in \"ungrouped\". Every tab id must appear exactly once: in one group or in \"ungrouped\". Use only the ids given. Labels are at most 3 words and name the task (e.g. \"Extension setup\", \"Vietnam trip\", \"Code review\"), not a product or site (not \"Password Management\", not \"GitHub Tools\"). Input: one tab per line as id|host|title. Reply with JSON: {\"groups\":[{\"label\":string,\"tabIds\":[int]}],\"ungrouped\":[int]}."
+ },
+ "runs": [
+  {
+   "run": 1,
+   "cold": true,
+   "startedAt": "2026-11-15T14:20:30.213Z",
+   "groups": [
+    {
+     "label": "Tidytabs PR review",
+     "tabIds": [
+      0,
+      1,
+      2
+     ]
+    },
+    {
+     "label": "Hanoi trip planning",
+     "tabIds": [
+      3,
+      4,
+      5
+     ]
+    },
+    {
+     "label": "Music listening",
+     "tabIds": [
+      6,
+      7
+     ]
+    }
+   ],
+   "wallMs": 6320,
+   "timing": {
+    "totalMs": 6154,
+    "apiMs": 4400,
+    "claudeMs": 4921,
+    "turns": 2,
+    "model": "claude-haiku-5-5"
+   },
+   "strictErrors": [],
+   "repair": {
+    "unknown": [],
+    "duplicates": [],
+    "missing": [],
+    "singletons": []
+   },
+   "fallback": false,
+   "metrics": {
+    "valid": true,
+    "purity": 1,
+    "cohesion": 1,
+    "groupCount": 3,
+    "singletons": 0,
+    "names": [
+     "Tidytabs PR review (3: github)",
+     "Hanoi trip planning (3: vietnam)",
+     "Music listening (2: music)"
+    ]
+   }
+  },
+  {
+   "run": 2,
+   "cold": false,
+   "startedAt": "2026-11-15T14:20:36.535Z",
+   "groups": [
+    {
+     "label": "Extension PR work",
+     "tabIds": [
+      0,
+      1,
+      2
+     ]
+    },
+    {
+     "label": "Hanoi trip planning",
+     "tabIds": [
+      3,
+      4,
+      5
+     ]
+    },
+    {
+     "label": "Other",
+     "tabIds": [
+      6,
+      7
+     ]
+    }
+   ],
+   "wallMs": 3455,
+   "timing": {
+    "totalMs": 3385,
+    "apiMs": 2072,
+    "claudeMs": 2340,
+    "turns": 2,
+    "model": "claude-haiku-5-5"
+   },
+   "strictErrors": [],
+   "repair": {
+    "unknown": [],
+    "duplicates": [],
+    "missing": [],
+    "singletons": []
+   },
+   "fallback": false,
+   "metrics": {
+    "valid": true,
+    "purity": 1,
+    "cohesion": 1,
+    "groupCount": 3,
+    "singletons": 0,
+    "names": [
+     "Extension PR work (3: github)",
+     "Hanoi trip planning (3: vietnam)",
+     "Other (2: music)"
+    ]
+   }
+  },
+  {
+   "run": 3,
+   "cold": false,
+   "startedAt": "2026-11-15T14:20:39.991Z",
+   "groups": [
+    {
+     "label": "Extension PR work",
+     "tabIds": [
+      0,
+      1,
+      2
+     ]
+    },
+    {
+     "label": "Vietnam trip planning",
+     "tabIds": [
+      3,
+      4,
+      5
+     ]
+    },
+    {
+     "label": "Other",
+     "tabIds": [
+      6,
+      7
+     ]
+    }
+   ],
+   "wallMs": 3612,
+   "timing": {
+    "totalMs": 3543,
+    "apiMs": 2143,
+    "claudeMs": 2411,
+    "turns": 2,
+    "model": "claude-haiku-5-5"
+   },
+   "strictErrors": [],
+   "repair": {
+    "unknown": [],
+    "duplicates": [],
+    "missing": [],
+    "singletons": []
+   },
+   "fallback": false,
+   "metrics": {
+    "valid": true,
+    "purity": 1,
+    "cohesion": 1,
+    "groupCount": 3,
+    "singletons": 0,
+    "names": [
+     "Extension PR work (3: github)",
+     "Vietnam trip planning (3: vietnam)",
+     "Other (2: music)"
+    ]
+   }
+  }
+ ]
+}

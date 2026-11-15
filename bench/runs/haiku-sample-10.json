@@ -1,0 +1,180 @@
+{
+ "backend": "haiku",
+ "tag": "",
+ "dataset": "sample-10",
+ "provenance": {
+  "extVersion": "0.2.3 (2026-11-15 19:47)",
+  "coreSha1": "5bd336e67b",
+  "systemPrompt": "You tidy a browser window. Group the tabs by the task or activity the user is in the middle of: one group per thing they are working on, not one group per website, product, or brand. Prefer fewer, broader groups: aim for about 5 groups, never more than 8. Every group must contain at least 2 tabs. Put tabs that do not share a task with any other tab in \"ungrouped\". Every tab id must appear exactly once: in one group or in \"ungrouped\". Use only the ids given. Labels are at most 3 words and name the task (e.g. \"Extension setup\", \"Vietnam trip\", \"Code review\"), not a product or site (not \"Password Management\", not \"GitHub Tools\"). Input: one tab per line as id|host|title. Reply with JSON: {\"groups\":[{\"label\":string,\"tabIds\":[int]}],\"ungrouped\":[int]}."
+ },
+ "runs": [
+  {
+   "run": 1,
+   "cold": true,
+   "startedAt": "2026-11-15T14:22:07.612Z",
+   "groups": [
+    {
+     "label": "Extension development",
+     "tabIds": [
+      100,
+      104
+     ]
+    },
+    {
+     "label": "Extension setup",
+     "tabIds": [
+      101,
+      102,
+      103,
+      105,
+      106,
+      107,
+      108,
+      109
+     ]
+    }
+   ],
+   "wallMs": 6985,
+   "timing": {
+    "totalMs": 6935,
+    "apiMs": 5934,
+    "claudeMs": 6164,
+    "turns": 2,
+    "model": "claude-haiku-5-5"
+   },
+   "strictErrors": [],
+   "repair": {
+    "unknown": [],
+    "duplicates": [],
+    "missing": [],
+    "singletons": []
+   },
+   "fallback": false,
+   "metrics": {
+    "valid": true,
+    "purity": null,
+    "cohesion": null,
+    "groupCount": 2,
+    "singletons": 0,
+    "names": [
+     "Extension development (2)",
+     "Extension setup (8)"
+    ]
+   }
+  },
+  {
+   "run": 2,
+   "cold": false,
+   "startedAt": "2026-11-15T14:22:14.598Z",
+   "groups": [
+    {
+     "label": "Extension development",
+     "tabIds": [
+      100,
+      104,
+      101
+     ]
+    },
+    {
+     "label": "Privacy tool setup",
+     "tabIds": [
+      103,
+      106,
+      108
+     ]
+    },
+    {
+     "label": "Extension research",
+     "tabIds": [
+      102,
+      105,
+      107,
+      109
+     ]
+    }
+   ],
+   "wallMs": 7191,
+   "timing": {
+    "totalMs": 7137,
+    "apiMs": 6123,
+    "claudeMs": 6365,
+    "turns": 2,
+    "model": "claude-haiku-5-5"
+   },
+   "strictErrors": [],
+   "repair": {
+    "unknown": [],
+    "duplicates": [],
+    "missing": [],
+    "singletons": []
+   },
+   "fallback": false,
+   "metrics": {
+    "valid": true,
+    "purity": null,
+    "cohesion": null,
+    "groupCount": 3,
+    "singletons": 0,
+    "names": [
+     "Extension development (3)",
+     "Privacy tool setup (3)",
+     "Extension research (4)"
+    ]
+   }
+  },
+  {
+   "run": 3,
+   "cold": false,
+   "startedAt": "2026-11-15T14:22:21.789Z",
+   "groups": [
+    {
+     "label": "Extension setup",
+     "tabIds": [
+      101,
+      103,
+      105,
+      106,
+      107,
+      108,
+      109
+     ]
+    },
+    {
+     "label": "Extension development",
+     "tabIds": [
+      100,
+      102,
+      104
+     ]
+    }
+   ],
+   "wallMs": 6609,
+   "timing": {
+    "totalMs": 6555,
+    "apiMs": 5273,
+    "claudeMs": 5769,
+    "turns": 2,
+    "model": "claude-haiku-5-5"
+   },
+   "strictErrors": [],
+   "repair": {
+    "unknown": [],
+    "duplicates": [],
+    "missing": [],
+    "singletons": []
+   },
+   "fallback": false,
+   "metrics": {
+    "valid": true,
+    "purity": null,
+    "cohesion": null,
+    "groupCount": 2,
+    "singletons": 0,
+    "names": [
+     "Extension setup (7)",
+     "Extension development (3)"
+    ]
+   }
+  }
+ ]
+}

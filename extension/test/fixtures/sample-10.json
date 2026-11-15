@@ -1,0 +1,72 @@
+[
+ {
+  "id": 500,
+  "index": 0,
+  "pinned": false,
+  "title": "Page Edit (Design Mode) :: MyBrowserAddon",
+  "url": "https://mybrowseraddon.com/"
+ },
+ {
+  "id": 501,
+  "index": 1,
+  "pinned": false,
+  "title": "Chrome Issues | Authenticator",
+  "url": "https://authenticator.cc/"
+ },
+ {
+  "id": 502,
+  "index": 2,
+  "pinned": false,
+  "title": "octotree",
+  "url": "https://octotree.io/"
+ },
+ {
+  "id": 503,
+  "index": 3,
+  "pinned": false,
+  "title": "Install",
+  "url": "https://adblock-for-y.com/"
+ },
+ {
+  "id": 504,
+  "index": 4,
+  "pinned": false,
+  "title": "Release v0.15.0 \u00b7 ruifigueira/playwright-crx \u00b7 GitHub",
+  "url": "https://github.com/"
+ },
+ {
+  "id": 505,
+  "index": 5,
+  "pinned": false,
+  "title": "Volume Master - how to | Peta Sittek",
+  "url": "https://petasittek.com/"
+ },
+ {
+  "id": 506,
+  "index": 6,
+  "pinned": false,
+  "title": "Welcome - Unhook",
+  "url": "https://unhook.app/"
+ },
+ {
+  "id": 507,
+  "index": 7,
+  "pinned": false,
+  "title": "Sign up | Glasp",
+  "url": "https://glasp.co/"
+ },
+ {
+  "id": 508,
+  "index": 8,
+  "pinned": false,
+  "title": "Browser Extension Getting Started | Bitwarden",
+  "url": "https://bitwarden.com/"
+ },
+ {
+  "id": 509,
+  "index": 9,
+  "pinned": false,
+  "title": "Get Started with Buyhatke Extension | Buyhatke",
+  "url": "https://buyhatke.com/"
+ }
+]
