@@ -30,7 +30,8 @@ Claude Haiku (your Claude subscription)  →  {groups:[{label, tabIds}], ungroup
   - Unknown or duplicate ids are dropped. Single-tab groups and leftovers go to "Other", which is never
     made a tab group.
   - Labels are capped at 40 chars and there are at most 8 groups.
-  - Browser-internal pages (`chrome://`, `chrome-extension://`) are never grouped.
+  - Browser-internal pages (`chrome://`, `chrome-extension://`) are never grouped. Tabs parked by a
+    suspender extension (Tab Suspender, Marvellous Suspender, …) are grouped by their real URL.
 - **Moves are verified:** after reordering, the extension re-reads the window and compares it with the
   plan, retrying once with a single array move. The popup shows exactly what happened.
 - **Tab groups are reused:** re-tidying keeps or renames the groups the extension created earlier
@@ -76,6 +77,9 @@ don't work for extensions, and Arc is being discontinued.
   (`~/Library/Logs/tidy-tabs/last-run.json`, plus `runs.jsonl` rotated at about 1 MB) keep status,
   errors, timings, counts, backend, move results and group labels with sizes. Tab titles and hosts are
   stored only if you turn on **Debug logging** in Options. The wrapper's `host-*.log` files are capped.
+- **Copy diagnostics** (popup) copies the last run in full: the exact prompt sent to the model, its raw
+  answer, and which kinds of tabs were skipped (`scheme://host` counts). That full copy lives only in
+  memory (`storage.session`) and never goes to disk unless Debug logging is on.
 - **Permissions:** `tabs`, `tabGroups`, `storage`, `nativeMessaging`, `notifications`, and host access
   to `http://localhost:11434` only. Any other Ollama endpoint is an optional permission you grant when
   you click Save. The extension is disabled in incognito.

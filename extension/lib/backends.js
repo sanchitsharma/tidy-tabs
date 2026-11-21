@@ -84,6 +84,19 @@ export async function runCluster(tabs, settings, deps = {}) {
     chat = ollamaChat({ endpoint: settings.endpoint, model: settings.model, signal, fetchImpl: deps.fetchImpl });
     label = `ollama:${settings.model}`;
   }
-  const res = await clusterTabs(tabs, { chat, strategy, idEnum: settings.idEnum !== false });
-  return { ...res, backend: res.fallback ? 'domain-fallback' : label, attemptedBackend: label, strategy };
+  const exchanges = [];
+  const recorded = async (prompt, schema) => {
+    const ex = { system: prompt.system, user: prompt.user };
+    exchanges.push(ex);
+    try {
+      const r = await chat(prompt, schema);
+      ex.response = String(r.content).slice(0, 20000);
+      return r;
+    } catch (e) {
+      ex.error = String(e?.message || e);
+      throw e;
+    }
+  };
+  const res = await clusterTabs(tabs, { chat: recorded, strategy, idEnum: settings.idEnum !== false });
+  return { ...res, exchanges, backend: res.fallback ? 'domain-fallback' : label, attemptedBackend: label, strategy };
 }

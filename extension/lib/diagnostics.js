@@ -93,9 +93,10 @@ export function errorEntry(where, e) {
  */
 export function redactRecord(rec, { debugLogging = false } = {}) {
   if (debugLogging) return rec;
-  const { before, ...rest } = rec;
+  const { before, llm, ...rest } = rec;
   return {
     ...rest,
+    llm: llm ? `${llm.length} model call(s) omitted (Copy diagnostics includes them; or enable Debug logging)` : undefined,
     groups: (rec.groups || []).map((g) => ({ label: g.label, size: g.tabs ? g.tabs.length : g.size })),
     redacted: 'tab titles/hosts omitted (enable Debug logging to include them)',
   };

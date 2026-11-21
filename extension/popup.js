@@ -100,7 +100,12 @@ chrome.runtime.onMessage.addListener((msg) => {
 $('tidy').addEventListener('click', tidyNow);
 $('options').addEventListener('click', () => chrome.runtime.openOptionsPage());
 $('copy').addEventListener('click', async () => {
-  const payload = JSON.stringify({ record: current, status: statusInfo, popup: { ua: navigator.userAgent } }, null, 2);
+  let record = current;
+  try {
+    const { lastRunFull } = await chrome.storage.session.get('lastRunFull');
+    if (lastRunFull && (!current || lastRunFull.id === current.id)) record = lastRunFull;
+  } catch { /* session storage unavailable: copy what is shown */ }
+  const payload = JSON.stringify({ record, status: statusInfo, popup: { ua: navigator.userAgent } }, null, 2);
   try {
     await navigator.clipboard.writeText(payload);
     $('copied').textContent = 'Copied.';

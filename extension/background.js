@@ -84,6 +84,8 @@ async function tidy(windowId, trigger) {
       const stored = redactRecord(rec, settings);
       await chrome.storage.local.set({ lastRun: stored, recentRuns: pushRecent(recentRuns, stored), swErrors: [] });
     } catch (e) { recordSwError('storage', e); }
+    // Full record (prompt + answer, titles) kept in memory-only session storage for "Copy diagnostics".
+    try { await chrome.storage.session.set({ lastRunFull: rec }); } catch (e) { recordSwError('storage.session', e); }
     broadcast({ type: 'done', record: rec });
     return rec;
   })();

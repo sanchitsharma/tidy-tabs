@@ -5,6 +5,7 @@ import { runCluster } from './backends.js';
 import { probeSettles } from './timeout.js';
 import { applyGroups } from './tab-groups.js';
 import { applyWithVerification } from './move-strategies.js';
+import { effectiveTab, skippedKind } from './suspended.js';
 import { guessBrowser, describeGroups, classify, summarize, tabSummary, errorEntry, hintsFor } from './diagnostics.js';
 
 let tabGroupsProbe = null; // cached per service-worker lifetime
@@ -72,12 +73,17 @@ export async function runTidy({ windowId: hint, settings, onProgress = () => {},
     const windowId = await resolveWindowId(hint);
     rec.windowId = windowId;
     const windowTabs = await chrome.tabs.query({ windowId });
-    const tabs = windowTabs.filter((t) => !t.pinned).sort((a, b) => a.index - b.index);
+    // Suspended tabs (Tab Suspender & co.) get their real URL back so they are clustered like any page.
+    const tabs = windowTabs.filter((t) => !t.pinned).sort((a, b) => a.index - b.index).map(effectiveTab);
     rec.counts = { total: windowTabs.length, pinned: windowTabs.length - tabs.length, unpinned: tabs.length };
     rec.before = tabs.map(tabSummary);
     // Internal pages (new tab, extensions, settings) are left out; the move plan puts them at the end.
     const clusterable = tabs.filter((t) => !isInternalTab(t));
     rec.counts.internal = tabs.length - clusterable.length;
+    rec.counts.suspended = tabs.filter((t) => t.suspended).length;
+    // What was skipped, as scheme://host counts only (no paths/titles), so a bad skip is visible.
+    rec.skipped = {};
+    for (const t of tabs) if (isInternalTab(t)) rec.skipped[skippedKind(t)] = (rec.skipped[skippedKind(t)] || 0) + 1;
     if (clusterable.length < 2) {
       rec.status = 'noop';
       step('nothing to tidy (fewer than 2 regular unpinned tabs)');
@@ -91,6 +97,9 @@ export async function runTidy({ windowId: hint, settings, onProgress = () => {},
       fallbackReason: result.fallbackReason, labels: result.labels, timings: result.timings, repair: result.stats,
       strictErrors: result.strictErrors?.slice(0, 10),
     };
+    // Exact prompt + raw model answer per call. Contains tab titles: kept out of disk/storage.local
+    // unless Debug logging is on (see redactRecord); always available to "Copy diagnostics".
+    rec.llm = result.exchanges || [];
     if (result.fallback) rec.errors.push({ where: 'backend', message: result.fallbackReason });
     rec.groups = describeGroups(result.groups, tabs);
     step(`backend done: ${result.groups.length} groups via ${result.backend}`);
