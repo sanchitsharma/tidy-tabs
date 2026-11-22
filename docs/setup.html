@@ -1,51 +1,212 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Setup · Tidy Tabs AI</title><link rel="icon" href="icon.png"><style>
-:root{--bg:#fff;--fg:#1f2328;--muted:#59636e;--accent:#2563eb;--card:#f6f8fa;--border:#d1d9e0}
-@media (prefers-color-scheme:dark){:root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--accent:#60a5fa;--card:#151b23;--border:#3d444d}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-main{max-width:760px;margin:0 auto;padding:40px 16px 64px}
-a{color:var(--accent)}h1{font-size:1.9rem;line-height:1.25;margin:0 0 8px}h2{font-size:1.2rem;margin:32px 0 8px}
-code{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-size:.9em}
-pre{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px;overflow-x:auto;position:relative}
-pre code{background:none;border:0;padding:0;font-size:.88em;white-space:pre-wrap;word-break:break-all}
-.brand{display:flex;align-items:center;gap:12px;margin-bottom:24px;text-decoration:none;color:inherit;font-weight:600}
-.brand img{width:40px;height:40px}.muted{color:var(--muted)}
-.copy{position:absolute;top:8px;right:8px;font:inherit;font-size:.8rem;padding:3px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--fg);cursor:pointer}
-ol li,ul li{margin:4px 0}
-footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--border);color:var(--muted);font-size:.9rem}
-</style></head>
-<body><main>
-<a class="brand" href="./"><img src="icon.png" alt="">Tidy Tabs AI</a>
-<h1>Setup guide</h1>
-<p class="muted">Tidy Tabs AI's Claude backend talks to Claude Code on your computer through a small helper. Install it once.</p>
-<h2>1. Before you start</h2>
-<ul>
-<li><strong>macOS or Linux</strong>, with Chrome, Chromium, Brave, Edge or Vivaldi (Dia and Phi on macOS too). Windows isn't supported for the Claude helper yet.</li>
-<li><a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a> installed and logged in: run <code>claude</code> once in a terminal.</li>
-<li><a href="https://nodejs.org/">Node.js</a> 18 or newer.</li>
-<li>The <a href="https://chromewebstore.google.com/detail/ponmidmoanddncagjfeegheonbgpeahe">Tidy Tabs AI extension</a>.</li>
-</ul>
-<h2>2. Install the helper</h2>
-<p>Paste this into a terminal:</p>
-<pre><code>curl -fsSL https://github.com/sanchitsharma/tidy-tabs/releases/latest/download/install.sh | bash</code></pre>
-<p>It copies the helper into your user folder (no <code>sudo</code>), finds <code>claude</code> and <code>node</code>, and registers the helper with each supported browser it finds. If it can't find them, pass paths: add <code>-s -- --claude /path/to/claude --node /path/to/node</code> after <code>bash</code>.</p>
-<h2>3. Restart the browser</h2>
-<p><strong>Fully quit</strong> the browser (not just the window) and reopen it, so it picks up the helper. Then click the Tidy Tabs AI toolbar icon and press <strong>Tidy now</strong>. In Options, <strong>Test connection</strong> checks the helper.</p>
-<h2>Choose a model</h2>
-<p>In the extension's Options, pick <strong>Haiku</strong> (fastest, lightest on your usage limits), <strong>Sonnet</strong>, <strong>Opus</strong>, or <strong>Custom model ID</strong> for any model Claude Code accepts.</p>
-<h2>No Claude Code?</h2>
-<p>Choose <strong>Ollama</strong> (local or your own server) or <strong>Gemini Nano</strong> (Chrome's built-in model, where available) in Options. Neither needs the helper. Without any model, Tidy groups tabs by website when two or more sites have several tabs.</p>
-<h2>Remove the helper</h2>
-<pre><code>curl -fsSL https://github.com/sanchitsharma/tidy-tabs/releases/latest/download/uninstall.sh | bash</code></pre>
-<h2>Troubleshooting</h2>
-<ul>
-<li><strong>"The Claude helper isn't installed for this browser"</strong>: run the installer, then fully quit and reopen the browser.</li>
-<li><strong>"…installed, but not for this extension id"</strong>: re-run the installer.</li>
-<li>Still stuck? Click <strong>Copy diagnostics</strong> in the popup and <a href="https://github.com/sanchitsharma/tidy-tabs/issues">open an issue</a>.</li>
-</ul>
-<footer><a href="./">Home</a> · <a href="setup.html">Setup</a> · <a href="privacy.html">Privacy</a> · <a href="https://github.com/sanchitsharma/tidy-tabs">Source on GitHub</a><br>Not affiliated with Anthropic or Google.</footer>
-</main><script>
-document.querySelectorAll('pre').forEach(function(p){var b=document.createElement('button');b.className='copy';b.textContent='Copy';
-b.onclick=function(){navigator.clipboard.writeText(p.querySelector('code').textContent.trim()).then(function(){b.textContent='Copied'},function(){b.textContent='Select & copy'})};p.appendChild(b)});
-</script></body></html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Setup · Tidy Tabs AI</title>
+    <link rel="icon" href="icon.png" />
+    <style>
+      :root {
+        --bg: #fff;
+        --fg: #1f2328;
+        --muted: #59636e;
+        --accent: #2563eb;
+        --card: #f6f8fa;
+        --border: #d1d9e0;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0d1117;
+          --fg: #e6edf3;
+          --muted: #9198a1;
+          --accent: #60a5fa;
+          --card: #151b23;
+          --border: #3d444d;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg);
+        font:
+          16px/1.6 system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+      }
+      main {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 40px 16px 64px;
+      }
+      a {
+        color: var(--accent);
+      }
+      h1 {
+        font-size: 1.9rem;
+        line-height: 1.25;
+        margin: 0 0 8px;
+      }
+      h2 {
+        font-size: 1.2rem;
+        margin: 32px 0 8px;
+      }
+      code {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 1px 5px;
+        font-size: 0.9em;
+      }
+      pre {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px 14px;
+        overflow-x: auto;
+        position: relative;
+      }
+      pre code {
+        background: none;
+        border: 0;
+        padding: 0;
+        font-size: 0.88em;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 24px;
+        text-decoration: none;
+        color: inherit;
+        font-weight: 600;
+      }
+      .brand img {
+        width: 40px;
+        height: 40px;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .copy {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        font: inherit;
+        font-size: 0.8rem;
+        padding: 3px 10px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        color: var(--fg);
+        cursor: pointer;
+      }
+      ol li,
+      ul li {
+        margin: 4px 0;
+      }
+      footer {
+        margin-top: 48px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="brand" href="./"><img src="icon.png" alt="" />Tidy Tabs AI</a>
+      <h1>Setup guide</h1>
+      <p class="muted">
+        Tidy Tabs AI's Claude backend talks to Claude Code on your computer through a small helper. Install it once.
+      </p>
+      <h2>1. Before you start</h2>
+      <ul>
+        <li>
+          <strong>macOS or Linux</strong>, with Chrome, Chromium, Brave, Edge or Vivaldi (Dia and Phi on macOS too).
+          Windows isn't supported for the Claude helper yet.
+        </li>
+        <li>
+          <a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a> installed and logged in: run
+          <code>claude</code> once in a terminal.
+        </li>
+        <li><a href="https://nodejs.org/">Node.js</a> 18 or newer.</li>
+        <li>
+          The
+          <a href="https://chromewebstore.google.com/detail/ponmidmoanddncagjfeegheonbgpeahe">Tidy Tabs AI extension</a
+          >.
+        </li>
+      </ul>
+      <h2>2. Install the helper</h2>
+      <p>Paste this into a terminal:</p>
+      <pre><code>curl -fsSL https://github.com/sanchitsharma/tidy-tabs/releases/latest/download/install.sh | bash</code></pre>
+      <p>
+        It copies the helper into your user folder (no <code>sudo</code>), finds <code>claude</code> and
+        <code>node</code>, and registers the helper with each supported browser it finds. If it can't find them, pass
+        paths: add <code>-s -- --claude /path/to/claude --node /path/to/node</code> after <code>bash</code>.
+      </p>
+      <h2>3. Restart the browser</h2>
+      <p>
+        <strong>Fully quit</strong> the browser (not just the window) and reopen it, so it picks up the helper. Then
+        click the Tidy Tabs AI toolbar icon and press <strong>Tidy now</strong>. In Options,
+        <strong>Test connection</strong> checks the helper.
+      </p>
+      <h2>Choose a model</h2>
+      <p>
+        In the extension's Options, pick <strong>Haiku</strong> (fastest, lightest on your usage limits),
+        <strong>Sonnet</strong>, <strong>Opus</strong>, or <strong>Custom model ID</strong> for any model Claude Code
+        accepts.
+      </p>
+      <h2>No Claude Code?</h2>
+      <p>
+        Choose <strong>Ollama</strong> (local or your own server) or <strong>Gemini Nano</strong> (Chrome's built-in
+        model, where available) in Options. Neither needs the helper. Without any model, Tidy groups tabs by website
+        when two or more sites have several tabs.
+      </p>
+      <h2>Remove the helper</h2>
+      <pre><code>curl -fsSL https://github.com/sanchitsharma/tidy-tabs/releases/latest/download/uninstall.sh | bash</code></pre>
+      <h2>Troubleshooting</h2>
+      <ul>
+        <li>
+          <strong>"The Claude helper isn't installed for this browser"</strong>: run the installer, then fully quit and
+          reopen the browser.
+        </li>
+        <li><strong>"…installed, but not for this extension id"</strong>: re-run the installer.</li>
+        <li>
+          Still stuck? Click <strong>Copy diagnostics</strong> in the popup and
+          <a href="https://github.com/sanchitsharma/tidy-tabs/issues">open an issue</a>.
+        </li>
+      </ul>
+      <footer>
+        <a href="./">Home</a> · <a href="setup.html">Setup</a> · <a href="privacy.html">Privacy</a> ·
+        <a href="https://github.com/sanchitsharma/tidy-tabs">Source on GitHub</a><br />Not affiliated with Anthropic or
+        Google.
+      </footer>
+    </main>
+    <script>
+      document.querySelectorAll('pre').forEach(function (p) {
+        var b = document.createElement('button');
+        b.className = 'copy';
+        b.textContent = 'Copy';
+        b.onclick = function () {
+          navigator.clipboard.writeText(p.querySelector('code').textContent.trim()).then(
+            function () {
+              b.textContent = 'Copied';
+            },
+            function () {
+              b.textContent = 'Select & copy';
+            },
+          );
+        };
+        p.appendChild(b);
+      });
+    </script>
+  </body>
+</html>

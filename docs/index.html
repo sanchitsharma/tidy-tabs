@@ -1,36 +1,164 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Tidy Tabs AI</title><link rel="icon" href="icon.png"><style>
-:root{--bg:#fff;--fg:#1f2328;--muted:#59636e;--accent:#2563eb;--card:#f6f8fa;--border:#d1d9e0}
-@media (prefers-color-scheme:dark){:root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--accent:#60a5fa;--card:#151b23;--border:#3d444d}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-main{max-width:760px;margin:0 auto;padding:40px 16px 64px}
-a{color:var(--accent)}h1{font-size:1.9rem;line-height:1.25;margin:0 0 8px}h2{font-size:1.2rem;margin:32px 0 8px}
-code{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-size:.9em}
-pre{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px;overflow-x:auto;position:relative}
-pre code{background:none;border:0;padding:0;font-size:.88em;white-space:pre-wrap;word-break:break-all}
-.brand{display:flex;align-items:center;gap:12px;margin-bottom:24px;text-decoration:none;color:inherit;font-weight:600}
-.brand img{width:40px;height:40px}.muted{color:var(--muted)}
-.copy{position:absolute;top:8px;right:8px;font:inherit;font-size:.8rem;padding:3px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--fg);cursor:pointer}
-ol li,ul li{margin:4px 0}
-footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--border);color:var(--muted);font-size:.9rem}
-</style></head>
-<body><main>
-<a class="brand" href="./"><img src="icon.png" alt="">Tidy Tabs AI</a>
-<h1>Tabs grouped by what you're actually doing</h1>
-<p class="muted">A free, open-source Chrome extension. One click groups the tabs in your window by task, puts related tabs side by side, and turns each task into a named tab group.</p>
-<ul>
-<li>Groups by <strong>task</strong> ("Lisbon trip", "Python asyncio"), not just by website.</li>
-<li>Uses <strong>your own Claude subscription</strong> via Claude Code: pick Haiku, Sonnet, Opus or any model. No API key, no server of ours.</li>
-<li>Or run it on a local model with <strong>Ollama</strong>, or Chrome's built-in <strong>Gemini Nano</strong>.</li>
-<li>Reuses its own groups when you tidy again; never renames yours.</li>
-</ul>
-<h2>Get it</h2>
-<ol>
-<li>Install <a href="https://chromewebstore.google.com/detail/ponmidmoanddncagjfeegheonbgpeahe">Tidy Tabs AI from the Chrome Web Store</a>.</li>
-<li>For Claude, install the helper once (macOS or Linux): see the <a href="setup.html">setup guide</a>.</li>
-</ol>
-<h2>Privacy</h2>
-<p>Only tab titles and hostnames are sent, to the model you choose, when you click Tidy. The developer receives nothing. <a href="privacy.html">Privacy policy</a>.</p>
-<footer><a href="./">Home</a> · <a href="setup.html">Setup</a> · <a href="privacy.html">Privacy</a> · <a href="https://github.com/sanchitsharma/tidy-tabs">Source on GitHub</a><br>Not affiliated with Anthropic or Google.</footer>
-</main></body></html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Tidy Tabs AI</title>
+    <link rel="icon" href="icon.png" />
+    <style>
+      :root {
+        --bg: #fff;
+        --fg: #1f2328;
+        --muted: #59636e;
+        --accent: #2563eb;
+        --card: #f6f8fa;
+        --border: #d1d9e0;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0d1117;
+          --fg: #e6edf3;
+          --muted: #9198a1;
+          --accent: #60a5fa;
+          --card: #151b23;
+          --border: #3d444d;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg);
+        font:
+          16px/1.6 system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+      }
+      main {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 40px 16px 64px;
+      }
+      a {
+        color: var(--accent);
+      }
+      h1 {
+        font-size: 1.9rem;
+        line-height: 1.25;
+        margin: 0 0 8px;
+      }
+      h2 {
+        font-size: 1.2rem;
+        margin: 32px 0 8px;
+      }
+      code {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 1px 5px;
+        font-size: 0.9em;
+      }
+      pre {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px 14px;
+        overflow-x: auto;
+        position: relative;
+      }
+      pre code {
+        background: none;
+        border: 0;
+        padding: 0;
+        font-size: 0.88em;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 24px;
+        text-decoration: none;
+        color: inherit;
+        font-weight: 600;
+      }
+      .brand img {
+        width: 40px;
+        height: 40px;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .copy {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        font: inherit;
+        font-size: 0.8rem;
+        padding: 3px 10px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        color: var(--fg);
+        cursor: pointer;
+      }
+      ol li,
+      ul li {
+        margin: 4px 0;
+      }
+      footer {
+        margin-top: 48px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="brand" href="./"><img src="icon.png" alt="" />Tidy Tabs AI</a>
+      <h1>Tabs grouped by what you're actually doing</h1>
+      <p class="muted">
+        A free, open-source Chrome extension. One click groups the tabs in your window by task, puts related tabs side
+        by side, and turns each task into a named tab group.
+      </p>
+      <ul>
+        <li>Groups by <strong>task</strong> ("Lisbon trip", "Python asyncio"), not just by website.</li>
+        <li>
+          Uses <strong>your own Claude subscription</strong> via Claude Code: pick Haiku, Sonnet, Opus or any model. No
+          API key, no server of ours.
+        </li>
+        <li>
+          Or run it on a local model with <strong>Ollama</strong>, or Chrome's built-in <strong>Gemini Nano</strong>.
+        </li>
+        <li>Reuses its own groups when you tidy again; never renames yours.</li>
+      </ul>
+      <h2>Get it</h2>
+      <ol>
+        <li>
+          Install
+          <a href="https://chromewebstore.google.com/detail/ponmidmoanddncagjfeegheonbgpeahe"
+            >Tidy Tabs AI from the Chrome Web Store</a
+          >.
+        </li>
+        <li>For Claude, install the helper once (macOS or Linux): see the <a href="setup.html">setup guide</a>.</li>
+      </ol>
+      <h2>Privacy</h2>
+      <p>
+        Only tab titles and hostnames are sent, to the model you choose, when you click Tidy. The developer receives
+        nothing. <a href="privacy.html">Privacy policy</a>.
+      </p>
+      <footer>
+        <a href="./">Home</a> · <a href="setup.html">Setup</a> · <a href="privacy.html">Privacy</a> ·
+        <a href="https://github.com/sanchitsharma/tidy-tabs">Source on GitHub</a><br />Not affiliated with Anthropic or
+        Google.
+      </footer>
+    </main>
+  </body>
+</html>
