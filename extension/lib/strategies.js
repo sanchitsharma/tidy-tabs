@@ -22,7 +22,7 @@ export async function twoPass(tabs, chat, { idEnum = true } = {}) {
   try {
     r1 = await chat(p1, LABELS_SCHEMA);
   } catch (e) {
-    throw new Error(`pass 1 (labels) failed: ${e.message}`);
+    throw new Error(`pass 1 (labels) failed: ${e.message}`, { cause: e });
   }
   const labels = normalizeLabels(r1.content);
   const p2 = buildAssignPrompt(p1.lines, labels);
@@ -30,7 +30,7 @@ export async function twoPass(tabs, chat, { idEnum = true } = {}) {
   try {
     r2 = await chat(p2, assignSchema(labels, tabs.length, { idEnum }));
   } catch (e) {
-    throw new Error(`pass 2 (assign) failed: ${e.message}`);
+    throw new Error(`pass 2 (assign) failed: ${e.message}`, { cause: e });
   }
   const { groups, stats } = assignmentsToGroups(r2.content, labels, p1.idMap);
   return { groups, stats, labels, strictErrors: [], timings: [r1.timing, r2.timing] };

@@ -7,7 +7,7 @@ import { join } from 'node:path';
 
 export const DEFAULT_MODEL = 'haiku';
 export const DEFAULT_TIMEOUT_MS = 60000;
-const MODEL_RE = /^[A-Za-z0-9][A-Za-z0-9._:\[\]-]{0,63}$/; // must not start with '-'
+const MODEL_RE = /^[A-Za-z0-9][A-Za-z0-9._:[\]-]{0,63}$/; // must not start with '-'
 
 /** Validate an inbound chat request. Returns a normalized request or throws. */
 export function normalizeRequest(msg) {

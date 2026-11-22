@@ -66,7 +66,7 @@ export async function callOllama(prompt, {
     return extractChatResult(await res.json());
   } catch (e) {
     if (e?.name === 'AbortError' || e?.name === 'TimeoutError') {
-      throw new Error(`Ollama timed out${timeoutMs ? ` after ${timeoutMs} ms` : ''}`);
+      throw new Error(`Ollama timed out${timeoutMs ? ` after ${timeoutMs} ms` : ''}`, { cause: e });
     }
     throw e;
   }

@@ -1,0 +1,28 @@
+{
+  "name": "tidy-tabs-ai",
+  "private": true,
+  "type": "module",
+  "description": "Tidy Tabs AI: Chrome extension that groups tabs by task with AI. Tooling for lint, end-to-end tests and packaging.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sanchitsharma/tidy-tabs.git"
+  },
+  "scripts": {
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write . && eslint --fix .",
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "cd extension && node --test && cd ../native-host && node --test",
+    "test:e2e": "node --test --test-concurrency=1 tests/e2e/*.test.mjs",
+    "package": "node scripts/package.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.15.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.7",
+    "globals": "^17.14.0",
+    "playwright": "^1.65.1",
+    "prettier": "^3.10.1"
+  }
+}

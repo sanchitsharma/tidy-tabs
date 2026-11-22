@@ -64,7 +64,7 @@ export function planGroups(clusters, owned = [], tabGroupOf = new Map(), { fallb
 export async function applyGroups({ windowId, clusters, tabs, ownedIds = [], collapsed = false, fallback = false, api }) {
   const errors = [];
   const call = (fn, label) => withTimeout(fn, GROUP_CALL_MS, label);
-  let existing = [];
+  let existing;
   try {
     existing = await call(() => api.queryGroups(windowId), 'tabGroups.query');
   } catch (e) {

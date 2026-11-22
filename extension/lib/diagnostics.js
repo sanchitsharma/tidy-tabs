@@ -95,7 +95,7 @@ export function errorEntry(where, e) {
  */
 export function redactRecord(rec, { debugLogging = false } = {}) {
   if (debugLogging) return rec;
-  const { before, llm, ...rest } = rec;
+  const { before: _before, llm, ...rest } = rec; // titles/hosts in `before` are dropped
   return {
     ...rest,
     llm: llm ? `${llm.length} model call(s) omitted (Copy diagnostics includes them; or enable Debug logging)` : undefined,

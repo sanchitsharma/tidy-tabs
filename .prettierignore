@@ -1,0 +1,11 @@
+node_modules
+dist
+bench/runs
+bench/datasets
+bench/fixtures
+bench/snapshot
+extension/test/fixtures
+native-host/test/fixtures
+**/*.md
+*.json
+!package.json
