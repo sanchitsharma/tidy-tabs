@@ -1,6 +1,13 @@
 import { DEFAULTS, loadSettings, saveSettings } from './lib/settings.js';
 import { nanoAvailable, chromeNativeSend } from './lib/backends.js';
-import { NATIVE_HOST } from './lib/claude-native.js';
+import {
+  NATIVE_HOST,
+  CLAUDE_MODEL_ALIASES,
+  CLAUDE_MODEL_RE,
+  HELPER_INSTALL_CMD,
+  SETUP_URL,
+  isHelperMissing,
+} from './lib/claude-native.js';
 import { probeSettles } from './lib/timeout.js';
 
 const $ = (id) => document.getElementById(id);
@@ -17,7 +24,21 @@ function readForm() {
     else out[f] = el.value.trim() || DEFAULTS[f];
   }
   out.endpoint = out.endpoint.replace(/\/+$/, '');
+  const choice = $('claudeModelChoice').value;
+  out.claudeModel = choice === 'custom' ? $('claudeModel').value.trim() : choice;
   return out;
+}
+
+/** Show the custom model field only for "Custom model ID…". */
+function syncModelChoice() {
+  $('claudeModel').hidden = $('claudeModelChoice').value !== 'custom';
+}
+
+function showClaudeModel(model) {
+  const known = CLAUDE_MODEL_ALIASES.includes(model);
+  $('claudeModelChoice').value = known ? model : 'custom';
+  $('claudeModel').value = known ? '' : model;
+  syncModelChoice();
 }
 
 async function ensureOriginPermission(endpoint) {
@@ -33,6 +54,9 @@ async function init() {
     const el = $(f);
     if (el.type === 'checkbox') el.checked = !!s[f]; else el.value = s[f];
   }
+  showClaudeModel(s.claudeModel || DEFAULTS.claudeModel);
+  $('installCmd').textContent = HELPER_INSTALL_CMD;
+  $('setupLink').href = SETUP_URL;
   const env = {
     userAgent: navigator.userAgent,
     tabGroupsApi: !!(chrome.tabGroups && chrome.tabs.group),
@@ -64,6 +88,9 @@ async function showReport() {
 $('save').addEventListener('click', async () => {
   try {
     const s = readForm();
+    if (!CLAUDE_MODEL_RE.test(s.claudeModel)) {
+      return status(`"${s.claudeModel}" isn't a valid Claude model ID (letters, digits, . _ : - [ ]; max 64).`);
+    }
     if (s.backend === 'ollama' && !(await ensureOriginPermission(s.endpoint))) {
       return status('Permission for that endpoint was denied.');
     }
@@ -81,7 +108,13 @@ $('test').addEventListener('click', async () => {
       const r = await chromeNativeSend(NATIVE_HOST, { type: 'ping' });
       const ms = Math.round(performance.now() - t0);
       return status(r?.ok ? `Native host OK in ${ms} ms (v${r.version}, claude: ${r.claudeBin})` : `Host error: ${r?.error}`);
-    } catch (e) { return status(`${e.message}. Run ./install.sh and reload the extension.`); }
+    } catch (e) {
+      return status(
+        isHelperMissing(e.message)
+          ? `The Claude helper isn't installed for this browser. Run: ${HELPER_INSTALL_CMD} then restart the browser.`
+          : `${e.message}`,
+      );
+    }
   }
   if (backend === 'gemini-nano') return status(`LanguageModel available: ${await nanoAvailable()}`);
   try {
@@ -99,6 +132,8 @@ $('run').addEventListener('click', async () => {
   status(report?.summary || report?.error || 'Done.');
   await showReport();
 });
+
+$('claudeModelChoice').addEventListener('change', syncModelChoice);
 
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === 'local' && (changes.lastRun || changes.recentRuns)) showReport();

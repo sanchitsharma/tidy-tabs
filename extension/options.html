@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tidy Tabs Options</title>
+<title>Tidy Tabs AI Options</title>
 <style>
   :root { color-scheme: light dark; --fg:#1f2328; --muted:#656d76; --bg:#ffffff; --card:#f6f8fa; --border:#d0d7de; --accent:#2563eb; }
   @media (prefers-color-scheme: dark) { :root { --fg:#e6edf3; --muted:#9198a1; --bg:#0d1117; --card:#161b22; --border:#30363d; --accent:#60a5fa; } }
@@ -22,18 +22,27 @@
 </style>
 </head>
 <body>
-<h1>Tidy Tabs</h1>
+<h1>Tidy Tabs AI</h1>
 
 <label for="backend">Backend</label>
 <select id="backend">
-  <option value="claude-haiku">Claude Haiku (subscription, via local Claude Code CLI)</option>
-  <option value="ollama">Ollama (Tailscale VM / localhost)</option>
-  <option value="gemini-nano">Gemini Nano (built-in LanguageModel API, Chrome only)</option>
+  <option value="claude-haiku">Claude (your Claude subscription, via Claude Code on this computer)</option>
+  <option value="ollama">Ollama (localhost or your own server)</option>
+  <option value="gemini-nano">Gemini Nano (Chrome's built-in model, where available)</option>
 </select>
-<p class="hint">Claude needs <code>./install.sh</code> run once (native messaging host). It uses your Claude subscription through <code>claude -p</code>; no API key.</p>
+<p class="hint">Claude needs the Tidy Tabs AI helper, installed once (macOS or Linux):
+  <code id="installCmd"></code> <a id="setupLink" target="_blank" rel="noopener">Setup guide</a>.
+  It uses your Claude subscription through <code>claude -p</code>; no API key.</p>
 
-<label for="claudeModel">Claude model</label>
-<input id="claudeModel" type="text" placeholder="haiku">
+<label for="claudeModelChoice">Claude model</label>
+<select id="claudeModelChoice">
+  <option value="haiku">Haiku: fastest, lightest on your usage limits (default)</option>
+  <option value="sonnet">Sonnet: smarter grouping, slower</option>
+  <option value="opus">Opus: most capable, slowest, uses the most of your limits</option>
+  <option value="custom">Custom model ID…</option>
+</select>
+<input id="claudeModel" type="text" placeholder="e.g. claude-sonnet-4-5" hidden>
+<p class="hint">Any model your Claude Code CLI accepts: an alias like <code>sonnet</code> or a full model ID.</p>
 
 <h2>Ollama</h2>
 <label for="endpoint">Ollama endpoint</label>
@@ -77,7 +86,7 @@
 
 <h2>Last run (full record)</h2>
 <pre id="report">No runs yet.</pre>
-<p class="hint">The same record is written to <code>~/Library/Logs/tidy-tabs/last-run.json</code> (and appended to <code>runs.jsonl</code>) by the native host.</p>
+<p class="hint">With the Claude helper installed, the same record is written to <code>last-run.json</code> in the helper's log folder (<code>~/Library/Logs/tidy-tabs</code> on macOS, <code>~/.local/state/tidy-tabs</code> on Linux), and appended to <code>runs.jsonl</code>) by the native host.</p>
 
 <script src="dev-reload.js"></script>
 <script src="build-badge.js"></script>

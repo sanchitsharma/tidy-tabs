@@ -66,11 +66,13 @@ export function hintsFor(rec) {
     .filter(Boolean).join('\n');
   const hints = [];
   if (/native messaging host not found/i.test(msgs)) {
-    hints.push(`Helper not registered for this browser (${rec.env?.browserGuess || 'unknown browser'}). `
-      + 'Run tidy-tabs/install.sh, then fully quit and restart the browser.');
+    hints.push(`The Claude helper isn't installed for this browser (${rec.env?.browserGuess || 'unknown browser'}). `
+      + 'Install it with the command under "Set up the Claude helper" (macOS/Linux), then fully quit and restart the browser. '
+      + 'Or pick Ollama / Gemini Nano in Options.');
   }
   if (/Access to the specified native messaging host is forbidden/i.test(msgs)) {
-    hints.push(`Helper registered, but not for this extension id (${rec.env?.extensionId || '?'}). Re-run tidy-tabs/install.sh.`);
+    hints.push(`The Claude helper is installed, but not for this extension id (${rec.env?.extensionId || '?'}). `
+      + 'Re-run the helper installer, then restart the browser.');
   }
   return hints;
 }

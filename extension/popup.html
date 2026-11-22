@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tidy Tabs</title>
+<title>Tidy Tabs AI</title>
 <style>
   :root { color-scheme: light dark; --fg:#1f2328; --muted:#656d76; --bg:#ffffff; --card:#f6f8fa; --border:#d0d7de;
     --accent:#2563eb; --ok:#16a34a; --warn:#d97706; --err:#dc2626; --errbg:#fef2f2; }
@@ -30,13 +30,32 @@
   th, td { border: 1px solid var(--border); padding: 2px 4px; text-align: left; }
   pre { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 6px; font-size: 11px; white-space: pre-wrap; word-break: break-word; max-height: 160px; overflow: auto; margin: 4px 0; }
   footer { display: flex; gap: 8px; margin-top: 10px; align-items: center; } #copied { color: var(--muted); font-size: 12px; }
+  #setup { margin: 10px 0 4px; padding: 10px; border-radius: 6px; background: var(--card); border: 1px solid var(--accent); }
+  #setup h2 { margin-top: 0; color: var(--accent); }
+  #setup p { margin: 4px 0; }
+  #setup code { display: block; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 6px;
+    font-size: 11px; word-break: break-all; margin: 6px 0; user-select: all; }
+  #setup .row { display: flex; gap: 8px; align-items: center; }
+  #setup a { color: var(--accent); }
 </style>
 </head>
 <body>
 <header>
-  <h1>Tidy Tabs</h1>
+  <h1>Tidy Tabs AI</h1>
   <button id="tidy" class="primary">Tidy now</button>
 </header>
+<section id="setup" hidden>
+  <h2>Set up the Claude helper</h2>
+  <p>Tidy Tabs AI uses Claude through Claude Code on this computer, via a small helper. Install it once
+    (macOS or Linux; needs Claude Code logged in and Node 18+), then fully quit and reopen the browser:</p>
+  <code id="setupCmd"></code>
+  <div class="row">
+    <button id="copyCmd">Copy command</button>
+    <a id="setupGuide" target="_blank" rel="noopener">Setup guide</a>
+    <span id="cmdCopied" class="host"></span>
+  </div>
+  <p class="host">No Claude Code? Choose Ollama or Gemini Nano in Options. Until then, Tidy now groups by website.</p>
+</section>
 <div id="status">No run yet.</div>
 <ol id="progress"></ol>
 

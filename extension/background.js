@@ -1,6 +1,6 @@
 // Service worker: wires triggers (popup, command, options) to runTidy, then publishes the record to
 // the badge, chrome.storage.local (lastRun + last 10), the popup (progress messages) and the native
-// host log file (~/Library/Logs/tidy-tabs/). Every handler is wrapped; unhandled errors are recorded.
+// host log file (~/Library/Logs/tidy-tabs on macOS, ~/.local/state/tidy-tabs on Linux). Every handler is wrapped; unhandled errors are recorded.
 import { loadSettings } from './lib/settings.js';
 import { runTidy, environment } from './lib/tidy-run.js';
 import { pushRecent, errorEntry, hintsFor, redactRecord } from './lib/diagnostics.js';
@@ -35,7 +35,7 @@ async function setBadge({ text, color }, title) {
   try {
     await chrome.action.setBadgeText({ text });
     if (color) await chrome.action.setBadgeBackgroundColor({ color });
-    if (title) await chrome.action.setTitle({ title: `Tidy Tabs\n${title}`.slice(0, 500) });
+    if (title) await chrome.action.setTitle({ title: `Tidy Tabs AI\n${title}`.slice(0, 500) });
   } catch (e) { recordSwError('setBadge', e); }
 }
 
@@ -52,7 +52,7 @@ function broadcast(msg) {
   chrome.runtime.sendMessage(msg).catch(() => { /* popup closed: fine */ });
 }
 
-/** Write the record to ~/Library/Logs/tidy-tabs via the native host. Returns {ok, error?, path?}. */
+/** Write the record to the helper's log folder via the native host. Returns {ok, error?, path?}. */
 async function nativeLog(record) {
   try {
     const resp = await withTimeout(() => chromeNativeSend(NATIVE_HOST, { type: 'log', record }), 5000, 'native log');
@@ -77,8 +77,8 @@ async function tidy(windowId, trigger) {
     if (!rec.nativeLog.ok) rec.errors.push({ where: 'nativeLog', message: rec.nativeLog.error });
     rec.hints = hintsFor(rec);
     await setBadge(rec.badge, rec.summary);
-    if (rec.status === 'moves-failed') notify(settings, 'Tidy Tabs: tabs not reordered', rec.summary);
-    else if (rec.status === 'backend-failed' || rec.status === 'error') notify(settings, 'Tidy Tabs: backend failed', rec.summary);
+    if (rec.status === 'moves-failed') notify(settings, 'Tidy Tabs AI: tabs not reordered', rec.summary);
+    else if (rec.status === 'backend-failed' || rec.status === 'error') notify(settings, 'Tidy Tabs AI: backend failed', rec.summary);
     try {
       const { recentRuns } = await chrome.storage.local.get('recentRuns');
       const stored = redactRecord(rec, settings);

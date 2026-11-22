@@ -9,7 +9,7 @@
     const onDisk = (await res.json()).version;
     if (onDisk && onDisk !== running) {
       document.body.prepend(Object.assign(document.createElement('p'), {
-        textContent: `Updating Tidy Tabs ${running} → ${onDisk}… reopen this popup in a second.`,
+        textContent: `Updating Tidy Tabs AI ${running} → ${onDisk}… reopen this popup in a second.`,
       }));
       setTimeout(() => chrome.runtime.reload(), 300);
     }

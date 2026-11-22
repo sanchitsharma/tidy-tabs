@@ -31,11 +31,21 @@ test('buildNativeRequest maps prompt + schema + model + remaining time', () => {
   assert.equal('timeoutMs' in buildNativeRequest({ system: '', user: 'U' }, {}), false);
 });
 
+test('isHelperMissing recognises Chrome\'s "not installed / not allowed" errors only', async () => {
+  const { isHelperMissing, CLAUDE_MODEL_RE } = await import('../lib/claude-native.js');
+  assert.equal(isHelperMissing('Specified native messaging host not found.'), true);
+  assert.equal(isHelperMissing('Access to the specified native messaging host is forbidden.'), true);
+  assert.equal(isHelperMissing('claude host: claude error (error_max_turns)'), false);
+  assert.equal(isHelperMissing(undefined), false);
+  for (const ok of ['haiku', 'sonnet', 'opus', 'claude-sonnet-4-5', 'claude-opus-4-1[1m]']) assert.match(ok, CLAUDE_MODEL_RE);
+  for (const bad of ['', '-p', '--model=x', 'a b', 'x'.repeat(65)]) assert.doesNotMatch(bad, CLAUDE_MODEL_RE);
+});
+
 test('parseNativeResponse: ok, error, empty, missing', () => {
   assert.deepEqual(parseNativeResponse(ok({ a: 1 })), { content: '{"a":1}', timing: { totalMs: 5, model: 'claude-haiku-5-5' } });
   assert.throws(() => parseNativeResponse({ ok: false, error: 'boom' }), /claude host: boom/);
   assert.throws(() => parseNativeResponse({ ok: true, content: '' }), /empty content/);
-  assert.throws(() => parseNativeResponse(undefined), /install\.sh/);
+  assert.throws(() => parseNativeResponse(undefined), /helper installed/);
 });
 
 test('runCluster default (Claude, auto -> single call) sends one native message', async () => {

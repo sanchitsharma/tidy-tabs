@@ -3,6 +3,21 @@
 
 export const NATIVE_HOST = 'dev.tidytabs.claude';
 export const DEFAULT_CLAUDE_MODEL = 'haiku';
+/** Claude model aliases offered in Options; any other model id the Claude Code CLI accepts also works. */
+export const CLAUDE_MODEL_ALIASES = ['haiku', 'sonnet', 'opus'];
+/** Same rule the native host enforces (must not start with '-'). */
+export const CLAUDE_MODEL_RE = /^[A-Za-z0-9][A-Za-z0-9._:[\]-]{0,63}$/;
+/** One-line helper installer (macOS and Linux) and the setup guide. */
+export const HELPER_INSTALL_CMD =
+  'curl -fsSL https://github.com/sanchitsharma/tidy-tabs/releases/latest/download/install.sh | bash';
+export const SETUP_URL = 'https://sanchitsharma.github.io/tidy-tabs/setup.html';
+
+/** True when an error means the Claude helper isn't installed/registered for this browser + extension. */
+export function isHelperMissing(message) {
+  return /native messaging host not found|access to the specified native messaging host is forbidden/i.test(
+    String(message || ''),
+  );
+}
 
 /** Request message for the native host. `timeoutMs` = time left in the run, enforced host-side too. */
 export function buildNativeRequest(prompt, schema, { model = DEFAULT_CLAUDE_MODEL, timeoutMs } = {}) {
@@ -18,7 +33,7 @@ export function buildNativeRequest(prompt, schema, { model = DEFAULT_CLAUDE_MODE
 
 /** Host response -> { content, timing } (the chat() contract), or throw. */
 export function parseNativeResponse(resp) {
-  if (!resp) throw new Error('native host returned nothing (is install.sh run and the host allowed?)');
+  if (!resp) throw new Error('native host returned nothing (is the Tidy Tabs AI helper installed?)');
   if (!resp.ok) throw new Error(`claude host: ${resp.error || 'unknown error'}`);
   if (typeof resp.content !== 'string' || !resp.content.trim()) throw new Error('claude host: empty content');
   return { content: resp.content, timing: { ...(resp.timing || {}), model: resp.model } };

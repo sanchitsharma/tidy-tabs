@@ -77,7 +77,7 @@ test('hint for "native messaging host not found" names the browser', () => {
   const rec = { env: { browserGuess: 'chromium fork (unknown; e.g. Phi)' },
     errors: [{ where: 'backend', message: 'native messaging: Specified native messaging host not found.' }] };
   const [h] = hintsFor(rec);
-  assert.match(h, /^Helper not registered for this browser \(chromium fork \(unknown; e\.g\. Phi\)\)\. Run tidy-tabs\/install\.sh, then fully quit and restart the browser\.$/);
+  assert.match(h, /^The Claude helper isn't installed for this browser \(chromium fork \(unknown; e\.g\. Phi\)\)\. Install it with the command under "Set up the Claude helper" \(macOS\/Linux\), then fully quit and restart the browser\. Or pick Ollama \/ Gemini Nano in Options\.$/);
   assert.deepEqual(hintsFor({ errors: [] }), []);
 });
 

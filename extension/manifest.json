@@ -1,16 +1,16 @@
 {
   "manifest_version": 3,
-  "name": "Tidy Tabs (LLM)",
-  "version": "0.2.5",
+  "name": "Tidy Tabs AI",
+  "version": "0.3.0",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA8bRt+UOQmwa7ncj7mnC4rjg1C4Cs8ef0oR2FNt2Cruy4ODLhPf92DgfRz4WMlDAynQcLU94BB0gxhc07buNwCajran03bB8eSw87xiHn0qMCyG+RtMIY0mwdC621lylN1VMqgveZnzsr8MY0xb9Ip0UOiVqn2kKQVjwxXge+VTf9K5hqiIn+gUMPdSnm/7t8XueovRdINJU04e4OLZftQilHV9ekBFNDbEH5iAgo62ndjL6lP9d+q8fIewNIlhgNdSzlONP6aRWVwTZYK/W0wqiaf9fHBA36YP4yOHIEH2Z6CREER2QqSXlVVVoJ/FXg4m7GbkvaHV58pP0r0bAj0wIDAQAB",
-  "description": "Group the current window's tabs by topic with a local LLM and reorder them so related tabs sit together.",
+  "description": "Groups your tabs by the task you're on into named tab groups with AI: Claude via Claude Code, Ollama, or Chrome's built-in model.",
   "minimum_chrome_version": "116",
   "background": {
     "service_worker": "background.js",
     "type": "module"
   },
   "action": {
-    "default_title": "Tidy Tabs",
+    "default_title": "Tidy Tabs AI",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",
@@ -31,7 +31,7 @@
         "default": "Alt+Shift+T",
         "mac": "Alt+Shift+T"
       },
-      "description": "Tidy tabs in the current window"
+      "description": "Tidy the tabs in the current window"
     }
   },
   "options_ui": {
@@ -52,6 +52,6 @@
     "http://*/*",
     "https://*/*"
   ],
-  "version_name": "0.2.5 (2026-11-17 19:18)",
+  "version_name": "0.3.0",
   "incognito": "not_allowed"
 }

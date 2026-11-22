@@ -1,5 +1,6 @@
-// Diagnostics log: ~/Library/Logs/tidy-tabs/last-run.json (overwritten) + runs.jsonl (appended,
-// rotated to runs.1.jsonl at ~1 MB). Never calls claude.
+// Diagnostics log: last-run.json (overwritten) + runs.jsonl (appended, rotated to runs.1.jsonl at
+// ~1 MB) in the log folder: ~/Library/Logs/tidy-tabs on macOS, $XDG_STATE_HOME/tidy-tabs
+// (~/.local/state/tidy-tabs) on Linux. The launcher sets TIDY_LOG_DIR. Never calls claude.
 import { mkdirSync, writeFileSync, renameSync, appendFileSync, statSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
@@ -7,8 +8,11 @@ import { homedir } from 'node:os';
 export const ROTATE_BYTES = 1024 * 1024;
 export const MAX_RECORD_BYTES = 2 * 1024 * 1024;
 
-export function logDir(env = process.env) {
-  return env.TIDY_LOG_DIR || join(env.HOME || homedir(), 'Library', 'Logs', 'tidy-tabs');
+export function logDir(env = process.env, platform = process.platform) {
+  if (env.TIDY_LOG_DIR) return env.TIDY_LOG_DIR;
+  const home = env.HOME || homedir();
+  if (platform === 'darwin') return join(home, 'Library', 'Logs', 'tidy-tabs');
+  return join(env.XDG_STATE_HOME || join(home, '.local', 'state'), 'tidy-tabs');
 }
 
 /** Defensive scrub: drop any url-ish fields so only titles/hosts are persisted. */

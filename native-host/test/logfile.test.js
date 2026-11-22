@@ -8,9 +8,11 @@ import { runHost } from '../test-support/helpers.js';
 
 const tmp = () => mkdtempSync(join(tmpdir(), 'tidy-log-'));
 
-test('logDir defaults to ~/Library/Logs/tidy-tabs, overridable', () => {
-  assert.equal(logDir({ HOME: '/Users/x' }), '/Users/x/Library/Logs/tidy-tabs');
-  assert.equal(logDir({ HOME: '/Users/x', TIDY_LOG_DIR: '/tmp/l' }), '/tmp/l');
+test('logDir: ~/Library/Logs on macOS, XDG state dir on Linux, TIDY_LOG_DIR overrides', () => {
+  assert.equal(logDir({ HOME: '/Users/x' }, 'darwin'), '/Users/x/Library/Logs/tidy-tabs');
+  assert.equal(logDir({ HOME: '/home/x' }, 'linux'), '/home/x/.local/state/tidy-tabs');
+  assert.equal(logDir({ HOME: '/home/x', XDG_STATE_HOME: '/st' }, 'linux'), '/st/tidy-tabs');
+  assert.equal(logDir({ HOME: '/Users/x', TIDY_LOG_DIR: '/tmp/l' }, 'darwin'), '/tmp/l');
 });
 
 test('scrub drops url fields at any depth, keeps titles/hosts', () => {

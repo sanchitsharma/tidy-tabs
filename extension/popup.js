@@ -1,4 +1,10 @@
 // Action popup: "Tidy now", live progress, groups, and a red error panel with full diagnostics.
+// Shows a setup panel when Claude is the backend but its helper (native host) isn't installed.
+import { NATIVE_HOST, HELPER_INSTALL_CMD, SETUP_URL, isHelperMissing } from './lib/claude-native.js';
+import { loadSettings } from './lib/settings.js';
+import { chromeNativeSend } from './lib/backends.js';
+import { withTimeout } from './lib/timeout.js';
+
 const $ = (id) => document.getElementById(id);
 let current = null; // last record shown
 let statusInfo = null; // {env, swErrors} from the service worker
@@ -115,6 +121,32 @@ $('copy').addEventListener('click', async () => {
     $('copied').textContent = `Clipboard blocked (${e.message}); diagnostics shown above. The log file also has them.`;
   }
 });
+
+/** Show the setup panel when the Claude backend is selected and its helper can't be reached. */
+async function checkHelper() {
+  const settings = await loadSettings();
+  if (settings.backend !== 'claude-haiku') return;
+  try {
+    const r = await withTimeout(() => chromeNativeSend(NATIVE_HOST, { type: 'ping' }), 4000, 'helper ping');
+    if (r?.ok) return;
+  } catch (e) {
+    if (!isHelperMissing(e?.message)) return; // other failures show up in the run's error panel
+  }
+  $('setupCmd').textContent = HELPER_INSTALL_CMD;
+  $('setupGuide').href = SETUP_URL;
+  $('setup').hidden = false;
+}
+
+$('copyCmd').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(HELPER_INSTALL_CMD);
+    $('cmdCopied').textContent = 'Copied.';
+  } catch {
+    $('cmdCopied').textContent = 'Select the command above and copy it.';
+  }
+});
+
+checkHelper().catch(() => {});
 
 (async () => {
   try {
