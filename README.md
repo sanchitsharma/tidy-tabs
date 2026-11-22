@@ -1,122 +1,129 @@
-# Tidy Tabs
+# Tidy Tabs AI
 
-A Chrome extension (Manifest V3, plain JS, no build step) that tidies the current window. It groups
-your tabs by the **task you're in the middle of**, puts related tabs next to each other, and turns each
-group into a named, colored tab group. It's a take on Arc's "Tidy Tabs" for browsers that still have
-tab groups.
+A Chrome extension that tidies the current window. It groups your tabs by the **task you're in the middle of**,
+puts related tabs next to each other, and turns each group into a named, colored tab group.
 
-By default the grouping runs on **Claude Haiku through your own Claude subscription**, using the Claude
-Code CLI already on your Mac. There's no API key and no server of ours. A local Ollama model is an
-optional alternative.
+## Overview
 
-## Architecture
+Click the toolbar icon and **Tidy now**, or press **Alt+Shift+T**. Tidy Tabs AI reads the title and site of each tab
+in the window, asks an AI model to group them by task ("Lisbon trip", "Python asyncio", "Code review"), then reorders
+the tabs and creates one tab group per task. Tabs that don't belong anywhere are left alone.
+
+Pick the model in Options:
+
+- **Claude** (default): uses **your own Claude subscription** through the Claude Code CLI on your computer. Choose
+  Haiku (fastest), Sonnet, Opus, or any model ID Claude Code accepts. There's no API key and no server of ours.
+  Needs a small helper, installed once (macOS or Linux, see below).
+- **Ollama**: a local or self-hosted model (`http://localhost:11434` by default, or any endpoint you approve).
+- **Gemini Nano**: Chrome's built-in model, where your Chrome has it.
+
+If the model fails, it falls back to grouping by website, and only when that finds at least 2 real groups.
+
+## Install
+
+1. Install **Tidy Tabs AI** from the Chrome Web Store:
+   https://chromewebstore.google.com/detail/ponmidmoanddncagjfeegheonbgpeahe
+2. For the Claude backend, install the helper once. You need the
+   [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) installed and logged in (run `claude` once) and
+   Node.js 18 or newer. Then, in a terminal:
+
+   ```sh
+   curl -fsSL https://github.com/sanchitsharma/tidy-tabs/releases/latest/download/install.sh | bash
+   ```
+
+3. **Fully quit and reopen** the browser so it picks up the helper.
+
+The installer works for Chrome, Chromium, Brave, Edge and Vivaldi on macOS and Linux (plus Dia and Phi on macOS). It
+installs only into your user folders; no `sudo`. To remove the helper:
+
+```sh
+curl -fsSL https://github.com/sanchitsharma/tidy-tabs/releases/latest/download/uninstall.sh | bash
+```
+
+Windows isn't supported for the Claude helper yet; use Ollama or Gemini Nano there. Arc isn't supported: its tab
+moves and tab-group APIs don't work for extensions.
+
+Setup guide: https://sanchitsharma.github.io/tidy-tabs/setup.html · Privacy policy:
+https://sanchitsharma.github.io/tidy-tabs/privacy.html
+
+## Implementation Notes
 
 ```
 extension (service worker)
-   │  chrome.runtime.sendNativeMessage("dev.tidytabs.claude", {type:"chat", system, user, schema})
+   │  chrome.runtime.sendNativeMessage("dev.tidytabs.claude", {type:"chat", model, system, user, schema})
    ▼
-native host (node, ~/Library/Application Support/tidy-tabs/native-host/)
-   │  claude -p --model=haiku --output-format json --json-schema … (tools off, MCP off, safe mode)
+helper (node; macOS ~/Library/Application Support/tidy-tabs, Linux ~/.local/share/tidy-tabs)
+   │  claude -p --model=<your choice> --output-format json --json-schema … (tools off, MCP off, safe mode)
    ▼
-Claude Haiku (your Claude subscription)  →  {groups:[{label, tabIds}], ungrouped:[…]}
+Claude (your Claude subscription)  →  {groups:[{label, tabIds}], ungrouped:[…]}
 ```
 
-- **Backends:** Claude Haiku (default), Ollama (`http://localhost:11434` by default, or any endpoint you
-  grant at Save), or Chrome's built-in Gemini Nano where available. If the backend fails, it falls back
-  to grouping by domain, and only when that finds at least 2 real groups.
-- **Strategies:** single-pass for Claude, where one call returns the groups. Two-pass for small local
-  models: first propose labels, then assign every tab against a per-run enum schema.
-- **Safety net on every path:**
-  - Unknown or duplicate ids are dropped. Single-tab groups and leftovers go to "Other", which is never
-    made a tab group.
-  - Labels are capped at 40 chars and there are at most 8 groups.
-  - Browser-internal pages (`chrome://`, `chrome-extension://`) are never grouped. Tabs parked by a
-    suspender extension (Tab Suspender, Marvellous Suspender, …) are grouped by their real URL.
-- **Moves are verified:** after reordering, the extension re-reads the window and compares it with the
-  plan, retrying once with a single array move. The popup shows exactly what happened.
-- **Tab groups are reused:** re-tidying keeps or renames the groups the extension created earlier
-  rather than piling up duplicates. Your own groups are never renamed.
+- **Strategies:** single-pass for Claude, where one call returns the groups. Two-pass for small local models: first
+  propose labels, then assign every tab against a per-run enum schema.
+- **Safety net on every path:** unknown or duplicate ids are dropped; single-tab groups and leftovers go to "Other",
+  which is never made a tab group; labels are capped at 40 chars; at most 8 groups. Browser-internal pages
+  (`chrome://`, `chrome-extension://`, …) are never sent or grouped. Tabs parked by a suspender extension are grouped
+  by their real URL.
+- **Moves are verified:** after reordering, the extension re-reads the window and compares it with the plan,
+  retrying once with a single array move. The popup shows exactly what happened.
+- **Tab groups are reused:** re-tidying keeps or renames the groups it created earlier. Your own groups are never
+  renamed.
+- **No helper?** The popup shows a "Set up the Claude helper" panel with the install command, and Tidy falls back to
+  grouping by website.
+- **Extension ID:** `manifest.json` carries the Chrome Web Store item's public key, so an unpacked copy of
+  `extension/` has the same ID as the store build (`ponmidmoanddncagjfeegheonbgpeahe`), which the helper allows.
 
-Layout: `extension/` (the MV3 extension), `native-host/` (the messaging host and its tests), `bench/`
-(the backend benchmark), `vm-setup/` (the optional private Ollama VM guide), `install.sh` /
-`uninstall.sh`.
+### Privacy and security
 
-## Install (macOS)
+- **What leaves your machine:** each tab's **title (max 80 chars) and hostname**, not the full URL or page content.
+  With Claude it goes to Anthropic through your Claude Code CLI, under your own account and terms. With Ollama it goes
+  only to the endpoint you configure; Gemini Nano runs on-device. The developer receives nothing.
+- **Claude is sandboxed:** `claude -p` runs with all tools disabled, no MCP servers, `--safe-mode` (no CLAUDE.md,
+  hooks, plugins or skills), no settings sources, no session persistence, and in an empty temp dir. The helper strips
+  `ANTHROPIC_API_KEY`, so your subscription login is used. Model IDs are validated (letters, digits, `. _ : - [ ]`).
+- **Logs keep no titles by default:** run history (last 10) and the helper's log folder (`~/Library/Logs/tidy-tabs`
+  on macOS, `~/.local/state/tidy-tabs` on Linux) keep status, errors, timings, counts and group labels. Titles and
+  hosts are stored only with **Debug logging** on. **Copy diagnostics** copies the last run in full from memory only.
+- **Permissions:** `tabs`, `tabGroups`, `storage`, `nativeMessaging`, `notifications`, and host access to
+  `http://localhost:11434` only (Ollama). Any other Ollama endpoint is an optional permission you grant when you click
+  Save. The extension is disabled in incognito.
 
-Requirements: Node 20+, and the [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code)
-installed and logged in to your Claude subscription (run `claude` once interactively).
+Full policy: [PRIVACY.md](PRIVACY.md).
 
-1. Run `./install.sh`. It finds absolute paths to `claude` and `node`, copies the host to
-   `~/Library/Application Support/tidy-tabs/native-host/` (macOS privacy rules block browser-spawned
-   helpers from reading `~/Documents`), and writes the `dev.tidytabs.claude.json` host manifest for each
-   browser it finds: Chrome, Dia, Phi (`com.phibrowser.Mac`) and Chromium. Pass `--claude` / `--node`
-   to override the detected paths.
-2. Open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked**, and pick
-   `extension/`. The extension ID is fixed by the `key` in `manifest.json`, so the host manifest's
-   `allowed_origins` matches.
-3. **Fully quit and restart** the browser so it picks up the host manifest.
-4. Click the toolbar icon, then **Tidy now**. **Alt+Shift+T** tidies without opening the popup.
+### Troubleshooting
 
-To remove it, run `./uninstall.sh`. It deletes only our host manifests and the runtime copy, and keeps
-your logs.
+Start with the popup's red error panel, or `last-run.json` in the helper's log folder.
 
-**Supported browsers:** Chrome, Dia, Phi, Chromium, and other Chromium browsers if you add their
-`NativeMessagingHosts` dir to `install.sh`. **Arc is not supported:** its tab moves and tab-group APIs
-don't work for extensions, and Arc is being discontinued.
+- **"The Claude helper isn't installed for this browser"**: run the installer above, then fully quit and reopen the
+  browser.
+- **"…installed, but not for this extension id"**: re-run the installer (it allows the store ID).
+- **Badge `!` / "Browser ignored tab moves"**: `moves.results` shows, per strategy, which calls threw or were ignored.
+- **"Claude unavailable → domain fallback found nothing to group; no changes made"**: the model failed, and no two
+  websites had 2+ tabs each.
 
-## Privacy and security
+## Running this extension
 
-- **What leaves your machine:** each tab's **title and hostname** (not the full URL or page content)
-  go to Anthropic through your Claude Code CLI, under your own account and terms. With Ollama they go
-  only to the endpoint you configure.
-- **Claude is sandboxed:** `claude -p` runs with all tools disabled (`--tools ''`), no MCP servers,
-  `--safe-mode` (no CLAUDE.md, hooks, plugins or skills), no settings sources, no session persistence,
-  and in an empty temp dir. The host strips `ANTHROPIC_API_KEY`, so your subscription login is used.
-  The model name is validated and must start with a letter or digit.
-- **Logs keep no titles by default:** run history (the last 10 runs) and the disk log
-  (`~/Library/Logs/tidy-tabs/last-run.json`, plus `runs.jsonl` rotated at about 1 MB) keep status,
-  errors, timings, counts, backend, move results and group labels with sizes. Tab titles and hosts are
-  stored only if you turn on **Debug logging** in Options. The wrapper's `host-*.log` files are capped.
-- **Copy diagnostics** (popup) copies the last run in full: the exact prompt sent to the model, its raw
-  answer, and which kinds of tabs were skipped (`scheme://host` counts). That full copy lives only in
-  memory (`storage.session`) and never goes to disk unless Debug logging is on.
-- **Permissions:** `tabs`, `tabGroups`, `storage`, `nativeMessaging`, `notifications`, and host access
-  to `http://localhost:11434` only. Any other Ollama endpoint is an optional permission you grant when
-  you click Save. The extension is disabled in incognito.
+1. Clone this repository.
+2. Load the [`extension/`](extension/) directory in Chrome as an
+   [unpacked extension](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked).
+3. Run `./install.sh` from the clone (same options as the one-liner: `--claude`, `--node`, `--extension-id`), then
+   fully restart the browser.
 
-## Options
+### Tests
 
-Backend (`claude-haiku` / `ollama` / `gemini-nano`), Claude model (`haiku`), Ollama endpoint and model,
-strategy (`auto`), whole-run timeout (120 s), tab groups (on), collapse groups (off), debug logging
-(off), notifications (on).
-
-## Troubleshooting
-
-Start with the popup's red error panel, or `~/Library/Logs/tidy-tabs/last-run.json`.
-
-- **"Specified native messaging host not found"**: the popup shows "Helper not registered for this
-  browser". Run `./install.sh` (add your browser's Application Support dir if it's missing), then fully
-  quit and restart the browser.
-- **Badge `!` / "Browser ignored tab moves"**: `moves.results` shows, per strategy, which calls threw,
-  which were silently ignored, and the `onMoved` events.
-- **"Claude unavailable → domain fallback found nothing to group; no changes made"**: the backend
-  failed, and no two domains had 2+ tabs each.
-- **No log file**: the popup says "diagnostics file NOT written"; fix the host install as above.
-
-## Tests
-
-```
-cd extension && node --test       # unit tests (fetch stubbed); live Ollama tests skip unless TIDY_LIVE=1
-TIDY_LIVE=1 TIDY_OLLAMA_URL=http://localhost:11434 node --test test/integration.test.js test/integration-two-pass.test.js
-
-cd native-host && node --test     # framing, claude args/env/result mapping, fake-claude end-to-end, log files
-TIDY_CLAUDE_LIVE=1 node --test test/host-live.test.js   # real Haiku via the installed host (uses your subscription)
+```sh
+npm install && npx playwright install chromium
+npm run lint          # ESLint + Prettier (config modelled on GoogleChrome/chrome-extensions-samples)
+npm run test:unit     # extension + helper unit tests (node --test; live tests skip)
+npm run test:e2e      # real extension in Chromium + real helper installed by install.sh, fake claude CLI
+TIDY_E2E_LIVE=1 node --test --test-name-pattern=LIVE tests/e2e/tidy.test.mjs   # real Claude (your subscription)
+npm run package       # dist/: store zip (no tests, no key), native-host.tar.gz, installers
 ```
 
-Development: after changing `native-host/*.js`, re-run `./install.sh`. After changing the extension, run
-`./bump.sh`, and the open popup reloads itself in unpacked dev installs.
+Live backend tests: `cd extension && TIDY_LIVE=1 node --test test/integration.test.js` (Ollama) and
+`cd native-host && TIDY_CLAUDE_LIVE=1 node --test test/host-live.test.js` (Claude).
 
-## Benchmark summary
+### Benchmark summary
 
 `bench/RESULTS.md` has the full run: 3 runs each, cold and warm, the same inputs for both backends.
 
@@ -127,9 +134,9 @@ Development: after changing `native-host/*.js`, re-run `./install.sh`. After cha
 | Clean 40-tab window | purity 1.00, ~8 s | purity 1.00, ~9 s (~5 s with 2 models loaded) |
 | 120 tabs | ~13 s | ~12 s |
 
-Haiku is the default because real windows mix tasks across the same sites. Use the local backend when
-tabs must not leave your network.
+Haiku is the default because real windows mix tasks across the same sites. Use a local model when tabs must not
+leave your network.
 
 ## License
 
-MIT; see [LICENSE](LICENSE).
+MIT; see [LICENSE](LICENSE). Not affiliated with Anthropic, Google, or the makers of other browsers.

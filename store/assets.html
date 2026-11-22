@@ -1,0 +1,341 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #13161b;
+        --muted: #5b6270;
+        --bg: #eef2f7;
+        --card: #ffffff;
+        --line: #dde3ea;
+        --accent: #2563eb;
+        --g-blue: #1a73e8;
+        --g-green: #188038;
+        --g-purple: #9334e6;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: Inter, system-ui, sans-serif;
+        color: var(--ink);
+        background: #777;
+      }
+      .shot {
+        width: 1280px;
+        height: 800px;
+        background: var(--bg);
+        position: relative;
+        overflow: hidden;
+      }
+      .tile {
+        width: 440px;
+        height: 280px;
+        background: var(--bg);
+        position: relative;
+        overflow: hidden;
+      }
+      h1 {
+        font-size: 52px;
+        line-height: 1.06;
+        letter-spacing: -1.5px;
+        font-weight: 800;
+      }
+      h1 em {
+        font-style: normal;
+        color: var(--accent);
+      }
+      p.lead {
+        font-size: 21px;
+        line-height: 1.45;
+        color: var(--muted);
+        margin-top: 16px;
+      }
+      ul.points {
+        list-style: none;
+        margin-top: 28px;
+        display: grid;
+        gap: 14px;
+      }
+      ul.points li {
+        font-size: 19px;
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        line-height: 1.35;
+      }
+      .dot {
+        flex: none;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: #dbe7fd;
+        color: var(--accent);
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        font-size: 14px;
+      }
+      .brand {
+        position: absolute;
+        left: 72px;
+        bottom: 44px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 700;
+        font-size: 20px;
+      }
+      .brand img {
+        width: 34px;
+        height: 34px;
+      }
+
+      /* generic browser tab strip */
+      .window {
+        position: absolute;
+        background: #dfe3e8;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow:
+          0 24px 60px rgba(19, 22, 27, 0.18),
+          0 3px 10px rgba(19, 22, 27, 0.1);
+      }
+      .strip {
+        display: flex;
+        align-items: flex-end;
+        gap: 4px;
+        padding: 10px 10px 0;
+        height: 52px;
+      }
+      .tab {
+        height: 38px;
+        min-width: 0;
+        flex: 1 1 0;
+        background: #eef1f4;
+        border-radius: 9px 9px 0 0;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 0 10px;
+        font-size: 13px;
+        color: #3c4043;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      .fav {
+        flex: none;
+        width: 14px;
+        height: 14px;
+        border-radius: 3px;
+      }
+      .tab span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .chip {
+        flex: none;
+        align-self: center;
+        margin-bottom: -6px;
+        color: #fff;
+        font-weight: 600;
+        font-size: 13px;
+        padding: 4px 10px;
+        border-radius: 7px;
+      }
+      .grouped .tab {
+        border-top: 3px solid var(--c);
+      }
+      .page {
+        height: 46px;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        padding: 0 14px;
+        gap: 10px;
+      }
+      .omni {
+        flex: 1;
+        height: 28px;
+        border-radius: 14px;
+        background: #f1f3f4;
+      }
+      .label {
+        position: absolute;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .arrow {
+        position: absolute;
+        font-size: 34px;
+        color: var(--accent);
+        font-weight: 800;
+      }
+
+      .frame {
+        position: absolute;
+        background: var(--card);
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        box-shadow:
+          0 24px 60px rgba(19, 22, 27, 0.2),
+          0 3px 10px rgba(19, 22, 27, 0.1);
+      }
+      .frame img {
+        display: block;
+      }
+      .copy {
+        position: absolute;
+        left: 72px;
+        top: 96px;
+        width: 470px;
+      }
+      .note {
+        position: absolute;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 16px;
+        font-weight: 600;
+        box-shadow: 0 10px 28px rgba(19, 22, 27, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 1. Hero: before / after tab strip -->
+    <section class="shot" id="shot1">
+      <div style="position: absolute; left: 72px; top: 70px; width: 1136px">
+        <h1>Your tabs, grouped by <em>what you're doing.</em></h1>
+        <p class="lead">
+          One click turns a messy window into named tab groups, one per task, with related tabs side by side.
+        </p>
+      </div>
+
+      <div class="label" style="left: 72px; top: 292px">Before</div>
+      <div class="window" style="left: 72px; top: 322px; width: 1136px">
+        <div class="strip">
+          <div class="tab"><i class="fav" style="background: #3776ab"></i><span>asyncio — Python docs</span></div>
+          <div class="tab"><i class="fav" style="background: #e8710a"></i><span>Hotels in Alfama, Lisbon</span></div>
+          <div class="tab"><i class="fav" style="background: #f48024"></i><span>asyncio wait_for timeout</span></div>
+          <div class="tab"><i class="fav" style="background: #0b57d0"></i><span>Flights to Lisbon (LIS)</span></div>
+          <div class="tab"><i class="fav" style="background: #006dad"></i><span>aiohttp · PyPI</span></div>
+          <div class="tab"><i class="fav" style="background: #c5221f"></i><span>Morning news</span></div>
+          <div class="tab"><i class="fav" style="background: #003580"></i><span>Lisbon apartments</span></div>
+        </div>
+        <div class="page"><div class="omni"></div></div>
+      </div>
+
+      <div class="arrow" style="left: 620px; top: 428px">↓</div>
+
+      <div class="label" style="left: 72px; top: 478px">After Tidy now</div>
+      <div class="window grouped" style="left: 72px; top: 508px; width: 1136px">
+        <div class="strip">
+          <div class="chip" style="background: var(--g-green)">Python asyncio</div>
+          <div class="tab" style="--c: var(--g-green)">
+            <i class="fav" style="background: #3776ab"></i><span>asyncio — Python docs</span>
+          </div>
+          <div class="tab" style="--c: var(--g-green)">
+            <i class="fav" style="background: #f48024"></i><span>asyncio wait_for timeout</span>
+          </div>
+          <div class="tab" style="--c: var(--g-green)">
+            <i class="fav" style="background: #006dad"></i><span>aiohttp · PyPI</span>
+          </div>
+          <div class="chip" style="background: var(--g-blue)">Lisbon trip</div>
+          <div class="tab" style="--c: var(--g-blue)">
+            <i class="fav" style="background: #e8710a"></i><span>Hotels in Alfama</span>
+          </div>
+          <div class="tab" style="--c: var(--g-blue)">
+            <i class="fav" style="background: #0b57d0"></i><span>Flights to Lisbon</span>
+          </div>
+          <div class="tab" style="--c: var(--g-blue)">
+            <i class="fav" style="background: #003580"></i><span>Lisbon apartments</span>
+          </div>
+          <div class="tab"><i class="fav" style="background: #c5221f"></i><span>Morning news</span></div>
+        </div>
+        <div class="page"><div class="omni"></div></div>
+      </div>
+
+      <div class="brand"><img src="../extension/icons/icon128.png" alt="" />Tidy Tabs AI</div>
+    </section>
+
+    <!-- 2. Popup: real result -->
+    <section class="shot" id="shot2">
+      <div class="copy">
+        <h1>One click.<br /><em>Real tab groups.</em></h1>
+        <p class="lead">Click the toolbar icon and Tidy now, or press Alt+Shift+T.</p>
+        <ul class="points">
+          <li><span class="dot">✓</span><span>Groups by <b>task</b>, even across different websites</span></li>
+          <li><span class="dot">↺</span><span>Re-tidy reuses its groups; yours are never renamed</span></li>
+          <li><span class="dot">⇆</span><span>Moves are checked, so you see exactly what happened</span></li>
+          <li><span class="dot">⌂</span><span>Lone tabs are left alone</span></li>
+        </ul>
+      </div>
+      <div class="frame" style="left: 660px; top: 120px">
+        <img src="build/popup@2x.png" style="width: 520px" alt="" />
+      </div>
+      <div class="brand"><img src="../extension/icons/icon128.png" alt="" />Tidy Tabs AI</div>
+    </section>
+
+    <!-- 3. Model choice + privacy -->
+    <section class="shot" id="shot3">
+      <div style="position: absolute; left: 72px; top: 78px; width: 1136px">
+        <h1>Your model. <em>Your subscription.</em></h1>
+        <p class="lead">
+          Use Claude through Claude Code on your computer (Haiku, Sonnet, Opus or any model ID), a local Ollama model,
+          or Chrome's built-in Gemini Nano.
+        </p>
+      </div>
+      <div class="frame" style="left: 72px; top: 300px">
+        <img src="build/options@2x.png" style="width: 760px" alt="" />
+      </div>
+      <div class="note" style="left: 880px; top: 300px; width: 328px; font-weight: 500; line-height: 1.5">
+        <div style="font-weight: 700; margin-bottom: 6px">Private by design</div>
+        Only tab titles and hostnames are sent, to the model you choose, when you click Tidy. No server of ours, no
+        tracking.
+      </div>
+      <div class="note" style="left: 880px; top: 470px; width: 328px; font-weight: 500; line-height: 1.5">
+        <div style="font-weight: 700; margin-bottom: 6px">One-line helper setup</div>
+        macOS and Linux. No API key: it uses the Claude account you're already logged in to.
+      </div>
+      <div class="brand"><img src="../extension/icons/icon128.png" alt="" />Tidy Tabs AI · free · open source</div>
+    </section>
+
+    <!-- Small promo tile 440x280 -->
+    <section class="tile" id="tile">
+      <div style="position: absolute; left: 30px; top: 30px; display: flex; align-items: center; gap: 12px">
+        <img src="../extension/icons/icon128.png" style="width: 52px; height: 52px" alt="" />
+        <div style="font-size: 29px; font-weight: 800; letter-spacing: -0.5px">Tidy Tabs AI</div>
+      </div>
+      <div
+        style="
+          position: absolute;
+          left: 30px;
+          top: 110px;
+          font-size: 24px;
+          font-weight: 700;
+          line-height: 1.22;
+          letter-spacing: -0.4px;
+        "
+      >
+        Tabs grouped by<br /><span style="color: var(--accent)">what you're doing.</span>
+      </div>
+      <div style="position: absolute; left: 30px; bottom: 26px; display: flex; gap: 6px">
+        <span class="chip" style="background: var(--g-green); margin: 0">Python asyncio</span>
+        <span class="chip" style="background: var(--g-blue); margin: 0">Lisbon trip</span>
+      </div>
+    </section>
+  </body>
+</html>

@@ -40,7 +40,7 @@ export const SITES = [
  * Launch Chromium with the extension. `helper: 'fake' | 'live' | 'none'`.
  * Returns { ctx, sw, extId, home, claudeLog, close }.
  */
-export async function launch({ helper = 'fake' } = {}) {
+export async function launch({ helper = 'fake', deviceScaleFactor = 1 } = {}) {
   const home = mkdtempSync(join(tmpdir(), 'tidy-e2e-home-'));
   const profile = join(home, '.config', 'chromium'); // Chromium reads NativeMessagingHosts/ from here
   mkdirSync(profile, { recursive: true });
@@ -72,6 +72,7 @@ export async function launch({ helper = 'fake' } = {}) {
     channel: 'chromium',
     headless: true,
     viewport: { width: 1280, height: 800 },
+    deviceScaleFactor,
     args: [`--disable-extensions-except=${EXT}`, `--load-extension=${EXT}`],
   });
   let [sw] = ctx.serviceWorkers();
@@ -82,7 +83,10 @@ export async function launch({ helper = 'fake' } = {}) {
   await ctx.route(/^https:\/\//, (route) => {
     const url = route.request().url();
     const title = (SITES.find(([u]) => u === url) || [url, url])[1];
-    return route.fulfill({ contentType: 'text/html', body: `<!doctype html><title>${title}</title><h1>${title}</h1>` });
+    return route.fulfill({
+      contentType: 'text/html; charset=utf-8',
+      body: `<!doctype html><title>${title}</title><h1>${title}</h1>`,
+    });
   });
 
   return {

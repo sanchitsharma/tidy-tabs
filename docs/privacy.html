@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Privacy policy · Tidy Tabs AI</title><link rel="icon" href="icon.png"><style>
+:root{--bg:#fff;--fg:#1f2328;--muted:#59636e;--accent:#2563eb;--card:#f6f8fa;--border:#d1d9e0}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--accent:#60a5fa;--card:#151b23;--border:#3d444d}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:760px;margin:0 auto;padding:40px 16px 64px}
+a{color:var(--accent)}h1{font-size:1.9rem;line-height:1.25;margin:0 0 8px}h2{font-size:1.2rem;margin:32px 0 8px}
+code{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-size:.9em}
+pre{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px;overflow-x:auto;position:relative}
+pre code{background:none;border:0;padding:0;font-size:.88em;white-space:pre-wrap;word-break:break-all}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:24px;text-decoration:none;color:inherit;font-weight:600}
+.brand img{width:40px;height:40px}.muted{color:var(--muted)}
+.copy{position:absolute;top:8px;right:8px;font:inherit;font-size:.8rem;padding:3px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--fg);cursor:pointer}
+ol li,ul li{margin:4px 0}
+footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--border);color:var(--muted);font-size:.9rem}
+</style></head>
+<body><main>
+<a class="brand" href="./"><img src="icon.png" alt="">Tidy Tabs AI</a>
+<h1>Tidy Tabs AI privacy policy</h1>
+<p><em>Last updated: 22 November 2026</em></p>
+<p>Tidy Tabs AI groups the tabs in your browser window by task. The developer runs no server and receives no data from the extension. This page explains exactly what the extension reads, where it sends it, and what it keeps.</p>
+<h2>What the extension reads</h2>
+<p>When you click <strong>Tidy now</strong> (or press the shortcut), it reads the <strong>title and web address</strong> of each tab in that window, so it can group and reorder them. Browser-internal pages (<code>chrome://</code>, extension pages and similar) are skipped. It does not read page content, form data, cookies, passwords or your browsing history.</p>
+<h2>What is sent, and where</h2>
+<p>Only each tab's <strong>title (cut to 80 characters) and hostname</strong> (for example <code>docs.python.org</code>) are sent, never the full web address or page content. Where they go depends on the backend you choose in Options:</p>
+<ul><li><strong>Claude (default):</strong> sent to the small helper program on your own computer, which passes them to the Claude Code CLI you installed. Claude Code sends them to <strong>Anthropic</strong> under <strong>your own Claude account</strong> to get the grouping back, subject to Anthropic's terms and privacy policy. The developer of Tidy Tabs AI never sees them.</li><li><strong>Ollama:</strong> sent only to the Ollama address you configure (by default <code>http://localhost:11434</code> on your computer).</li><li><strong>Gemini Nano:</strong> processed by Chrome's built-in model on your device.</li></ul>
+<p>Nothing is sent until you start a tidy.</p>
+<h2>What is stored</h2>
+<ul><li><strong>Settings</strong> (backend, model, options) in <code>chrome.storage.sync</code>. If you use Chrome Sync, Chrome syncs them between your own browsers.</li><li><strong>Run history</strong> (last 10 runs) in <code>chrome.storage.local</code> on your device: status, errors, timings, counts and group names. Tab titles and hosts are stored only if you turn on <strong>Debug logging</strong>.</li><li><strong>The full last run</strong> (including the titles sent and the model's answer) in memory only (<code>chrome.storage.session</code>), for the <strong>Copy diagnostics</strong> button. It is cleared when the browser closes.</li><li><strong>Log files</strong>, if the Claude helper is installed, in a folder on your computer (<code>~/Library/Logs/tidy-tabs</code> on macOS, <code>~/.local/state/tidy-tabs</code> on Linux), with the same content rules as run history.</li></ul>
+<h2>What the extension does not do</h2>
+<ul><li>No analytics, tracking, advertising or third-party code; no data is sold or shared.</li><li>No remote code: all code ships in the extension package.</li><li>It is disabled in incognito windows.</li></ul>
+<p>Removing the extension deletes its settings and run history. The helper's uninstaller removes the helper; its log folder can be deleted by hand.</p>
+<h2>Contact</h2>
+<p>Questions or problems: open an issue at <a href="https://github.com/sanchitsharma/tidy-tabs/issues">https://github.com/sanchitsharma/tidy-tabs/issues</a>.</p>
+<footer><a href="./">Home</a> · <a href="setup.html">Setup</a> · <a href="privacy.html">Privacy</a> · <a href="https://github.com/sanchitsharma/tidy-tabs">Source on GitHub</a><br>Not affiliated with Anthropic or Google.</footer>
+</main></body></html>
