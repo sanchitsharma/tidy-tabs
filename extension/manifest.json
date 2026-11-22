@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Tidy Tabs AI",
   "version": "0.3.0",
-  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA8bRt+UOQmwa7ncj7mnC4rjg1C4Cs8ef0oR2FNt2Cruy4ODLhPf92DgfRz4WMlDAynQcLU94BB0gxhc07buNwCajran03bB8eSw87xiHn0qMCyG+RtMIY0mwdC621lylN1VMqgveZnzsr8MY0xb9Ip0UOiVqn2kKQVjwxXge+VTf9K5hqiIn+gUMPdSnm/7t8XueovRdINJU04e4OLZftQilHV9ekBFNDbEH5iAgo62ndjL6lP9d+q8fIewNIlhgNdSzlONP6aRWVwTZYK/W0wqiaf9fHBA36YP4yOHIEH2Z6CREER2QqSXlVVVoJ/FXg4m7GbkvaHV58pP0r0bAj0wIDAQAB",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqIaFLBhhSBPsdI5bH7SHASwEH3Ku/HVe/2s86D2l8moIFNAh1SKU5tp18faBmg6XrBEFtRGW9Kl9fhJM3FANBHTuwJO005rIhyojW8GK0dEep0rfpQJsMmkS5AKS0/Ph5OEAPZcajYY7mnY70mIDh3VDFQWoV7LGby1HxfLvDY2LYp5XaZZNg5J+1iOB4CqFzIGagtBZMvy1115GRWMs7egtBiXq4ZO0mkb3pOThVnFqZm836OzIxLAPUFRopDX6S4lVv8FcpnqYPU5Pn9IqW0J2YM6h7iH8JR3gw6uen33HFWJ3nJq0eBKWvJkIMRxz7iWEvIyTbqMpS2etzsCUlQIDAQAB",
   "description": "Groups your tabs by the task you're on into named tab groups with AI: Claude via Claude Code, Ollama, or Chrome's built-in model.",
   "minimum_chrome_version": "116",
   "background": {

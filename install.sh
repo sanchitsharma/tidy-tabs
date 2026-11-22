@@ -13,7 +13,7 @@ set -euo pipefail
 HOST_NAME="dev.tidytabs.claude"
 # Chrome Web Store ID of Tidy Tabs AI. extension/manifest.json carries the store's public key, so an
 # unpacked copy of extension/ gets this same ID.
-STORE_EXTENSION_ID="__STORE_EXTENSION_ID__"
+STORE_EXTENSION_ID="ponmidmoanddncagjfeegheonbgpeahe"
 RELEASE_BASE="${TIDY_RELEASE_BASE:-https://github.com/sanchitsharma/tidy-tabs/releases/latest/download}"
 
 CLAUDE_BIN="" NODE_BIN=""
