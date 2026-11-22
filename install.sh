@@ -61,7 +61,7 @@ if [[ -n "${BASH_SOURCE[0]:-}" && -f "${BASH_SOURCE[0]}" ]]; then
   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 fi
 TMP=""
-cleanup() { [[ -n "$TMP" ]] && rm -rf "$TMP"; }
+cleanup() { if [[ -n "$TMP" ]]; then rm -rf "$TMP"; fi; } # must not change the exit status
 trap cleanup EXIT
 if [[ -n "$SCRIPT_DIR" && -f "$SCRIPT_DIR/native-host/host.js" ]]; then
   SRC="$SCRIPT_DIR/native-host"
