@@ -16,7 +16,10 @@ const defaultSleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /** Current unpinned order (ids sorted by index). */
 export function unpinnedOrder(windowTabs) {
-  return windowTabs.filter((t) => !t.pinned).sort((a, b) => a.index - b.index).map((t) => t.id);
+  return windowTabs
+    .filter((t) => !t.pinned)
+    .sort((a, b) => a.index - b.index)
+    .map((t) => t.id);
 }
 
 /**
@@ -30,22 +33,37 @@ export function verifyOrder(windowTabs, plannedOrder) {
   const expected = plannedOrder.filter((id) => present.has(id));
   const actual = actualAll.filter((id) => planned.has(id));
   const misplaced = expected.filter((id, i) => actual[i] !== id);
-  return { ok: misplaced.length === 0 && expected.length === actual.length, mismatches: misplaced.length, misplaced, expected, actual };
+  return {
+    ok: misplaced.length === 0 && expected.length === actual.length,
+    mismatches: misplaced.length,
+    misplaced,
+    expected,
+    actual,
+  };
 }
 
 async function callMove(api, ids, index) {
-  return withTimeout(() => api.move(ids, { index }), MOVE_CALL_MS, `tabs.move(${Array.isArray(ids) ? `[${ids.length}]` : ids}, ${index})`);
+  return withTimeout(
+    () => api.move(ids, { index }),
+    MOVE_CALL_MS,
+    `tabs.move(${Array.isArray(ids) ? `[${ids.length}]` : ids}, ${index})`,
+  );
 }
 
 /** Build the list of move calls for a strategy. Each step = { ids, index, tabIds }. */
 export function strategySteps(name, plan) {
   const { order, startIndex, moves } = plan;
   switch (name) {
-    case 'batch-plan': return moves.map((m) => ({ ids: m.tabId, index: m.index, tabIds: [m.tabId] }));
-    case 'sequential-delay': return order.map((id, i) => ({ ids: id, index: startIndex + i, tabIds: [id], delay: true, check: true }));
-    case 'append-each': return order.map((id) => ({ ids: id, index: -1, tabIds: [id] }));
-    case 'single-call': return [{ ids: [...order], index: startIndex, tabIds: [...order] }];
-    default: throw new Error(`unknown strategy ${name}`);
+    case 'batch-plan':
+      return moves.map((m) => ({ ids: m.tabId, index: m.index, tabIds: [m.tabId] }));
+    case 'sequential-delay':
+      return order.map((id, i) => ({ ids: id, index: startIndex + i, tabIds: [id], delay: true, check: true }));
+    case 'append-each':
+      return order.map((id) => ({ ids: id, index: -1, tabIds: [id] }));
+    case 'single-call':
+      return [{ ids: [...order], index: startIndex, tabIds: [...order] }];
+    default:
+      throw new Error(`unknown strategy ${name}`);
   }
 }
 
@@ -56,8 +74,15 @@ export async function runStrategy(name, plan, api, { delayMs = 75, settleMs = 15
   const steps = strategySteps(name, plan);
   const fired = new Set();
   let events = 0;
-  const onMoved = (tabId) => { events++; fired.add(tabId); };
-  try { api.onMoved?.addListener(onMoved); } catch { /* ignore */ }
+  const onMoved = (tabId) => {
+    events++;
+    fired.add(tabId);
+  };
+  try {
+    api.onMoved?.addListener(onMoved);
+  } catch {
+    /* ignore */
+  }
   const threw = [];
   const perMoveIgnored = [];
   let calls = 0;
@@ -67,7 +92,11 @@ export async function runStrategy(name, plan, api, { delayMs = 75, settleMs = 15
       try {
         await callMove(api, s.ids, s.index);
       } catch (e) {
-        threw.push({ tabIds: s.tabIds.length > 3 ? `${s.tabIds.length} tabs` : s.tabIds, index: s.index, error: errMsg(e) });
+        threw.push({
+          tabIds: s.tabIds.length > 3 ? `${s.tabIds.length} tabs` : s.tabIds,
+          index: s.index,
+          error: errMsg(e),
+        });
         continue;
       }
       if (s.delay) await sleep(delayMs);
@@ -75,12 +104,18 @@ export async function runStrategy(name, plan, api, { delayMs = 75, settleMs = 15
         try {
           const t = await withTimeout(() => api.get(s.ids), MOVE_CALL_MS, 'tabs.get');
           if (t.index !== s.index) perMoveIgnored.push({ tabId: s.ids, wanted: s.index, got: t.index });
-        } catch (e) { perMoveIgnored.push({ tabId: s.ids, wanted: s.index, error: errMsg(e) }); }
+        } catch (e) {
+          perMoveIgnored.push({ tabId: s.ids, wanted: s.index, error: errMsg(e) });
+        }
       }
     }
     await sleep(settleMs); // let onMoved events arrive before verifying
   } finally {
-    try { api.onMoved?.removeListener(onMoved); } catch { /* ignore */ }
+    try {
+      api.onMoved?.removeListener(onMoved);
+    } catch {
+      /* ignore */
+    }
   }
   let verify;
   try {
@@ -115,7 +150,14 @@ export async function runStrategy(name, plan, api, { delayMs = 75, settleMs = 15
  */
 export async function applyWithVerification(plan, api, { strategies = DEFAULT_STRATEGIES, onProgress, ...opts } = {}) {
   const initial = verifyOrder(await api.query(), plan.order);
-  if (initial.ok) return { verified: true, winner: 'none-needed', alreadyOrdered: true, results: [], message: 'Tabs already in order' };
+  if (initial.ok)
+    return {
+      verified: true,
+      winner: 'none-needed',
+      alreadyOrdered: true,
+      results: [],
+      message: 'Tabs already in order',
+    };
   const results = [];
   for (const name of strategies) {
     onProgress?.(`moving tabs: ${name}`);
@@ -131,6 +173,8 @@ export async function applyWithVerification(plan, api, { strategies = DEFAULT_ST
     winner: null,
     alreadyOrdered: false,
     results,
-    message: allIgnored ? 'Browser ignored tab moves (no errors, order unchanged)' : 'Tab moves failed with every strategy',
+    message: allIgnored
+      ? 'Browser ignored tab moves (no errors, order unchanged)'
+      : 'Tab moves failed with every strategy',
   };
 }

@@ -8,9 +8,11 @@
     const res = await fetch(chrome.runtime.getURL('manifest.json'), { cache: 'no-store' });
     const onDisk = (await res.json()).version;
     if (onDisk && onDisk !== running) {
-      document.body.prepend(Object.assign(document.createElement('p'), {
-        textContent: `Updating Tidy Tabs AI ${running} → ${onDisk}… reopen this popup in a second.`,
-      }));
+      document.body.prepend(
+        Object.assign(document.createElement('p'), {
+          textContent: `Updating Tidy Tabs AI ${running} → ${onDisk}… reopen this popup in a second.`,
+        }),
+      );
       setTimeout(() => chrome.runtime.reload(), 300);
     }
   } catch (e) {

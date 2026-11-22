@@ -38,7 +38,9 @@ async function handle(msg) {
 const decoder = createDecoder();
 let inflight = 0;
 let ended = false;
-const maybeExit = () => { if (ended && inflight === 0) process.exit(0); };
+const maybeExit = () => {
+  if (ended && inflight === 0) process.exit(0);
+};
 
 process.stdin.on('data', (chunk) => {
   let msgs;
@@ -50,7 +52,15 @@ process.stdin.on('data', (chunk) => {
   }
   for (const m of msgs) {
     inflight++;
-    handle(m).then(send).finally(() => { inflight--; maybeExit(); });
+    handle(m)
+      .then(send)
+      .finally(() => {
+        inflight--;
+        maybeExit();
+      });
   }
 });
-process.stdin.on('end', () => { ended = true; maybeExit(); });
+process.stdin.on('end', () => {
+  ended = true;
+  maybeExit();
+});

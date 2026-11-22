@@ -15,10 +15,21 @@ test(`live single-pass clustering of 30 tabs via ${model} @ ${endpoint}`, { skip
   const wallMs = Math.round(performance.now() - t0);
   const strict = checkSchema(content, tabs.length);
   const { groups, stats } = repairGroups(content, prompt.idMap);
-  console.log(JSON.stringify({
-    wallMs, timing, strictValid: strict.ok, strictErrors: strict.errors, repair: stats,
-    purity: purity(groups), groups: summarize(groups),
-  }, null, 2));
+  console.log(
+    JSON.stringify(
+      {
+        wallMs,
+        timing,
+        strictValid: strict.ok,
+        strictErrors: strict.errors,
+        repair: stats,
+        purity: purity(groups),
+        groups: summarize(groups),
+      },
+      null,
+      2,
+    ),
+  );
   assert.equal(groups.flatMap((g) => g.tabIds).length, tabs.length);
   assert.ok(groups.length >= 2);
 });

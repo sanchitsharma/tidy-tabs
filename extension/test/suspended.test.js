@@ -8,8 +8,10 @@ import { redactRecord } from '../lib/diagnostics.js';
 
 // Regression: a tester with Tab Suspender had 18 of 22 tabs skipped as "internal" pages.
 test('suspended tabs: real URL recovered from query or hash; real internal pages stay internal', () => {
-  const q = 'chrome-extension://fiabciakcmgepblmdkmemdbbkilneeeh/park.html?title=Inbox&url=https%3A%2F%2Fmail.google.com%2Fmail%2Fu%2F0';
-  const h = 'chrome-extension://noogafoofpebimajpfpamcfhoaifemoa/suspended.html#ttl=Docs&pos=0&uri=https://developer.mozilla.org/en-US/docs/Web';
+  const q =
+    'chrome-extension://fiabciakcmgepblmdkmemdbbkilneeeh/park.html?title=Inbox&url=https%3A%2F%2Fmail.google.com%2Fmail%2Fu%2F0';
+  const h =
+    'chrome-extension://noogafoofpebimajpfpamcfhoaifemoa/suspended.html#ttl=Docs&pos=0&uri=https://developer.mozilla.org/en-US/docs/Web';
   assert.equal(unwrapSuspendedUrl(q), 'https://mail.google.com/mail/u/0');
   assert.equal(unwrapSuspendedUrl(h), 'https://developer.mozilla.org/en-US/docs/Web');
   assert.equal(unwrapSuspendedUrl('chrome-extension://abc/options.html'), null);
@@ -38,14 +40,21 @@ test('runCluster records the exact prompt and raw answer; redactRecord hides the
   ];
   const answer = JSON.stringify({ groups: [{ label: 'Alpha', tabIds: [0, 1] }], ungrouped: [] });
   const nativeSend = async () => ({ ok: true, content: answer, model: 'claude-haiku-5-5', timing: {} });
-  const res = await runCluster(tabs, { backend: 'claude-haiku', strategy: 'single-pass', timeoutMs: 5000 }, { nativeSend });
+  const res = await runCluster(
+    tabs,
+    { backend: 'claude-haiku', strategy: 'single-pass', timeoutMs: 5000 },
+    { nativeSend },
+  );
   assert.equal(res.exchanges.length, 1);
   assert.match(res.exchanges[0].user, /Alpha one/);
   assert.ok(res.exchanges[0].system);
   assert.equal(res.exchanges[0].response, answer);
 
-  const failing = await runCluster(tabs, { backend: 'claude-haiku', strategy: 'single-pass', timeoutMs: 5000 },
-    { nativeSend: async () => ({ ok: false, error: 'boom' }) });
+  const failing = await runCluster(
+    tabs,
+    { backend: 'claude-haiku', strategy: 'single-pass', timeoutMs: 5000 },
+    { nativeSend: async () => ({ ok: false, error: 'boom' }) },
+  );
   assert.match(failing.exchanges[0].error, /boom/);
 
   const rec = { llm: res.exchanges, groups: [] };
@@ -55,7 +64,11 @@ test('runCluster records the exact prompt and raw answer; redactRecord hides the
 });
 
 test('runTidy: suspended tabs reach the model and get grouped; settings page is skipped and reported', async () => {
-  const sus = (id, title, url) => ({ id, title, url: `chrome-extension://fiabciakcmgepblmdkmemdbbkilneeeh/park.html?title=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}` });
+  const sus = (id, title, url) => ({
+    id,
+    title,
+    url: `chrome-extension://fiabciakcmgepblmdkmemdbbkilneeeh/park.html?title=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`,
+  });
   const { fakeTabs } = await import('../test-support/fake-tabs.js');
   const ft = fakeTabs([
     sus(1, 'Bread recipe', 'https://en.wikipedia.org/wiki/Bread'),
@@ -68,24 +81,44 @@ test('runTidy: suspended tabs reach the model and get grouped; settings page is 
   globalThis.navigator ??= {};
   globalThis.chrome = {
     runtime: {
-      id: 'test', getManifest: () => ({ version: '0.0.0' }), lastError: null,
+      id: 'test',
+      getManifest: () => ({ version: '0.0.0' }),
+      lastError: null,
       sendNativeMessage: (host, msg, cb) => {
         sentUser = msg.user;
         const ids = [...msg.user.matchAll(/^(\d+)\b/gm)].map((m) => Number(m[1]));
-        cb({ ok: true, model: 'm', timing: {}, content: JSON.stringify({ groups: [{ label: 'Bread', tabIds: ids.slice(0, 2) }, { label: 'JS', tabIds: ids.slice(2) }], ungrouped: [] }) });
+        cb({
+          ok: true,
+          model: 'm',
+          timing: {},
+          content: JSON.stringify({
+            groups: [
+              { label: 'Bread', tabIds: ids.slice(0, 2) },
+              { label: 'JS', tabIds: ids.slice(2) },
+            ],
+            ungrouped: [],
+          }),
+        });
       },
     },
     windows: { getLastFocused: async () => ({ id: 1 }), getAll: async () => [{ id: 1 }] },
     tabs: { query: () => ft.query(), move: ft.move, get: ft.get, onMoved: ft.onMoved },
   };
   const { runTidy } = await import('../lib/tidy-run.js');
-  const rec = await runTidy({ windowId: 1, settings: { backend: 'claude-haiku', strategy: 'single-pass', timeoutMs: 5000, createTabGroups: false }, trigger: 'test' });
+  const rec = await runTidy({
+    windowId: 1,
+    settings: { backend: 'claude-haiku', strategy: 'single-pass', timeoutMs: 5000, createTabGroups: false },
+    trigger: 'test',
+  });
   assert.equal(rec.counts.internal, 1);
   assert.equal(rec.counts.suspended, 3);
   assert.deepEqual(rec.skipped, { 'chrome://settings': 1 });
   assert.match(sentUser, /Sourdough/);
   assert.match(sentUser, /wikipedia/);
   assert.equal(rec.llm.length, 1);
-  assert.deepEqual(rec.groups.map((g) => g.tabs.length), [2, 2]);
+  assert.deepEqual(
+    rec.groups.map((g) => g.tabs.length),
+    [2, 2],
+  );
   assert.equal(ft.order().at(-1), 2, 'settings page ends up last');
 });

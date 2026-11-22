@@ -12,6 +12,9 @@ export function extensionIdFromKey(base64Key) {
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const manifestPath = process.argv[2] || new URL('../extension/manifest.json', import.meta.url);
   const { key } = JSON.parse(readFileSync(manifestPath, 'utf8'));
-  if (!key) { console.error('manifest has no "key"'); process.exit(1); }
+  if (!key) {
+    console.error('manifest has no "key"');
+    process.exit(1);
+  }
   console.log(extensionIdFromKey(key));
 }

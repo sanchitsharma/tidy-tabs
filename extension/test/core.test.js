@@ -3,8 +3,16 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
-  GROUPS_SCHEMA, TITLE_MAX, buildPrompt, buildTabLines, checkSchema, repairGroups,
-  groupByDomain, registrableDomain, hostOf, computeMovePlan,
+  GROUPS_SCHEMA,
+  TITLE_MAX,
+  buildPrompt,
+  buildTabLines,
+  checkSchema,
+  repairGroups,
+  groupByDomain,
+  registrableDomain,
+  hostOf,
+  computeMovePlan,
 } from '../lib/core.js';
 import { buildChatBody, chatUrl, extractChatResult, callOllama } from '../lib/ollama-request.js';
 
@@ -30,7 +38,15 @@ test('schema has the contract shape', () => {
 test('checkSchema accepts a valid response', () => {
   const raw = JSON.stringify({ groups: [{ label: 'A', tabIds: [0, 1] }], ungrouped: [2] });
   assert.deepEqual(checkSchema(raw, 3), { ok: true, errors: [] });
-  const single = checkSchema({ groups: [{ label: 'A', tabIds: [0, 1] }, { label: 'B', tabIds: [2] }] }, 3);
+  const single = checkSchema(
+    {
+      groups: [
+        { label: 'A', tabIds: [0, 1] },
+        { label: 'B', tabIds: [2] },
+      ],
+    },
+    3,
+  );
   assert.deepEqual(single.errors, ['group 1 has a single tab']);
   const nine = { groups: Array.from({ length: 9 }, (_, i) => ({ label: `G${i}`, tabIds: [2 * i, 2 * i + 1] })) };
   assert.ok(checkSchema(nine, 18).errors.includes('group count 9 above 8'));
@@ -49,18 +65,26 @@ test('checkSchema reports missing, duplicate, unknown, bad count, empty label, b
 
 test('repairGroups maps short ids to real tab ids', () => {
   const idMap = [101, 202, 303, 404];
-  const { groups, stats } = repairGroups('{"groups":[{"label":"X","tabIds":[3,0]},{"label":"Y","tabIds":[1,2]}]}', idMap);
-  assert.deepEqual(groups, [{ label: 'X', tabIds: [404, 101] }, { label: 'Y', tabIds: [202, 303] }]);
+  const { groups, stats } = repairGroups(
+    '{"groups":[{"label":"X","tabIds":[3,0]},{"label":"Y","tabIds":[1,2]}]}',
+    idMap,
+  );
+  assert.deepEqual(groups, [
+    { label: 'X', tabIds: [404, 101] },
+    { label: 'Y', tabIds: [202, 303] },
+  ]);
   assert.deepEqual(stats, { unknown: [], duplicates: [], missing: [], singletons: [] });
 });
 
 test('repairGroups drops unknown ids, keeps first duplicate, adds Other at end', () => {
   const idMap = [10, 11, 12, 13, 14];
-  const raw = { groups: [
-    { label: 'A', tabIds: [0, 1, 99, -1] },
-    { label: 'B', tabIds: [1, 2, '3'] }, // "3" as a numeric string is accepted
-    { label: 'Empty', tabIds: [42] },
-  ] };
+  const raw = {
+    groups: [
+      { label: 'A', tabIds: [0, 1, 99, -1] },
+      { label: 'B', tabIds: [1, 2, '3'] }, // "3" as a numeric string is accepted
+      { label: 'Empty', tabIds: [42] },
+    ],
+  };
   const { groups, stats } = repairGroups(raw, idMap);
   assert.deepEqual(groups, [
     { label: 'A', tabIds: [10, 11] },
@@ -73,9 +97,19 @@ test('repairGroups drops unknown ids, keeps first duplicate, adds Other at end',
 });
 
 test('repairGroups: model Other, ungrouped, singletons and missing all become one Other at the end', () => {
-  const raw = { groups: [{ label: 'other', tabIds: [0] }, { label: '  ', tabIds: [1, 2] }, { label: 'Solo', tabIds: [3] }], ungrouped: [5, 99, 1] };
+  const raw = {
+    groups: [
+      { label: 'other', tabIds: [0] },
+      { label: '  ', tabIds: [1, 2] },
+      { label: 'Solo', tabIds: [3] },
+    ],
+    ungrouped: [5, 99, 1],
+  };
   const { groups, stats } = repairGroups(raw, [10, 11, 12, 13, 14, 15]);
-  assert.deepEqual(groups, [{ label: 'Group 2', tabIds: [11, 12] }, { label: 'Other', tabIds: [10, 13, 14, 15] }]);
+  assert.deepEqual(groups, [
+    { label: 'Group 2', tabIds: [11, 12] },
+    { label: 'Other', tabIds: [10, 13, 14, 15] },
+  ]);
   assert.deepEqual(stats.singletons, [3]);
   assert.deepEqual(stats.missing, [4]);
   assert.deepEqual(stats.unknown, [99]);
@@ -129,7 +163,10 @@ test('ollama body matches the planned contract', () => {
   assert.equal(body.think, false);
   assert.deepEqual(body.options, { temperature: 0, num_ctx: 8192 });
   assert.equal(body.format, GROUPS_SCHEMA);
-  assert.deepEqual(body.messages.map((m) => m.role), ['system', 'user']);
+  assert.deepEqual(
+    body.messages.map((m) => m.role),
+    ['system', 'user'],
+  );
   assert.equal(chatUrl('http://h:11434///'), 'http://h:11434/api/chat');
   const r = extractChatResult({ message: { content: '{"groups":[]}' }, total_duration: 2_500_000_000 });
   assert.equal(r.timing.totalMs, 2500);
@@ -139,9 +176,14 @@ test('ollama body matches the planned contract', () => {
 test('callOllama surfaces HTTP errors and timeouts', async () => {
   const bad = async () => ({ ok: false, status: 404, text: async () => 'model not found' });
   await assert.rejects(callOllama({ system: '', user: '' }, { fetchImpl: bad }), /HTTP 404: model not found/);
-  const hang = (_u, { signal }) => new Promise((_, rej) => signal.addEventListener('abort', () => {
-    const e = new Error('aborted'); e.name = 'AbortError'; rej(e);
-  }));
+  const hang = (_u, { signal }) =>
+    new Promise((_, rej) =>
+      signal.addEventListener('abort', () => {
+        const e = new Error('aborted');
+        e.name = 'AbortError';
+        rej(e);
+      }),
+    );
   await assert.rejects(callOllama({ system: '', user: '' }, { fetchImpl: hang, timeoutMs: 20 }), /timed out/);
 });
 
@@ -158,9 +200,12 @@ test('registrableDomain heuristics', () => {
 
 test('groupByDomain clusters by registrable domain, singletons to Other at end', () => {
   const tabs = [
-    mk(1, 0, 'https://mail.google.com/'), mk(2, 1, 'https://github.com/a'),
-    mk(3, 2, 'https://docs.google.com/'), mk(4, 3, 'https://example.org/'),
-    mk(5, 4, 'https://github.com/b'), mk(6, 5, 'chrome://newtab/'),
+    mk(1, 0, 'https://mail.google.com/'),
+    mk(2, 1, 'https://github.com/a'),
+    mk(3, 2, 'https://docs.google.com/'),
+    mk(4, 3, 'https://example.org/'),
+    mk(5, 4, 'https://github.com/b'),
+    mk(6, 5, 'chrome://newtab/'),
   ];
   assert.deepEqual(groupByDomain(tabs), [
     { label: 'google.com', tabIds: [1, 3] },
@@ -179,10 +224,19 @@ test('groupByDomain on fixture covers every tab once', () => {
 
 test('move plan starts after pinned tabs and yields grouped order', () => {
   const win = [
-    mk(1, 0, 'a', 'p1', true), mk(2, 1, 'a', 'p2', true),
-    mk(10, 2, 'x'), mk(11, 3, 'y'), mk(12, 4, 'x'), mk(13, 5, 'y'), mk(14, 6, 'z'),
+    mk(1, 0, 'a', 'p1', true),
+    mk(2, 1, 'a', 'p2', true),
+    mk(10, 2, 'x'),
+    mk(11, 3, 'y'),
+    mk(12, 4, 'x'),
+    mk(13, 5, 'y'),
+    mk(14, 6, 'z'),
   ];
-  const groups = [{ label: 'X', tabIds: [10, 12] }, { label: 'Y', tabIds: [11, 13] }, { label: 'Z', tabIds: [14] }];
+  const groups = [
+    { label: 'X', tabIds: [10, 12] },
+    { label: 'Y', tabIds: [11, 13] },
+    { label: 'Z', tabIds: [14] },
+  ];
   const plan = computeMovePlan(win, groups);
   assert.equal(plan.startIndex, 2);
   assert.deepEqual(plan.order, [10, 12, 11, 13, 14]);

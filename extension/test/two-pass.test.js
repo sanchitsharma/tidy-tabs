@@ -3,8 +3,13 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
-  LABELS_SCHEMA, assignSchema, buildLabelsPrompt, buildAssignPrompt, normalizeLabels,
-  assignmentsToGroups, orderAndMerge,
+  LABELS_SCHEMA,
+  assignSchema,
+  buildLabelsPrompt,
+  buildAssignPrompt,
+  normalizeLabels,
+  assignmentsToGroups,
+  orderAndMerge,
 } from '../lib/two-pass.js';
 import { clusterTabs, twoPass, singlePass } from '../lib/strategies.js';
 import { runCluster } from '../lib/backends.js';
@@ -13,8 +18,10 @@ import { GROUPS_SCHEMA, groupByDomain } from '../lib/core.js';
 const tabs30 = JSON.parse(readFileSync(new URL('./fixtures/tabs-30.json', import.meta.url)));
 const mk = (id, url, title = `T${id}`) => ({ id, url, title, pinned: false });
 const tabs5 = [
-  mk(50, 'https://github.com/a/pull/1', 'PR 1'), mk(51, 'https://mail.google.com/', 'Inbox'),
-  mk(52, 'https://github.com/a/pull/2', 'PR 2'), mk(53, 'https://booking.com/h', 'Hotel'),
+  mk(50, 'https://github.com/a/pull/1', 'PR 1'),
+  mk(51, 'https://mail.google.com/', 'Inbox'),
+  mk(52, 'https://github.com/a/pull/2', 'PR 2'),
+  mk(53, 'https://booking.com/h', 'Hotel'),
   mk(54, 'https://mail.google.com/x', 'Re: invoice'),
 ];
 const json = (o) => JSON.stringify(o);
@@ -31,7 +38,13 @@ function mockFetch(responses) {
   };
   return { impl, calls };
 }
-const settings = { backend: 'ollama', endpoint: 'http://mock:11434', model: 'm', strategy: 'two-pass', timeoutMs: 5000 };
+const settings = {
+  backend: 'ollama',
+  endpoint: 'http://mock:11434',
+  model: 'm',
+  strategy: 'two-pass',
+  timeoutMs: 5000,
+};
 
 test('labels schema: array of strings, 2..8', () => {
   const l = LABELS_SCHEMA.properties.labels;
@@ -52,8 +65,24 @@ test('assign schema: group enum = labels + Other once, min=max=n, id enum 0..n-1
 });
 
 test('normalizeLabels trims, caps words, de-dupes, drops Other, caps count', () => {
-  const raw = json({ labels: ['  GitHub  PRs ', 'github prs', 'Other', '', 7, 'A Very Long Label Here',
-    'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'] });
+  const raw = json({
+    labels: [
+      '  GitHub  PRs ',
+      'github prs',
+      'Other',
+      '',
+      7,
+      'A Very Long Label Here',
+      'b',
+      'c',
+      'd',
+      'e',
+      'f',
+      'g',
+      'h',
+      'i',
+    ],
+  });
   assert.deepEqual(normalizeLabels(raw), ['GitHub PRs', 'A Very Long', 'b', 'c', 'd', 'e', 'f', 'g']);
   assert.throws(() => normalizeLabels(json({ labels: ['Other', ' '] })), /no usable labels/);
   assert.throws(() => normalizeLabels('garbage'), /not valid JSON/);
@@ -69,27 +98,41 @@ test('prompts: pass 2 reuses the same tab lines and lists labels + Other', () =>
 });
 
 test('assignments -> groups maps short ids to real ids', () => {
-  const raw = json({ assignments: [
-    { id: 0, group: 'Code' }, { id: 1, group: 'Mail' }, { id: 2, group: 'Code' },
-    { id: 3, group: 'Travel' }, { id: 4, group: 'Mail' },
-  ] });
+  const raw = json({
+    assignments: [
+      { id: 0, group: 'Code' },
+      { id: 1, group: 'Mail' },
+      { id: 2, group: 'Code' },
+      { id: 3, group: 'Travel' },
+      { id: 4, group: 'Mail' },
+    ],
+  });
   const { groups, stats } = assignmentsToGroups(raw, ['Code', 'Mail', 'Travel'], [50, 51, 52, 53, 54]);
   assert.deepEqual(groups, [
-    { label: 'Code', tabIds: [50, 52] }, { label: 'Mail', tabIds: [51, 54] }, { label: 'Other', tabIds: [53] },
+    { label: 'Code', tabIds: [50, 52] },
+    { label: 'Mail', tabIds: [51, 54] },
+    { label: 'Other', tabIds: [53] },
   ]); // single-tab "Travel" -> Other
   assert.deepEqual(stats, { unknown: [], duplicates: [], missing: [], unknownLabels: [] });
 });
 
 test('repair: unknown ids dropped, first duplicate wins, missing/unknown labels -> Other, empty groups dropped', () => {
-  const raw = json({ assignments: [
-    { id: 0, group: 'mail' }, // case-insensitive label match
-    { id: 0, group: 'Code' }, // duplicate: ignored
-    { id: 9, group: 'Code' }, { id: -1, group: 'Code' }, { id: 'x', group: 'Code' },
-    { id: '2', group: 'Ghost' }, // numeric string ok; unknown label -> Other
-    { id: 1, group: 'Mail' },
-  ] });
+  const raw = json({
+    assignments: [
+      { id: 0, group: 'mail' }, // case-insensitive label match
+      { id: 0, group: 'Code' }, // duplicate: ignored
+      { id: 9, group: 'Code' },
+      { id: -1, group: 'Code' },
+      { id: 'x', group: 'Code' },
+      { id: '2', group: 'Ghost' }, // numeric string ok; unknown label -> Other
+      { id: 1, group: 'Mail' },
+    ],
+  });
   const { groups, stats } = assignmentsToGroups(raw, ['Code', 'Mail'], [10, 11, 12, 13]);
-  assert.deepEqual(groups, [{ label: 'Mail', tabIds: [10, 11] }, { label: 'Other', tabIds: [12, 13] }]);
+  assert.deepEqual(groups, [
+    { label: 'Mail', tabIds: [10, 11] },
+    { label: 'Other', tabIds: [12, 13] },
+  ]);
   assert.deepEqual(stats.unknown, [9, -1, 'x']);
   assert.deepEqual(stats.duplicates, [0]);
   assert.deepEqual(stats.missing, [3]);
@@ -99,28 +142,46 @@ test('repair: unknown ids dropped, first duplicate wins, missing/unknown labels 
 });
 
 test('groups ordered by first appearance in tab order regardless of label/assignment order', () => {
-  const raw = json({ assignments: [
-    { id: 3, group: 'Z' }, { id: 2, group: 'Y' }, { id: 1, group: 'Other' }, { id: 0, group: 'Y' }, { id: 4, group: 'Z' },
-  ] });
+  const raw = json({
+    assignments: [
+      { id: 3, group: 'Z' },
+      { id: 2, group: 'Y' },
+      { id: 1, group: 'Other' },
+      { id: 0, group: 'Y' },
+      { id: 4, group: 'Z' },
+    ],
+  });
   const { groups } = assignmentsToGroups(raw, ['Z', 'Y'], [0, 1, 2, 3, 4]);
-  assert.deepEqual(groups.map((g) => g.label), ['Y', 'Z', 'Other']);
+  assert.deepEqual(
+    groups.map((g) => g.label),
+    ['Y', 'Z', 'Other'],
+  );
   assert.deepEqual(groups[0].tabIds, [0, 2]);
 });
 
 test('single-tab groups always merge into Other (last, in tab order)', () => {
   assert.deepEqual(orderAndMerge(['A', 'B', 'A', 'C', 'Other']), [
-    { label: 'A', ids: [0, 2] }, { label: 'Other', ids: [1, 3, 4] },
+    { label: 'A', ids: [0, 2] },
+    { label: 'Other', ids: [1, 3, 4] },
   ]);
-  assert.deepEqual(orderAndMerge(['A', 'A', 'B', 'B']), [{ label: 'A', ids: [0, 1] }, { label: 'B', ids: [2, 3] }]);
+  assert.deepEqual(orderAndMerge(['A', 'A', 'B', 'B']), [
+    { label: 'A', ids: [0, 1] },
+    { label: 'B', ids: [2, 3] },
+  ]);
 });
 
 test('mocked two-call flow: pass-1 then pass-2 bodies are correct', async () => {
   const { impl, calls } = mockFetch([
     { labels: ['Code', 'Mail', 'Travel'] },
-    { assignments: [
-      { id: 0, group: 'Code' }, { id: 1, group: 'Mail' }, { id: 2, group: 'Code' },
-      { id: 3, group: 'Travel' }, { id: 4, group: 'Mail' },
-    ] },
+    {
+      assignments: [
+        { id: 0, group: 'Code' },
+        { id: 1, group: 'Mail' },
+        { id: 2, group: 'Code' },
+        { id: 3, group: 'Travel' },
+        { id: 4, group: 'Mail' },
+      ],
+    },
   ]);
   const res = await runCluster(tabs5, settings, { fetchImpl: impl });
   assert.equal(calls.length, 2);
@@ -140,11 +201,22 @@ test('mocked two-call flow: pass-1 then pass-2 bodies are correct', async () => 
   assert.equal(res.fallback, false);
   assert.equal(res.backend, 'ollama:m');
   assert.deepEqual(res.labels, ['Code', 'Mail', 'Travel']);
-  assert.deepEqual(res.groups.map((g) => g.tabIds), [[50, 52], [51, 54], [53]]);
+  assert.deepEqual(
+    res.groups.map((g) => g.tabIds),
+    [[50, 52], [51, 54], [53]],
+  );
 });
 
 test('idEnum=false setting drops the id enum from pass 2', async () => {
-  const { impl, calls } = mockFetch([{ labels: ['A', 'B'] }, { assignments: [{ id: 0, group: 'A' }, { id: 1, group: 'B' }] }]);
+  const { impl, calls } = mockFetch([
+    { labels: ['A', 'B'] },
+    {
+      assignments: [
+        { id: 0, group: 'A' },
+        { id: 1, group: 'B' },
+      ],
+    },
+  ]);
   await runCluster(tabs5.slice(0, 2), { ...settings, idEnum: false }, { fetchImpl: impl });
   assert.deepEqual(calls[1].body.format.properties.assignments.items.properties.id, { type: 'integer' });
 });
@@ -172,7 +244,8 @@ test('whole-run timeout aborts across passes', async () => {
   let n = 0;
   const impl = (_u, { signal }) => {
     n++;
-    if (n === 1) return Promise.resolve({ ok: true, json: async () => ({ message: { content: json({ labels: ['A', 'B'] }) } }) });
+    if (n === 1)
+      return Promise.resolve({ ok: true, json: async () => ({ message: { content: json({ labels: ['A', 'B'] }) } }) });
     return new Promise((_, rej) => signal.addEventListener('abort', () => rej(signal.reason)));
   };
   const t0 = Date.now();
@@ -187,13 +260,22 @@ test('single-pass strategy still works through clusterTabs', async () => {
   const chatCalls = [];
   const chat = async (prompt, schema) => {
     chatCalls.push(schema);
-    return { content: json({ groups: [{ label: 'Code', tabIds: [0, 2] }, { label: 'Mail', tabIds: [1, 4] }] }) };
+    return {
+      content: json({
+        groups: [
+          { label: 'Code', tabIds: [0, 2] },
+          { label: 'Mail', tabIds: [1, 4] },
+        ],
+      }),
+    };
   };
   const res = await clusterTabs(tabs5, { chat, strategy: 'single-pass' });
   assert.equal(chatCalls.length, 1);
   assert.equal(chatCalls[0], GROUPS_SCHEMA);
   assert.deepEqual(res.groups, [
-    { label: 'Code', tabIds: [50, 52] }, { label: 'Mail', tabIds: [51, 54] }, { label: 'Other', tabIds: [53] },
+    { label: 'Code', tabIds: [50, 52] },
+    { label: 'Mail', tabIds: [51, 54] },
+    { label: 'Other', tabIds: [53] },
   ]);
   assert.ok(res.strictErrors.some((e) => e.includes('missing ids 3')));
   assert.equal(typeof singlePass, 'function');
@@ -201,12 +283,20 @@ test('single-pass strategy still works through clusterTabs', async () => {
 
 test('two-pass on the 30-tab fixture with a perfect mock covers every tab once', async () => {
   const topics = [...new Set(tabs30.map((t) => t.topic))].slice(0, 8);
-  const chat = async (_p, schema) => (schema === LABELS_SCHEMA
-    ? { content: json({ labels: topics }) }
-    : { content: json({ assignments: tabs30.map((t, i) => ({ id: i, group: topics.includes(t.topic) ? t.topic : 'Other' })) }) });
+  const chat = async (_p, schema) =>
+    schema === LABELS_SCHEMA
+      ? { content: json({ labels: topics }) }
+      : {
+          content: json({
+            assignments: tabs30.map((t, i) => ({ id: i, group: topics.includes(t.topic) ? t.topic : 'Other' })),
+          }),
+        };
   const res = await twoPass(tabs30, chat);
   const ids = res.groups.flatMap((g) => g.tabIds);
   assert.equal(ids.length, 30);
   assert.equal(new Set(ids).size, 30);
-  assert.deepEqual(res.groups.map((g) => g.label), topics);
+  assert.deepEqual(
+    res.groups.map((g) => g.label),
+    topics,
+  );
 });

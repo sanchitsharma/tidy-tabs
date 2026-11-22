@@ -47,12 +47,15 @@ export function planGroups(clusters, owned = [], tabGroupOf = new Map(), { fallb
     const color = GROUP_COLORS[i % GROUP_COLORS.length];
     if (matched.has(c)) return { label: c.label, tabIds: c.tabIds, color, groupId: matched.get(c).id, action: 'reuse' };
     const g = take(() => true);
-    return g ? { label: c.label, tabIds: c.tabIds, color, groupId: g.id, action: 'rename' }
+    return g
+      ? { label: c.label, tabIds: c.tabIds, color, groupId: g.id, action: 'rename' }
       : { label: c.label, tabIds: c.tabIds, color, groupId: null, action: 'create' };
   });
   const ownedIds = new Set(owned.map((o) => o.id));
   const grouped = new Set(actions.flatMap((a) => a.tabIds));
-  const ungroup = clusters.flatMap((c) => c.tabIds).filter((id) => !grouped.has(id) && ownedIds.has(tabGroupOf.get(id)));
+  const ungroup = clusters
+    .flatMap((c) => c.tabIds)
+    .filter((id) => !grouped.has(id) && ownedIds.has(tabGroupOf.get(id)));
   return { actions, ungroup };
 }
 
@@ -61,14 +64,30 @@ export function planGroups(clusters, owned = [], tabGroupOf = new Map(), { fallb
  *         update(groupId, props), ungroup(tabIds) }. ownedIds: group ids created earlier.
  * Returns { ownedIds (to persist), created, reused, renamed, ungrouped, errors, actions }.
  */
-export async function applyGroups({ windowId, clusters, tabs, ownedIds = [], collapsed = false, fallback = false, api }) {
+export async function applyGroups({
+  windowId,
+  clusters,
+  tabs,
+  ownedIds = [],
+  collapsed = false,
+  fallback = false,
+  api,
+}) {
   const errors = [];
   const call = (fn, label) => withTimeout(fn, GROUP_CALL_MS, label);
   let existing;
   try {
     existing = await call(() => api.queryGroups(windowId), 'tabGroups.query');
   } catch (e) {
-    return { ownedIds, created: 0, reused: 0, renamed: 0, ungrouped: 0, errors: [String(e?.message || e)], actions: [] };
+    return {
+      ownedIds,
+      created: 0,
+      reused: 0,
+      renamed: 0,
+      ungrouped: 0,
+      errors: [String(e?.message || e)],
+      actions: [],
+    };
   }
   const ownedSet = new Set(ownedIds);
   const owned = existing.filter((g) => ownedSet.has(g.id)).map((g) => ({ id: g.id, title: g.title }));
@@ -80,11 +99,16 @@ export async function applyGroups({ windowId, clusters, tabs, ownedIds = [], col
     try {
       await call(() => api.ungroup(plan.ungroup), 'tabs.ungroup');
       counts.ungrouped = plan.ungroup.length;
-    } catch (e) { errors.push(`ungroup: ${e?.message || e}`); }
+    } catch (e) {
+      errors.push(`ungroup: ${e?.message || e}`);
+    }
   }
   for (const a of plan.actions) {
     try {
-      const opts = a.groupId != null ? { tabIds: a.tabIds, groupId: a.groupId } : { tabIds: a.tabIds, createProperties: { windowId } };
+      const opts =
+        a.groupId != null
+          ? { tabIds: a.tabIds, groupId: a.groupId }
+          : { tabIds: a.tabIds, createProperties: { windowId } };
       const groupId = await call(() => api.group(opts), 'tabs.group');
       await call(() => api.update(groupId, { title: a.label, color: a.color, collapsed }), 'tabGroups.update');
       nowOwned.push(groupId);
@@ -94,5 +118,15 @@ export async function applyGroups({ windowId, clusters, tabs, ownedIds = [], col
       if (/did not settle/.test(String(e?.message))) break; // API hangs: stop trying
     }
   }
-  return { ownedIds: nowOwned, ...counts, errors, actions: plan.actions.map(({ label, action, groupId, tabIds }) => ({ label, action, groupId, size: tabIds.length })) };
+  return {
+    ownedIds: nowOwned,
+    ...counts,
+    errors,
+    actions: plan.actions.map(({ label, action, groupId, tabIds }) => ({
+      label,
+      action,
+      groupId,
+      size: tabIds.length,
+    })),
+  };
 }

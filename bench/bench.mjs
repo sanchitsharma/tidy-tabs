@@ -26,20 +26,35 @@ mkdirSync(new URL('./runs/', import.meta.url), { recursive: true });
 const coreSrc = readFileSync(new URL('lib/core.js', EXT), 'utf8');
 const coreUrl = new URL('./snapshot/core.js', import.meta.url);
 writeFileSync(coreUrl, coreSrc);
-writeFileSync(new URL('./snapshot/claude-native.js', import.meta.url), readFileSync(new URL('lib/claude-native.js', EXT)));
+writeFileSync(
+  new URL('./snapshot/claude-native.js', import.meta.url),
+  readFileSync(new URL('lib/claude-native.js', EXT)),
+);
 const core = await import(coreUrl.href);
-const { buildNativeRequest, parseNativeResponse } = await import(new URL('./snapshot/claude-native.js', import.meta.url).href);
+const { buildNativeRequest, parseNativeResponse } = await import(
+  new URL('./snapshot/claude-native.js', import.meta.url).href
+);
 const manifest = JSON.parse(readFileSync(new URL('manifest.json', EXT), 'utf8'));
-const provenance = { extVersion: manifest.version_name || manifest.version, coreSha1: createHash('sha1').update(coreSrc).digest('hex').slice(0, 10), systemPrompt: core.SYSTEM_PROMPT };
+const provenance = {
+  extVersion: manifest.version_name || manifest.version,
+  coreSha1: createHash('sha1').update(coreSrc).digest('hex').slice(0, 10),
+  systemPrompt: core.SYSTEM_PROMPT,
+};
 
 async function postJson(url, body, timeoutMs = 300000) {
-  const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(timeoutMs) });
+  const r = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(timeoutMs),
+  });
   if (!r.ok) throw new Error(`${url} -> ${r.status} ${await r.text()}`);
   return r.json();
 }
 
 async function unloadVm() {
-  for (const model of ['embeddinggemma', 'qwen3:1.7b']) await postJson(`${OLLAMA}/api/generate`, { model, keep_alive: 0 }).catch(() => {});
+  for (const model of ['embeddinggemma', 'qwen3:1.7b'])
+    await postJson(`${OLLAMA}/api/generate`, { model, keep_alive: 0 }).catch(() => {});
   const ps = await fetch(`${OLLAMA}/api/ps`).then((r) => r.json());
   return ps.models.map((m) => m.name);
 }
@@ -53,12 +68,21 @@ async function runVm(ds) {
 // Chrome launches hosts with a near-empty environment; mirror host-live.test.js.
 function nativeSend(msg, timeoutMs = 180000) {
   return new Promise((resolve, reject) => {
-    const child = spawn(WRAPPER, [], { env: { PATH: '/usr/bin:/bin', HOME: process.env.HOME, USER: process.env.USER, TMPDIR: process.env.TMPDIR }, stdio: ['pipe', 'pipe', 'pipe'] });
+    const child = spawn(WRAPPER, [], {
+      env: { PATH: '/usr/bin:/bin', HOME: process.env.HOME, USER: process.env.USER, TMPDIR: process.env.TMPDIR },
+      stdio: ['pipe', 'pipe', 'pipe'],
+    });
     const dec = createDecoder();
     const out = [];
-    const timer = setTimeout(() => { child.kill('SIGKILL'); reject(new Error('host timeout')); }, timeoutMs);
+    const timer = setTimeout(() => {
+      child.kill('SIGKILL');
+      reject(new Error('host timeout'));
+    }, timeoutMs);
     child.stdout.on('data', (c) => out.push(...dec.push(c)));
-    child.on('close', () => { clearTimeout(timer); resolve(out[0]); });
+    child.on('close', () => {
+      clearTimeout(timer);
+      resolve(out[0]);
+    });
     child.stdin.write(encodeMessage(msg));
     child.stdin.end();
   });
@@ -79,8 +103,18 @@ async function runHaiku(ds) {
   const strict = core.checkSchema(resp.content, ds.tabs.length);
   let { groups, stats } = core.repairGroups(resp.content, prompt.idMap);
   let fallback = false;
-  if (!groups.length || (groups.length === 1 && ds.tabs.length > 3)) { groups = core.groupByDomain(ds.tabs); fallback = true; }
-  return { groups, wallMs: Math.round(performance.now() - t0), timing: resp.timing, strictErrors: strict.errors, repair: stats, fallback };
+  if (!groups.length || (groups.length === 1 && ds.tabs.length > 3)) {
+    groups = core.groupByDomain(ds.tabs);
+    fallback = true;
+  }
+  return {
+    groups,
+    wallMs: Math.round(performance.now() - t0),
+    timing: resp.timing,
+    strictErrors: strict.errors,
+    repair: stats,
+    fallback,
+  };
 }
 
 for (const name of dsArg.split(',')) {
@@ -98,9 +132,17 @@ for (const name of dsArg.split(',')) {
     }
     const m = metrics(r.groups, ds);
     runs.push({ run: i + 1, cold: i === 0, startedAt, ...pre, ...r, metrics: m });
-    console.log(`${backend}${tag} ${name} run${i + 1}: ${r.wallMs} ms valid=${m.valid} purity=${m.purity} cohesion=${m.cohesion} groups=${m.groupCount} singles=${m.singletons} ${r.error || ''}`);
+    console.log(
+      `${backend}${tag} ${name} run${i + 1}: ${r.wallMs} ms valid=${m.valid} purity=${m.purity} cohesion=${m.cohesion} groups=${m.groupCount} singles=${m.singletons} ${r.error || ''}`,
+    );
     console.log('   ', m.names.join(' · '));
   }
-  writeFileSync(new URL(`./runs/${backend}${tag ? `-${tag}` : ''}-${name}.json`, import.meta.url),
-    JSON.stringify({ backend, tag, dataset: name, provenance: backend === 'haiku' ? provenance : undefined, runs }, null, 1));
+  writeFileSync(
+    new URL(`./runs/${backend}${tag ? `-${tag}` : ''}-${name}.json`, import.meta.url),
+    JSON.stringify(
+      { backend, tag, dataset: name, provenance: backend === 'haiku' ? provenance : undefined, runs },
+      null,
+      1,
+    ),
+  );
 }

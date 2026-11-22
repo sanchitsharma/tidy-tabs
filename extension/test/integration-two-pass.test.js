@@ -13,10 +13,20 @@ test(`live two-pass clustering of 30 tabs via ${model} @ ${endpoint}`, { skip },
   const t0 = performance.now();
   const res = await twoPass(tabs, chat, { idEnum: process.env.TIDY_ID_ENUM !== '0' });
   const wallMs = Math.round(performance.now() - t0);
-  console.log(JSON.stringify({
-    wallMs, timings: res.timings, labels: res.labels, repair: res.stats,
-    purity: purity(res.groups), groups: summarize(res.groups),
-  }, null, 2));
+  console.log(
+    JSON.stringify(
+      {
+        wallMs,
+        timings: res.timings,
+        labels: res.labels,
+        repair: res.stats,
+        purity: purity(res.groups),
+        groups: summarize(res.groups),
+      },
+      null,
+      2,
+    ),
+  );
   const ids = res.groups.flatMap((g) => g.tabIds);
   assert.equal(ids.length, tabs.length);
   assert.equal(new Set(ids).size, tabs.length);

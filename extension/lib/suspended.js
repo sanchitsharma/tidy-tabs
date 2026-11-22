@@ -12,7 +12,11 @@ function paramsOf(u) {
 export function unwrapSuspendedUrl(raw) {
   if (!raw || !/^chrome-extension:/i.test(raw)) return null;
   let u;
-  try { u = new URL(raw); } catch { return null; }
+  try {
+    u = new URL(raw);
+  } catch {
+    return null;
+  }
   for (const params of paramsOf(u)) {
     for (const k of PARAM_KEYS) {
       const v = params.get(k);
@@ -30,7 +34,9 @@ function suspendedTitle(raw) {
       const t = params.get('title') || params.get('ttl');
       if (t) return t;
     }
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
   return null;
 }
 
@@ -39,7 +45,7 @@ export function effectiveTab(tab) {
   const raw = tab.url || tab.pendingUrl || '';
   const real = unwrapSuspendedUrl(raw);
   if (!real) return tab;
-  const title = tab.title && !/^chrome-extension:/i.test(tab.title) ? tab.title : (suspendedTitle(raw) || real);
+  const title = tab.title && !/^chrome-extension:/i.test(tab.title) ? tab.title : suspendedTitle(raw) || real;
   return { ...tab, url: real, pendingUrl: undefined, title, suspended: true };
 }
 

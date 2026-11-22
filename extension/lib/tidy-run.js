@@ -26,7 +26,12 @@ async function tabGroupsStep(windowId, clusters, settings, fallback) {
   const { ownedGroups = {} } = await chrome.storage.local.get('ownedGroups');
   const tabs = await chrome.tabs.query({ windowId });
   const res = await applyGroups({
-    windowId, clusters, tabs, ownedIds: ownedGroups[windowId] || [], collapsed: !!settings.collapseGroups, fallback,
+    windowId,
+    clusters,
+    tabs,
+    ownedIds: ownedGroups[windowId] || [],
+    collapsed: !!settings.collapseGroups,
+    fallback,
     api: {
       queryGroups: (w) => chrome.tabGroups.query({ windowId: w }),
       group: (opts) => chrome.tabs.group(opts),
@@ -65,8 +70,17 @@ async function resolveWindowId(windowId) {
 /** Run once. Never throws: errors land in record.error / record.errors. */
 export async function runTidy({ windowId: hint, settings, onProgress = () => {}, trigger = 'unknown' }) {
   const t0 = Date.now();
-  const rec = { id: `${t0}-${Math.random().toString(36).slice(2, 7)}`, at: new Date(t0).toISOString(), trigger, progress: [], errors: [] };
-  const step = (s) => { rec.progress.push({ ms: Date.now() - t0, step: s }); onProgress(s, rec); };
+  const rec = {
+    id: `${t0}-${Math.random().toString(36).slice(2, 7)}`,
+    at: new Date(t0).toISOString(),
+    trigger,
+    progress: [],
+    errors: [],
+  };
+  const step = (s) => {
+    rec.progress.push({ ms: Date.now() - t0, step: s });
+    onProgress(s, rec);
+  };
   try {
     step('starting');
     rec.env = await environment();
@@ -74,7 +88,10 @@ export async function runTidy({ windowId: hint, settings, onProgress = () => {},
     rec.windowId = windowId;
     const windowTabs = await chrome.tabs.query({ windowId });
     // Suspended tabs (Tab Suspender & co.) get their real URL back so they are clustered like any page.
-    const tabs = windowTabs.filter((t) => !t.pinned).sort((a, b) => a.index - b.index).map(effectiveTab);
+    const tabs = windowTabs
+      .filter((t) => !t.pinned)
+      .sort((a, b) => a.index - b.index)
+      .map(effectiveTab);
     rec.counts = { total: windowTabs.length, pinned: windowTabs.length - tabs.length, unpinned: tabs.length };
     rec.before = tabs.map(tabSummary);
     // Internal pages (new tab, extensions, settings) are left out; the move plan puts them at the end.
@@ -93,8 +110,14 @@ export async function runTidy({ windowId: hint, settings, onProgress = () => {},
     step(`calling backend (${settings.backend})`);
     const result = await runCluster(clusterable, settings);
     rec.backend = {
-      name: result.backend, attempted: result.attemptedBackend, strategy: result.strategy, fallback: result.fallback,
-      fallbackReason: result.fallbackReason, labels: result.labels, timings: result.timings, repair: result.stats,
+      name: result.backend,
+      attempted: result.attemptedBackend,
+      strategy: result.strategy,
+      fallback: result.fallback,
+      fallbackReason: result.fallbackReason,
+      labels: result.labels,
+      timings: result.timings,
+      repair: result.stats,
       strictErrors: result.strictErrors?.slice(0, 10),
     };
     // Exact prompt + raw model answer per call. Contains tab titles: kept out of disk/storage.local
@@ -119,18 +142,27 @@ export async function runTidy({ windowId: hint, settings, onProgress = () => {},
     };
     step('moving tabs');
     rec.moves = await applyWithVerification(plan, api, { onProgress: step });
-    for (const r of rec.moves.results) for (const t of r.threw) rec.errors.push({ where: `move:${r.name}`, message: t.error });
+    for (const r of rec.moves.results)
+      for (const t of r.threw) rec.errors.push({ where: `move:${r.name}`, message: t.error });
     step(`verification: ${rec.moves.message}`);
     try {
-      rec.after = (await chrome.tabs.query({ windowId })).filter((t) => !t.pinned).sort((a, b) => a.index - b.index).map((t) => t.id);
-    } catch { /* ignore */ }
+      rec.after = (await chrome.tabs.query({ windowId }))
+        .filter((t) => !t.pinned)
+        .sort((a, b) => a.index - b.index)
+        .map((t) => t.id);
+    } catch {
+      /* ignore */
+    }
 
     if (settings.createTabGroups) {
       step('creating tab groups');
       rec.tabGroups = await tabGroupsStep(windowId, result.groups, settings, result.fallback);
       for (const m of rec.tabGroups.errors || []) rec.errors.push({ where: 'tabGroups', message: m });
-      step(rec.tabGroups.skipped ? `tab groups skipped: ${rec.tabGroups.skipped}`
-        : `tab groups: ${rec.tabGroups.created} created, ${rec.tabGroups.reused} reused, ${rec.tabGroups.renamed} renamed`);
+      step(
+        rec.tabGroups.skipped
+          ? `tab groups skipped: ${rec.tabGroups.skipped}`
+          : `tab groups: ${rec.tabGroups.created} created, ${rec.tabGroups.reused} reused, ${rec.tabGroups.renamed} renamed`,
+      );
     }
   } catch (e) {
     rec.error = String(e?.message || e);

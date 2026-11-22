@@ -1,14 +1,33 @@
 import '../test-support/no-network.js';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { verifyOrder, strategySteps, runStrategy, applyWithVerification, STRATEGY_NAMES, DEFAULT_STRATEGIES } from '../lib/move-strategies.js';
+import {
+  verifyOrder,
+  strategySteps,
+  runStrategy,
+  applyWithVerification,
+  STRATEGY_NAMES,
+  DEFAULT_STRATEGIES,
+} from '../lib/move-strategies.js';
 import { computeMovePlan } from '../lib/core.js';
 import { fakeTabs } from '../test-support/fake-tabs.js';
 import { classify, pushRecent, guessBrowser, describeGroups, summarize } from '../lib/diagnostics.js';
 
 // Window: 2 pinned, then 6 unpinned interleaved across 2 topics.
-const SPEC = [{ id: 1, pinned: true }, { id: 2, pinned: true }, { id: 10 }, { id: 20 }, { id: 11 }, { id: 21 }, { id: 12 }, { id: 22 }];
-const GROUPS = [{ label: 'A', tabIds: [10, 11, 12] }, { label: 'B', tabIds: [20, 21, 22] }];
+const SPEC = [
+  { id: 1, pinned: true },
+  { id: 2, pinned: true },
+  { id: 10 },
+  { id: 20 },
+  { id: 11 },
+  { id: 21 },
+  { id: 12 },
+  { id: 22 },
+];
+const GROUPS = [
+  { label: 'A', tabIds: [10, 11, 12] },
+  { label: 'B', tabIds: [20, 21, 22] },
+];
 const TARGET = [1, 2, 10, 11, 12, 20, 21, 22];
 async function setup(mode) {
   const api = fakeTabs(SPEC, mode);
@@ -29,10 +48,18 @@ test('verifyOrder: exact match, mismatch list, tolerates closed/new tabs', () =>
 test('strategySteps shapes', async () => {
   const { plan } = await setup('works');
   assert.equal(plan.startIndex, 2);
-  assert.deepEqual(strategySteps('single-call', plan), [{ ids: [10, 11, 12, 20, 21, 22], index: 2, tabIds: [10, 11, 12, 20, 21, 22] }]);
+  assert.deepEqual(strategySteps('single-call', plan), [
+    { ids: [10, 11, 12, 20, 21, 22], index: 2, tabIds: [10, 11, 12, 20, 21, 22] },
+  ]);
   assert.ok(strategySteps('append-each', plan).every((s) => s.index === -1));
-  assert.deepEqual(strategySteps('sequential-delay', plan).map((s) => s.index), [2, 3, 4, 5, 6, 7]);
-  assert.deepEqual(strategySteps('batch-plan', plan), plan.moves.map((m) => ({ ids: m.tabId, index: m.index, tabIds: [m.tabId] })));
+  assert.deepEqual(
+    strategySteps('sequential-delay', plan).map((s) => s.index),
+    [2, 3, 4, 5, 6, 7],
+  );
+  assert.deepEqual(
+    strategySteps('batch-plan', plan),
+    plan.moves.map((m) => ({ ids: m.tabId, index: m.index, tabIds: [m.tabId] })),
+  );
   assert.throws(() => strategySteps('nope', plan));
 });
 
@@ -60,7 +87,10 @@ test('ignores: every strategy runs, none verifies, "Browser ignored tab moves", 
   const r = await applyWithVerification(plan, api, { strategies: STRATEGY_NAMES });
   assert.equal(r.verified, false);
   assert.equal(r.winner, null);
-  assert.deepEqual(r.results.map((x) => x.name), STRATEGY_NAMES);
+  assert.deepEqual(
+    r.results.map((x) => x.name),
+    STRATEGY_NAMES,
+  );
   assert.match(r.message, /Browser ignored tab moves/);
   for (const x of r.results) {
     assert.equal(x.threwCount, 0);
@@ -80,7 +110,10 @@ test('throws: errors recorded per call with messages, distinct failure message',
   assert.match(r.message, /failed with every strategy/);
   assert.equal(r.results[0].threwCount, plan.moves.length);
   assert.match(r.results[0].threw[0].error, /cannot be edited/);
-  assert.deepEqual(r.results.map((x) => x.name), DEFAULT_STRATEGIES);
+  assert.deepEqual(
+    r.results.map((x) => x.name),
+    DEFAULT_STRATEGIES,
+  );
   assert.equal(r.results[1].threw[0].tabIds, '6 tabs');
 });
 
@@ -93,7 +126,10 @@ test('only-minus-one (opt-in strategies): falls through to append-each and verif
   const r = await applyWithVerification(plan, api, { strategies: STRATEGY_NAMES });
   assert.equal(r.verified, true);
   assert.equal(r.winner, 'append-each');
-  assert.deepEqual(r.results.map((x) => x.verified), [false, false, true]);
+  assert.deepEqual(
+    r.results.map((x) => x.verified),
+    [false, false, true],
+  );
   assert.deepEqual(api.order(), TARGET);
 });
 
@@ -116,11 +152,22 @@ test('hangs: each move times out instead of blocking forever', async (t) => {
 
 test('diagnostics: classify -> status + badge', () => {
   assert.equal(classify({ moves: { verified: true }, backend: {} }).badge.text, '✓');
-  assert.deepEqual(classify({ moves: { verified: false }, backend: {} }), { status: 'moves-failed', badge: { text: '!', color: '#d97706' } });
+  assert.deepEqual(classify({ moves: { verified: false }, backend: {} }), {
+    status: 'moves-failed',
+    badge: { text: '!', color: '#d97706' },
+  });
   assert.equal(classify({ backend: { fallback: true }, moves: { verified: true } }).badge.text, '✗');
   assert.equal(classify({ error: 'x' }).status, 'error');
   assert.equal(classify({ status: 'noop' }).status, 'noop');
-  assert.match(summarize({ status: 'moves-failed', groups: [{}, {}], backend: { name: 'claude:haiku' }, moves: { message: 'Arc ignored tab moves' } }), /2 groups via claude:haiku, but Arc ignored/);
+  assert.match(
+    summarize({
+      status: 'moves-failed',
+      groups: [{}, {}],
+      backend: { name: 'claude:haiku' },
+      moves: { message: 'Arc ignored tab moves' },
+    }),
+    /2 groups via claude:haiku, but Arc ignored/,
+  );
 });
 
 test('diagnostics: recent runs capped at 10, newest first', () => {
@@ -132,9 +179,15 @@ test('diagnostics: recent runs capped at 10, newest first', () => {
 
 test('diagnostics: browser guess + groups carry titles/hosts but no URLs', () => {
   assert.equal(guessBrowser({ brands: [{ brand: 'Google Chrome' }], tabGroupsUsable: true }), 'chrome');
-  assert.equal(guessBrowser({ brands: [{ brand: 'Chromium' }], tabGroupsReason: 'tabGroups.query: hangs' }), 'unsupported (tabGroups hangs)');
+  assert.equal(
+    guessBrowser({ brands: [{ brand: 'Chromium' }], tabGroupsReason: 'tabGroups.query: hangs' }),
+    'unsupported (tabGroups hangs)',
+  );
   assert.equal(guessBrowser({ brands: [{ brand: 'Chromium' }, { brand: 'Brave' }] }), 'chromium-based (unknown)');
-  const d = describeGroups([{ label: 'A', tabIds: [5] }], [{ id: 5, title: 'Doc', url: 'https://x.example.com/secret?q=1' }]);
+  const d = describeGroups(
+    [{ label: 'A', tabIds: [5] }],
+    [{ id: 5, title: 'Doc', url: 'https://x.example.com/secret?q=1' }],
+  );
   assert.deepEqual(d, [{ label: 'A', tabs: [{ id: 5, title: 'Doc', host: 'x.example.com' }] }]);
   assert.ok(!JSON.stringify(d).includes('secret'));
 });

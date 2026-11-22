@@ -45,9 +45,10 @@ export function extractChatResult(json) {
  * One /api/chat call. `timeoutMs` bounds this call; `signal` (optional) is an outer abort, e.g. the
  * whole-run deadline shared by both passes. `fetchImpl` is injectable for node tests.
  */
-export async function callOllama(prompt, {
-  endpoint, model, format = GROUPS_SCHEMA, timeoutMs, signal, fetchImpl = fetch,
-} = {}) {
+export async function callOllama(
+  prompt,
+  { endpoint, model, format = GROUPS_SCHEMA, timeoutMs, signal, fetchImpl = fetch } = {},
+) {
   const signals = [];
   if (signal) signals.push(signal);
   if (timeoutMs) signals.push(AbortSignal.timeout(timeoutMs));

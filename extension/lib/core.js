@@ -39,15 +39,55 @@ export function hostOf(url) {
 
 // Common second-level public suffixes; a full PSL is overkill for tab grouping.
 const MULTI_PART_SUFFIXES = new Set([
-  'co.uk', 'org.uk', 'ac.uk', 'gov.uk', 'me.uk', 'ltd.uk',
-  'com.au', 'net.au', 'org.au', 'edu.au', 'gov.au',
-  'co.in', 'net.in', 'org.in', 'gov.in', 'ac.in', 'edu.in',
-  'co.jp', 'ne.jp', 'or.jp', 'ac.jp', 'co.kr', 'or.kr',
-  'co.nz', 'org.nz', 'co.za', 'org.za', 'com.br', 'com.mx', 'com.ar',
-  'com.cn', 'com.hk', 'com.sg', 'com.tw', 'com.tr', 'com.vn', 'edu.vn',
-  'github.io', 'gitlab.io', 'vercel.app', 'netlify.app', 'pages.dev',
-  'herokuapp.com', 'appspot.com', 'azurewebsites.net', 'cloudfront.net',
-  'blogspot.com', 'substack.com', 'ts.net',
+  'co.uk',
+  'org.uk',
+  'ac.uk',
+  'gov.uk',
+  'me.uk',
+  'ltd.uk',
+  'com.au',
+  'net.au',
+  'org.au',
+  'edu.au',
+  'gov.au',
+  'co.in',
+  'net.in',
+  'org.in',
+  'gov.in',
+  'ac.in',
+  'edu.in',
+  'co.jp',
+  'ne.jp',
+  'or.jp',
+  'ac.jp',
+  'co.kr',
+  'or.kr',
+  'co.nz',
+  'org.nz',
+  'co.za',
+  'org.za',
+  'com.br',
+  'com.mx',
+  'com.ar',
+  'com.cn',
+  'com.hk',
+  'com.sg',
+  'com.tw',
+  'com.tr',
+  'com.vn',
+  'edu.vn',
+  'github.io',
+  'gitlab.io',
+  'vercel.app',
+  'netlify.app',
+  'pages.dev',
+  'herokuapp.com',
+  'appspot.com',
+  'azurewebsites.net',
+  'cloudfront.net',
+  'blogspot.com',
+  'substack.com',
+  'ts.net',
 ]);
 
 /** Approximate registrable domain (eTLD+1). IPs, localhost, single labels pass through. */
@@ -63,7 +103,10 @@ export function registrableDomain(host) {
 }
 
 function cleanTitle(title) {
-  return String(title ?? '').replace(/[\r\n|]+/g, ' ').replace(/\s+/g, ' ').trim();
+  return String(title ?? '')
+    .replace(/[\r\n|]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 export function truncate(s, max = TITLE_MAX) {
@@ -192,8 +235,14 @@ export function repairGroups(raw, idMap) {
     const ids = [];
     for (const v of Array.isArray(g?.tabIds) ? g.tabIds : []) {
       const id = toIntId(v);
-      if (id === null || id < 0 || id >= n) { stats.unknown.push(v); continue; }
-      if (used.has(id)) { stats.duplicates.push(id); continue; }
+      if (id === null || id < 0 || id >= n) {
+        stats.unknown.push(v);
+        continue;
+      }
+      if (used.has(id)) {
+        stats.duplicates.push(id);
+        continue;
+      }
       used.add(id);
       ids.push(id);
     }
@@ -205,8 +254,14 @@ export function repairGroups(raw, idMap) {
   const leftovers = [];
   for (const v of Array.isArray(data?.ungrouped) ? data.ungrouped : []) {
     const id = toIntId(v);
-    if (id === null || id < 0 || id >= n) { stats.unknown.push(v); continue; }
-    if (used.has(id)) { stats.duplicates.push(id); continue; }
+    if (id === null || id < 0 || id >= n) {
+      stats.unknown.push(v);
+      continue;
+    }
+    if (used.has(id)) {
+      stats.duplicates.push(id);
+      continue;
+    }
     used.add(id);
     leftovers.push(id);
   }
@@ -214,10 +269,16 @@ export function repairGroups(raw, idMap) {
   const kept = [];
   for (const g of out) {
     if (isOther(g)) leftovers.push(...g.ids);
-    else if (g.ids.length < 2) { stats.singletons.push(...g.ids); leftovers.push(...g.ids); }
-    else kept.push(g);
+    else if (g.ids.length < 2) {
+      stats.singletons.push(...g.ids);
+      leftovers.push(...g.ids);
+    } else kept.push(g);
   }
-  for (let i = 0; i < n; i++) if (!used.has(i)) { stats.missing.push(i); leftovers.push(i); }
+  for (let i = 0; i < n; i++)
+    if (!used.has(i)) {
+      stats.missing.push(i);
+      leftovers.push(i);
+    }
   if (leftovers.length) kept.push({ label: OTHER_LABEL, ids: leftovers.sort((x, y) => x - y) });
   return {
     groups: capGroups(kept.map((g) => ({ label: g.label, tabIds: g.ids.map((i) => idMap[i]) }))),
@@ -267,7 +328,11 @@ export function computeMovePlan(windowTabs, groups) {
     }
   }
   // Unpinned tabs not covered by any group keep relative order at the end.
-  for (const t of unpinned) if (!placed.has(t.id)) { order.push(t.id); groupOf.set(t.id, OTHER_LABEL); }
+  for (const t of unpinned)
+    if (!placed.has(t.id)) {
+      order.push(t.id);
+      groupOf.set(t.id, OTHER_LABEL);
+    }
 
   const sim = unpinned.map((t) => t.id);
   const moves = [];
@@ -296,7 +361,9 @@ export function realGroups(groups) {
 /** Labels capped at LABEL_MAX chars; at most MAX_GROUPS groups (largest kept), overflow into "Other". */
 export function capGroups(groups, max = MAX_GROUPS) {
   const isOther = (g) => g.label.trim().toLowerCase() === OTHER_LABEL.toLowerCase();
-  const real = groups.filter((g) => !isOther(g)).map((g) => ({ ...g, label: truncate(g.label.trim(), LABEL_MAX).trim() || 'Group' }));
+  const real = groups
+    .filter((g) => !isOther(g))
+    .map((g) => ({ ...g, label: truncate(g.label.trim(), LABEL_MAX).trim() || 'Group' }));
   let other = groups.filter(isOther).flatMap((g) => g.tabIds);
   let kept = real;
   if (real.length + (other.length ? 1 : 0) > max) {

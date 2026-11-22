@@ -6,10 +6,19 @@
 //   'only-array'     only array moves work; single-id moves are ignored
 //   'hangs'          move() never settles
 export function fakeTabs(spec, mode = 'works') {
-  let tabs = spec.map((t, i) => ({ id: t.id, pinned: !!t.pinned, title: t.title || `T${t.id}`, url: t.url || `https://h${t.id}.com/` , index: i }));
+  let tabs = spec.map((t, i) => ({
+    id: t.id,
+    pinned: !!t.pinned,
+    title: t.title || `T${t.id}`,
+    url: t.url || `https://h${t.id}.com/`,
+    index: i,
+  }));
   const listeners = new Set();
   const calls = [];
-  const reindex = () => tabs.forEach((t, i) => { t.index = i; });
+  const reindex = () =>
+    tabs.forEach((t, i) => {
+      t.index = i;
+    });
   function moveOne(id, index) {
     const from = tabs.findIndex((t) => t.id === id);
     if (from < 0) throw new Error(`No tab with id: ${id}.`);
@@ -23,8 +32,14 @@ export function fakeTabs(spec, mode = 'works') {
   }
   const api = {
     calls,
-    async query() { return tabs.map((t) => ({ ...t })); },
-    async get(id) { const t = tabs.find((x) => x.id === id); if (!t) throw new Error('no tab'); return { ...t }; },
+    async query() {
+      return tabs.map((t) => ({ ...t }));
+    },
+    async get(id) {
+      const t = tabs.find((x) => x.id === id);
+      if (!t) throw new Error('no tab');
+      return { ...t };
+    },
     move(ids, { index }) {
       calls.push({ ids, index });
       if (mode === 'hangs') return new Promise(() => {});

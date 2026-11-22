@@ -14,10 +14,23 @@ const save = (name, tabs, expected) => {
 const vmTabs = (arr) => arr.map((t) => ({ id: t.id, title: t.title, url: `https://${t.host}/` }));
 
 // tabs-8 has no expected file upstream; labels are mine (3 GitHub PRs, 3 Vietnam trip, 2 YouTube music).
-save('vm-8', vmTabs(rd('vm/tabs-8.json')), { 0: 'github', 1: 'github', 2: 'github', 3: 'vietnam', 4: 'vietnam', 5: 'vietnam', 6: 'music', 7: 'music' });
+save('vm-8', vmTabs(rd('vm/tabs-8.json')), {
+  0: 'github',
+  1: 'github',
+  2: 'github',
+  3: 'vietnam',
+  4: 'vietnam',
+  5: 'vietnam',
+  6: 'music',
+  7: 'music',
+});
 save('vm-40', vmTabs(rd('vm/tabs-40.json')), rd('vm/expected-40.json'));
 save('vm-120', vmTabs(rd('vm/tabs-120.json')), rd('vm/expected-120.json'));
-save('haiku-40', rd('haiku/tabs-40.json').map((t) => ({ id: t.id, title: t.title, url: t.url })), rd('haiku/expected-40.json'));
+save(
+  'haiku-40',
+  rd('haiku/tabs-40.json').map((t) => ({ id: t.id, title: t.title, url: t.url })),
+  rd('haiku/expected-40.json'),
+);
 
 // sample-10: ten public browser-extension welcome/help pages plus one GitHub release.
 const sample = [
@@ -32,8 +45,15 @@ const sample = [
   ['Browser Extension Getting Started | Bitwarden', 'bitwarden.com'],
   ['Get Started with Buyhatke Extension | Buyhatke', 'buyhatke.com'],
 ];
-save('sample-10', sample.map(([title, host], i) => ({ id: 100 + i, title, url: `https://${host}/` })), null);
+save(
+  'sample-10',
+  sample.map(([title, host], i) => ({ id: 100 + i, title, url: `https://${host}/` })),
+  null,
+);
 
 const messy = rd('messy-55.json');
-save('messy-55', messy.map(([url, title], i) => ({ id: 500 + i, title, url })),
-  Object.fromEntries(messy.map(([, , topic], i) => [500 + i, topic])));
+save(
+  'messy-55',
+  messy.map(([url, title], i) => ({ id: 500 + i, title, url })),
+  Object.fromEntries(messy.map(([, , topic], i) => [500 + i, topic])),
+);

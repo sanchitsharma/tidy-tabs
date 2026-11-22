@@ -10,7 +10,8 @@ export function validity(groups, tabs) {
 
 /** Majority-topic accuracy over non-stray tabs (same as host-live.test.js / v2 common.py). */
 export function purity(groups, expected) {
-  let pure = 0, total = 0;
+  let pure = 0,
+    total = 0;
   for (const g of groups) {
     const topics = g.tabIds.map((id) => expected[String(id)]).filter((t) => t && t !== 'stray');
     total += topics.length;
@@ -24,13 +25,16 @@ export function purity(groups, expected) {
 /** Per non-stray topic, the share of its tabs in its largest group (inverse purity). */
 export function cohesion(groups, expected) {
   const by = {};
-  groups.forEach((g, gi) => g.tabIds.forEach((id) => {
-    const t = expected[String(id)];
-    if (!t || t === 'stray') return;
-    by[t] ??= {};
-    by[t][gi] = (by[t][gi] || 0) + 1;
-  }));
-  let best = 0, total = 0;
+  groups.forEach((g, gi) =>
+    g.tabIds.forEach((id) => {
+      const t = expected[String(id)];
+      if (!t || t === 'stray') return;
+      by[t] ??= {};
+      by[t][gi] = (by[t][gi] || 0) + 1;
+    }),
+  );
+  let best = 0,
+    total = 0;
   for (const c of Object.values(by)) {
     best += Math.max(...Object.values(c));
     total += Object.values(c).reduce((a, b) => a + b, 0);

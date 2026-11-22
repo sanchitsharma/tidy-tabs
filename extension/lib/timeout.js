@@ -12,7 +12,9 @@ export class TimeoutError extends Error {
 export function withTimeout(promiseOrFn, ms, label = 'call') {
   let timer;
   const p = Promise.resolve().then(() => (typeof promiseOrFn === 'function' ? promiseOrFn() : promiseOrFn));
-  const t = new Promise((_, rej) => { timer = setTimeout(() => rej(new TimeoutError(label, ms)), ms); });
+  const t = new Promise((_, rej) => {
+    timer = setTimeout(() => rej(new TimeoutError(label, ms)), ms);
+  });
   return Promise.race([p, t]).finally(() => clearTimeout(timer));
 }
 

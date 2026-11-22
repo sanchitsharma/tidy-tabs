@@ -11,9 +11,22 @@ import {
 import { probeSettles } from './lib/timeout.js';
 
 const $ = (id) => document.getElementById(id);
-const FIELDS = ['backend', 'claudeModel', 'endpoint', 'model', 'strategy', 'timeoutMs', 'createTabGroups', 'collapseGroups', 'debugLogging', 'notify'];
+const FIELDS = [
+  'backend',
+  'claudeModel',
+  'endpoint',
+  'model',
+  'strategy',
+  'timeoutMs',
+  'createTabGroups',
+  'collapseGroups',
+  'debugLogging',
+  'notify',
+];
 
-function status(msg) { $('status').textContent = msg; }
+function status(msg) {
+  $('status').textContent = msg;
+}
 
 function readForm() {
   const out = {};
@@ -43,7 +56,11 @@ function showClaudeModel(model) {
 
 async function ensureOriginPermission(endpoint) {
   let origin;
-  try { origin = `${new URL(endpoint).origin}/*`; } catch { throw new Error('endpoint is not a valid URL'); }
+  try {
+    origin = `${new URL(endpoint).origin}/*`;
+  } catch {
+    throw new Error('endpoint is not a valid URL');
+  }
   if (await chrome.permissions.contains({ origins: [origin] })) return true;
   return chrome.permissions.request({ origins: [origin] });
 }
@@ -52,7 +69,8 @@ async function init() {
   const s = await loadSettings();
   for (const f of FIELDS) {
     const el = $(f);
-    if (el.type === 'checkbox') el.checked = !!s[f]; else el.value = s[f];
+    if (el.type === 'checkbox') el.checked = !!s[f];
+    else el.value = s[f];
   }
   showClaudeModel(s.claudeModel || DEFAULTS.claudeModel);
   $('installCmd').textContent = HELPER_INSTALL_CMD;
@@ -60,7 +78,12 @@ async function init() {
   const env = {
     userAgent: navigator.userAgent,
     tabGroupsApi: !!(chrome.tabGroups && chrome.tabs.group),
-    tabGroupsSettles: (await probeSettles(() => chrome.tabGroups.query({}), { exists: !!chrome.tabGroups?.query, label: 'tabGroups.query' })).reason,
+    tabGroupsSettles: (
+      await probeSettles(() => chrome.tabGroups.query({}), {
+        exists: !!chrome.tabGroups?.query,
+        label: 'tabGroups.query',
+      })
+    ).reason,
     languageModelApi: typeof globalThis.LanguageModel !== 'undefined',
     languageModelAvailable: await nanoAvailable(),
     notificationsApi: !!chrome.notifications,
@@ -76,7 +99,14 @@ async function showReport() {
   while (table.rows.length > 1) table.deleteRow(1);
   for (const r of recentRuns) {
     const tr = table.insertRow();
-    const cells = [new Date(r.at).toLocaleString(), r.status, r.backend || '', r.winner || '—', String(r.errors), r.summary || ''];
+    const cells = [
+      new Date(r.at).toLocaleString(),
+      r.status,
+      r.backend || '',
+      r.winner || '—',
+      String(r.errors),
+      r.summary || '',
+    ];
     cells.forEach((v, i) => {
       const td = tr.insertCell();
       td.textContent = v;
@@ -96,7 +126,9 @@ $('save').addEventListener('click', async () => {
     }
     await saveSettings(s);
     status('Saved.');
-  } catch (e) { status(`Error: ${e.message}`); }
+  } catch (e) {
+    status(`Error: ${e.message}`);
+  }
 });
 
 $('test').addEventListener('click', async () => {
@@ -107,7 +139,9 @@ $('test').addEventListener('click', async () => {
     try {
       const r = await chromeNativeSend(NATIVE_HOST, { type: 'ping' });
       const ms = Math.round(performance.now() - t0);
-      return status(r?.ok ? `Native host OK in ${ms} ms (v${r.version}, claude: ${r.claudeBin})` : `Host error: ${r?.error}`);
+      return status(
+        r?.ok ? `Native host OK in ${ms} ms (v${r.version}, claude: ${r.claudeBin})` : `Host error: ${r?.error}`,
+      );
     } catch (e) {
       return status(
         isHelperMissing(e.message)
@@ -122,8 +156,12 @@ $('test').addEventListener('click', async () => {
     const json = await res.json();
     const names = (json.models || []).map((m) => m.name);
     const ms = Math.round(performance.now() - t0);
-    status(`OK in ${ms} ms. Models: ${names.join(', ') || 'none'}${names.includes(model) ? '' : ` (warning: ${model} not pulled)`}`);
-  } catch (e) { status(`Unreachable: ${e.message}`); }
+    status(
+      `OK in ${ms} ms. Models: ${names.join(', ') || 'none'}${names.includes(model) ? '' : ` (warning: ${model} not pulled)`}`,
+    );
+  } catch (e) {
+    status(`Unreachable: ${e.message}`);
+  }
 });
 
 $('run').addEventListener('click', async () => {

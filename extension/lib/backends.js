@@ -78,7 +78,11 @@ export async function runCluster(tabs, settings, deps = {}) {
     chat = claudeChat({ model: settings.claudeModel, signal, deadline, send: deps.nativeSend || chromeNativeSend });
     label = `claude:${settings.claudeModel || 'haiku'}`;
   } else if (backendName === 'gemini-nano') {
-    chat = (await nanoAvailable()) ? nanoChat(signal) : async () => { throw new Error('LanguageModel API unavailable'); };
+    chat = (await nanoAvailable())
+      ? nanoChat(signal)
+      : async () => {
+          throw new Error('LanguageModel API unavailable');
+        };
     label = 'gemini-nano';
   } else {
     chat = ollamaChat({ endpoint: settings.endpoint, model: settings.model, signal, fetchImpl: deps.fetchImpl });

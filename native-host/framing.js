@@ -29,6 +29,8 @@ export function createDecoder() {
       }
       return out;
     },
-    get pending() { return buf.length; },
+    get pending() {
+      return buf.length;
+    },
   };
 }

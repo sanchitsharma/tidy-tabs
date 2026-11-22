@@ -32,5 +32,9 @@ export function purity(groups) {
 
 export function summarize(groups) {
   const topicOf = new Map(tabs.map((t) => [t.id, t.topic]));
-  return groups.map((g) => ({ label: g.label, n: g.tabIds.length, topics: [...new Set(g.tabIds.map((id) => topicOf.get(id)))] }));
+  return groups.map((g) => ({
+    label: g.label,
+    n: g.tabIds.length,
+    topics: [...new Set(g.tabIds.map((id) => topicOf.get(id)))],
+  }));
 }

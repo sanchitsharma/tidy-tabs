@@ -1,82 +1,258 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tidy Tabs AI</title>
-<style>
-  :root { color-scheme: light dark; --fg:#1f2328; --muted:#656d76; --bg:#ffffff; --card:#f6f8fa; --border:#d0d7de;
-    --accent:#2563eb; --ok:#16a34a; --warn:#d97706; --err:#dc2626; --errbg:#fef2f2; }
-  @media (prefers-color-scheme: dark) { :root { --fg:#e6edf3; --muted:#9198a1; --bg:#0d1117; --card:#161b22; --border:#30363d;
-    --accent:#60a5fa; --errbg:#2a1215; } }
-  body { font: 13px/1.45 system-ui, -apple-system, sans-serif; color: var(--fg); background: var(--bg); width: 440px; margin: 0; padding: 12px; }
-  header { display: flex; align-items: center; gap: 8px; }
-  h1 { font-size: 15px; margin: 0; flex: 1; }
-  button { padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--card); color: var(--fg); cursor: pointer; }
-  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
-  button:disabled { opacity: .5; cursor: default; }
-  #status { margin: 10px 0 6px; padding: 8px; border-radius: 6px; background: var(--card); border-left: 4px solid var(--muted); }
-  #status.verified { border-color: var(--ok); } #status.moves-failed { border-color: var(--warn); }
-  #status.backend-failed, #status.error { border-color: var(--err); }
-  #progress { color: var(--muted); font-size: 12px; margin: 0; padding-left: 18px; max-height: 110px; overflow: auto; }
-  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 12px 0 4px; }
-  .group { margin: 4px 0 8px; } .group b { display: block; }
-  .group ul { margin: 2px 0 0; padding-left: 16px; } .group li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .host { color: var(--muted); }
-  #errors { display: none; background: var(--errbg); border: 1px solid var(--err); border-radius: 6px; padding: 8px; margin-top: 10px; }
-  #errors h2 { color: var(--err); margin-top: 0; }
-  #errors ul { margin: 0 0 6px; padding-left: 16px; } #errors li { word-break: break-word; } #errors li.hint { font-weight: 600; list-style: none; margin-left: -16px; }
-  table { border-collapse: collapse; width: 100%; font-size: 11px; margin: 4px 0; }
-  th, td { border: 1px solid var(--border); padding: 2px 4px; text-align: left; }
-  pre { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 6px; font-size: 11px; white-space: pre-wrap; word-break: break-word; max-height: 160px; overflow: auto; margin: 4px 0; }
-  footer { display: flex; gap: 8px; margin-top: 10px; align-items: center; } #copied { color: var(--muted); font-size: 12px; }
-  #setup { margin: 10px 0 4px; padding: 10px; border-radius: 6px; background: var(--card); border: 1px solid var(--accent); }
-  #setup h2 { margin-top: 0; color: var(--accent); }
-  #setup p { margin: 4px 0; }
-  #setup code { display: block; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 6px;
-    font-size: 11px; word-break: break-all; margin: 6px 0; user-select: all; }
-  #setup .row { display: flex; gap: 8px; align-items: center; }
-  #setup a { color: var(--accent); }
-</style>
-</head>
-<body>
-<header>
-  <h1>Tidy Tabs AI</h1>
-  <button id="tidy" class="primary">Tidy now</button>
-</header>
-<section id="setup" hidden>
-  <h2>Set up the Claude helper</h2>
-  <p>Tidy Tabs AI uses Claude through Claude Code on this computer, via a small helper. Install it once
-    (macOS or Linux; needs Claude Code logged in and Node 18+), then fully quit and reopen the browser:</p>
-  <code id="setupCmd"></code>
-  <div class="row">
-    <button id="copyCmd">Copy command</button>
-    <a id="setupGuide" target="_blank" rel="noopener">Setup guide</a>
-    <span id="cmdCopied" class="host"></span>
-  </div>
-  <p class="host">No Claude Code? Choose Ollama or Gemini Nano in Options. Until then, Tidy now groups by website.</p>
-</section>
-<div id="status">No run yet.</div>
-<ol id="progress"></ol>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tidy Tabs AI</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --fg: #1f2328;
+        --muted: #656d76;
+        --bg: #ffffff;
+        --card: #f6f8fa;
+        --border: #d0d7de;
+        --accent: #2563eb;
+        --ok: #16a34a;
+        --warn: #d97706;
+        --err: #dc2626;
+        --errbg: #fef2f2;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --fg: #e6edf3;
+          --muted: #9198a1;
+          --bg: #0d1117;
+          --card: #161b22;
+          --border: #30363d;
+          --accent: #60a5fa;
+          --errbg: #2a1215;
+        }
+      }
+      body {
+        font:
+          13px/1.45 system-ui,
+          -apple-system,
+          sans-serif;
+        color: var(--fg);
+        background: var(--bg);
+        width: 440px;
+        margin: 0;
+        padding: 12px;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      h1 {
+        font-size: 15px;
+        margin: 0;
+        flex: 1;
+      }
+      button {
+        padding: 5px 12px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--fg);
+        cursor: pointer;
+      }
+      button.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+        font-weight: 600;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+      #status {
+        margin: 10px 0 6px;
+        padding: 8px;
+        border-radius: 6px;
+        background: var(--card);
+        border-left: 4px solid var(--muted);
+      }
+      #status.verified {
+        border-color: var(--ok);
+      }
+      #status.moves-failed {
+        border-color: var(--warn);
+      }
+      #status.backend-failed,
+      #status.error {
+        border-color: var(--err);
+      }
+      #progress {
+        color: var(--muted);
+        font-size: 12px;
+        margin: 0;
+        padding-left: 18px;
+        max-height: 110px;
+        overflow: auto;
+      }
+      h2 {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--muted);
+        margin: 12px 0 4px;
+      }
+      .group {
+        margin: 4px 0 8px;
+      }
+      .group b {
+        display: block;
+      }
+      .group ul {
+        margin: 2px 0 0;
+        padding-left: 16px;
+      }
+      .group li {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .host {
+        color: var(--muted);
+      }
+      #errors {
+        display: none;
+        background: var(--errbg);
+        border: 1px solid var(--err);
+        border-radius: 6px;
+        padding: 8px;
+        margin-top: 10px;
+      }
+      #errors h2 {
+        color: var(--err);
+        margin-top: 0;
+      }
+      #errors ul {
+        margin: 0 0 6px;
+        padding-left: 16px;
+      }
+      #errors li {
+        word-break: break-word;
+      }
+      #errors li.hint {
+        font-weight: 600;
+        list-style: none;
+        margin-left: -16px;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 11px;
+        margin: 4px 0;
+      }
+      th,
+      td {
+        border: 1px solid var(--border);
+        padding: 2px 4px;
+        text-align: left;
+      }
+      pre {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 6px;
+        font-size: 11px;
+        white-space: pre-wrap;
+        word-break: break-word;
+        max-height: 160px;
+        overflow: auto;
+        margin: 4px 0;
+      }
+      footer {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+        align-items: center;
+      }
+      #copied {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      #setup {
+        margin: 10px 0 4px;
+        padding: 10px;
+        border-radius: 6px;
+        background: var(--card);
+        border: 1px solid var(--accent);
+      }
+      #setup h2 {
+        margin-top: 0;
+        color: var(--accent);
+      }
+      #setup p {
+        margin: 4px 0;
+      }
+      #setup code {
+        display: block;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 6px;
+        font-size: 11px;
+        word-break: break-all;
+        margin: 6px 0;
+        user-select: all;
+      }
+      #setup .row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      #setup a {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Tidy Tabs AI</h1>
+      <button id="tidy" class="primary">Tidy now</button>
+    </header>
+    <section id="setup" hidden>
+      <h2>Set up the Claude helper</h2>
+      <p>
+        Tidy Tabs AI uses Claude through Claude Code on this computer, via a small helper. Install it once (macOS or
+        Linux; needs Claude Code logged in and Node 18+), then fully quit and reopen the browser:
+      </p>
+      <code id="setupCmd"></code>
+      <div class="row">
+        <button id="copyCmd">Copy command</button>
+        <a id="setupGuide" target="_blank" rel="noopener">Setup guide</a>
+        <span id="cmdCopied" class="host"></span>
+      </div>
+      <p class="host">
+        No Claude Code? Choose Ollama or Gemini Nano in Options. Until then, Tidy now groups by website.
+      </p>
+    </section>
+    <div id="status">No run yet.</div>
+    <ol id="progress"></ol>
 
-<div id="errors">
-  <h2>Errors</h2>
-  <ul id="errorList"></ul>
-  <div id="strategies"></div>
-  <h2>Environment</h2>
-  <pre id="envBox"></pre>
-</div>
+    <div id="errors">
+      <h2>Errors</h2>
+      <ul id="errorList"></ul>
+      <div id="strategies"></div>
+      <h2>Environment</h2>
+      <pre id="envBox"></pre>
+    </div>
 
-<h2>Groups</h2>
-<div id="groups"><span class="host">Run a tidy to see groups.</span></div>
+    <h2>Groups</h2>
+    <div id="groups"><span class="host">Run a tidy to see groups.</span></div>
 
-<footer>
-  <button id="copy">Copy diagnostics</button>
-  <button id="options">Options</button>
-  <span id="copied"></span>
-</footer>
-<script src="dev-reload.js"></script>
-<script src="build-badge.js"></script>
-<script type="module" src="popup.js"></script>
-</body>
+    <footer>
+      <button id="copy">Copy diagnostics</button>
+      <button id="options">Options</button>
+      <span id="copied"></span>
+    </footer>
+    <script src="dev-reload.js"></script>
+    <script src="build-badge.js"></script>
+    <script type="module" src="popup.js"></script>
+  </body>
 </html>

@@ -10,8 +10,10 @@ import { withTimeout, probeSettles, TimeoutError } from '../lib/timeout.js';
 
 const mk = (id, url, title) => ({ id, url, title, pinned: false });
 const tabs = [
-  mk(7, 'https://github.com/a/pull/1', 'PR 1'), mk(8, 'https://mail.google.com/', 'Inbox'),
-  mk(9, 'https://github.com/a/pull/2', 'PR 2'), mk(10, 'https://mail.google.com/x', 'Re: hi'),
+  mk(7, 'https://github.com/a/pull/1', 'PR 1'),
+  mk(8, 'https://mail.google.com/', 'Inbox'),
+  mk(9, 'https://github.com/a/pull/2', 'PR 2'),
+  mk(10, 'https://mail.google.com/x', 'Re: hi'),
 ];
 const ok = (obj) => ({ ok: true, content: JSON.stringify(obj), model: 'claude-haiku-5-5', timing: { totalMs: 5 } });
 
@@ -37,12 +39,16 @@ test('isHelperMissing recognises Chrome\'s "not installed / not allowed" errors 
   assert.equal(isHelperMissing('Access to the specified native messaging host is forbidden.'), true);
   assert.equal(isHelperMissing('claude host: claude error (error_max_turns)'), false);
   assert.equal(isHelperMissing(undefined), false);
-  for (const ok of ['haiku', 'sonnet', 'opus', 'claude-sonnet-4-5', 'claude-opus-4-1[1m]']) assert.match(ok, CLAUDE_MODEL_RE);
+  for (const ok of ['haiku', 'sonnet', 'opus', 'claude-sonnet-4-5', 'claude-opus-4-1[1m]'])
+    assert.match(ok, CLAUDE_MODEL_RE);
   for (const bad of ['', '-p', '--model=x', 'a b', 'x'.repeat(65)]) assert.doesNotMatch(bad, CLAUDE_MODEL_RE);
 });
 
 test('parseNativeResponse: ok, error, empty, missing', () => {
-  assert.deepEqual(parseNativeResponse(ok({ a: 1 })), { content: '{"a":1}', timing: { totalMs: 5, model: 'claude-haiku-5-5' } });
+  assert.deepEqual(parseNativeResponse(ok({ a: 1 })), {
+    content: '{"a":1}',
+    timing: { totalMs: 5, model: 'claude-haiku-5-5' },
+  });
   assert.throws(() => parseNativeResponse({ ok: false, error: 'boom' }), /claude host: boom/);
   assert.throws(() => parseNativeResponse({ ok: true, content: '' }), /empty content/);
   assert.throws(() => parseNativeResponse(undefined), /helper installed/);
@@ -52,7 +58,12 @@ test('runCluster default (Claude, auto -> single call) sends one native message'
   const sent = [];
   const nativeSend = async (host, msg) => {
     sent.push({ host, msg });
-    return ok({ groups: [{ label: 'Code', tabIds: [0, 2] }, { label: 'Mail', tabIds: [1, 3] }] });
+    return ok({
+      groups: [
+        { label: 'Code', tabIds: [0, 2] },
+        { label: 'Mail', tabIds: [1, 3] },
+      ],
+    });
   };
   const res = await runCluster(tabs, { ...DEFAULTS }, { nativeSend });
   assert.equal(sent.length, 1);
@@ -63,7 +74,10 @@ test('runCluster default (Claude, auto -> single call) sends one native message'
   assert.match(sent[0].msg.user, /^Tabs:\n0\|github\.com\|PR 1/);
   assert.equal(res.backend, 'claude:haiku');
   assert.equal(res.strategy, 'single-pass');
-  assert.deepEqual(res.groups, [{ label: 'Code', tabIds: [7, 9] }, { label: 'Mail', tabIds: [8, 10] }]);
+  assert.deepEqual(res.groups, [
+    { label: 'Code', tabIds: [7, 9] },
+    { label: 'Mail', tabIds: [8, 10] },
+  ]);
 });
 
 test('Claude works with two-pass too', async () => {
@@ -72,18 +86,30 @@ test('Claude works with two-pass too', async () => {
     schemas.push(msg.schema);
     return schemas.length === 1
       ? ok({ labels: ['Code', 'Mail'] })
-      : ok({ assignments: [{ id: 0, group: 'Code' }, { id: 1, group: 'Mail' }, { id: 2, group: 'Code' }, { id: 3, group: 'Mail' }] });
+      : ok({
+          assignments: [
+            { id: 0, group: 'Code' },
+            { id: 1, group: 'Mail' },
+            { id: 2, group: 'Code' },
+            { id: 3, group: 'Mail' },
+          ],
+        });
   };
   const res = await runCluster(tabs, { ...DEFAULTS, strategy: 'two-pass' }, { nativeSend });
   assert.equal(schemas.length, 2);
   assert.deepEqual(schemas[0], LABELS_SCHEMA);
   assert.deepEqual(schemas[1].properties.assignments.items.properties.group.enum, ['Code', 'Mail', 'Other']);
   assert.equal(res.fallback, false);
-  assert.deepEqual(res.groups.map((g) => g.label), ['Code', 'Mail']);
+  assert.deepEqual(
+    res.groups.map((g) => g.label),
+    ['Code', 'Mail'],
+  );
 });
 
 test('host missing -> domain fallback', async () => {
-  const nativeSend = async () => { throw new Error('native messaging: Specified native messaging host not found.'); };
+  const nativeSend = async () => {
+    throw new Error('native messaging: Specified native messaging host not found.');
+  };
   const res = await runCluster(tabs, { ...DEFAULTS }, { nativeSend });
   assert.equal(res.fallback, true);
   assert.equal(res.backend, 'domain-fallback');
@@ -110,7 +136,12 @@ test('withTimeout: resolves, rejects passthrough, times out on a never-settling 
   assert.equal(await withTimeout(Promise.resolve(3), 50), 3);
   assert.equal(await withTimeout(() => Promise.resolve(4), 50), 4);
   await assert.rejects(withTimeout(Promise.reject(new Error('nope')), 50), /nope/);
-  await assert.rejects(withTimeout(() => { throw new Error('sync'); }, 50), /sync/);
+  await assert.rejects(
+    withTimeout(() => {
+      throw new Error('sync');
+    }, 50),
+    /sync/,
+  );
   const t0 = Date.now();
   await assert.rejects(withTimeout(new Promise(() => {}), 30, 'tabs.group'), (e) => {
     assert.ok(e instanceof TimeoutError);
@@ -121,10 +152,26 @@ test('withTimeout: resolves, rejects passthrough, times out on a never-settling 
 });
 
 test('probeSettles: resolves, hangs (stubbed API), missing API, throwing API', async () => {
-  assert.deepEqual(await probeSettles(() => Promise.resolve([]), { ms: 30, label: 'q' }), { usable: true, reason: 'q: resolved' });
-  assert.deepEqual(await probeSettles(() => new Promise(() => {}), { ms: 30, label: 'q' }), { usable: false, reason: 'q: hangs' });
+  assert.deepEqual(await probeSettles(() => Promise.resolve([]), { ms: 30, label: 'q' }), {
+    usable: true,
+    reason: 'q: resolved',
+  });
+  assert.deepEqual(await probeSettles(() => new Promise(() => {}), { ms: 30, label: 'q' }), {
+    usable: false,
+    reason: 'q: hangs',
+  });
   let called = false;
-  assert.equal((await probeSettles(() => { called = true; }, { exists: false })).usable, false);
+  assert.equal(
+    (
+      await probeSettles(
+        () => {
+          called = true;
+        },
+        { exists: false },
+      )
+    ).usable,
+    false,
+  );
   assert.equal(called, false);
   assert.match((await probeSettles(() => Promise.reject(new Error('x')), { ms: 30, label: 'q' })).reason, /q: x/);
 });

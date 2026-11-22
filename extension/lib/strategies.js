@@ -2,7 +2,12 @@
 // Pure: no chrome.*, no fetch. Backends (Ollama, Gemini Nano) supply `chat`.
 import { GROUPS_SCHEMA, buildPrompt, checkSchema, repairGroups, groupByDomain } from './core.js';
 import {
-  LABELS_SCHEMA, assignSchema, buildLabelsPrompt, buildAssignPrompt, normalizeLabels, assignmentsToGroups,
+  LABELS_SCHEMA,
+  assignSchema,
+  buildLabelsPrompt,
+  buildAssignPrompt,
+  normalizeLabels,
+  assignmentsToGroups,
 } from './two-pass.js';
 
 export const STRATEGIES = ['two-pass', 'single-pass'];

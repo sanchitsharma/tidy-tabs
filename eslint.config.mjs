@@ -20,7 +20,14 @@ export default [
   },
   {
     // Node-side code: the native host, unit tests, e2e tests, benchmark and scripts.
-    files: ['native-host/**/*.js', '**/test/**/*.js', 'extension/test-support/**/*.js', 'tests/**/*.mjs', 'bench/**/*.mjs', 'scripts/**/*.mjs'],
+    files: [
+      'native-host/**/*.js',
+      '**/test/**/*.js',
+      'extension/test-support/**/*.js',
+      'tests/**/*.mjs',
+      'bench/**/*.mjs',
+      'scripts/**/*.mjs',
+    ],
     languageOptions: { globals: { ...globals.node } },
   },
   { ignores: ['node_modules/**', 'dist/**', 'bench/runs/**', 'bench/snapshot/**', '**/fixtures/**'] },

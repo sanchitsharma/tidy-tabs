@@ -19,7 +19,10 @@ test('manifest: localhost-only host permissions, optional for custom endpoints, 
 });
 
 test('capGroups: labels <= 40 chars, at most 8 groups, smallest overflow into Other', () => {
-  const groups = Array.from({ length: 10 }, (_, i) => ({ label: `G${i}`, tabIds: Array.from({ length: 10 - i }, (_, k) => i * 100 + k) }));
+  const groups = Array.from({ length: 10 }, (_, i) => ({
+    label: `G${i}`,
+    tabIds: Array.from({ length: 10 - i }, (_, k) => i * 100 + k),
+  }));
   groups[0].label = 'x'.repeat(100);
   const out = capGroups(groups);
   assert.equal(out.length, MAX_GROUPS);
@@ -33,22 +36,43 @@ test('capGroups: labels <= 40 chars, at most 8 groups, smallest overflow into Ot
 test('every repair path is capped (single-pass, two-pass, domain fallback)', () => {
   const n = 24;
   const idMap = Array.from({ length: n }, (_, i) => 1000 + i);
-  const single = repairGroups({ groups: Array.from({ length: 12 }, (_, i) => ({ label: `Label ${i} `.repeat(8), tabIds: [2 * i, 2 * i + 1] })) }, idMap);
+  const single = repairGroups(
+    { groups: Array.from({ length: 12 }, (_, i) => ({ label: `Label ${i} `.repeat(8), tabIds: [2 * i, 2 * i + 1] })) },
+    idMap,
+  );
   assert.ok(single.groups.length <= MAX_GROUPS);
   assert.ok(single.groups.every((g) => g.label.length <= LABEL_MAX));
   const labels = Array.from({ length: 12 }, (_, i) => `L${i}`);
-  const two = assignmentsToGroups({ assignments: idMap.map((_, i) => ({ id: i, group: labels[i >> 1] })) }, labels, idMap);
+  const two = assignmentsToGroups(
+    { assignments: idMap.map((_, i) => ({ id: i, group: labels[i >> 1] })) },
+    labels,
+    idMap,
+  );
   assert.ok(two.groups.length <= MAX_GROUPS);
-  assert.equal(normalizeLabels({ labels: ['Supercalifragilisticexpialidocious-and-more-and-more extra words'] })[0].length <= LABEL_MAX, true);
+  assert.equal(
+    normalizeLabels({ labels: ['Supercalifragilisticexpialidocious-and-more-and-more extra words'] })[0].length <=
+      LABEL_MAX,
+    true,
+  );
   const tabs = Array.from({ length: 24 }, (_, i) => ({ id: i, url: `https://site${i >> 1}.com/` }));
   assert.ok(groupByDomain(tabs).length <= MAX_GROUPS);
 });
 
 test('redactRecord: no titles/hosts unless debug; errors, labels, sizes, moves kept', () => {
   const rec = {
-    status: 'moves-failed', errors: [{ where: 'move', message: 'boom' }], counts: { total: 3 },
+    status: 'moves-failed',
+    errors: [{ where: 'move', message: 'boom' }],
+    counts: { total: 3 },
     before: [{ id: 1, title: 'Secret doc', host: 'private.example' }],
-    groups: [{ label: 'Work', tabs: [{ id: 1, title: 'Secret doc', host: 'private.example' }, { id: 2, title: 'x', host: 'y' }] }],
+    groups: [
+      {
+        label: 'Work',
+        tabs: [
+          { id: 1, title: 'Secret doc', host: 'private.example' },
+          { id: 2, title: 'x', host: 'y' },
+        ],
+      },
+    ],
     moves: { verified: false, results: [{ name: 'batch-plan', threw: [{ error: 'boom' }] }] },
   };
   const r = redactRecord(rec, { debugLogging: false });

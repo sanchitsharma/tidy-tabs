@@ -34,9 +34,7 @@ export const ASSIGN_SYSTEM = [
 /** Pass-2 schema: group constrained to labels + Other; exactly n assignments; ids optionally enum'd. */
 export function assignSchema(labels, n, { idEnum = true } = {}) {
   const groupEnum = [...labels.filter((l) => l !== OTHER_LABEL), OTHER_LABEL];
-  const id = idEnum
-    ? { type: 'integer', enum: Array.from({ length: n }, (_, i) => i) }
-    : { type: 'integer' };
+  const id = idEnum ? { type: 'integer', enum: Array.from({ length: n }, (_, i) => i) } : { type: 'integer' };
   return {
     type: 'object',
     properties: {
@@ -67,7 +65,9 @@ export function buildAssignPrompt(lines, labels) {
 
 export function parseJson(raw) {
   if (raw && typeof raw === 'object') return raw;
-  const text = String(raw ?? '').trim().replace(/^```(?:json)?\s*|```$/g, '');
+  const text = String(raw ?? '')
+    .trim()
+    .replace(/^```(?:json)?\s*|```$/g, '');
   const start = text.indexOf('{');
   const end = text.lastIndexOf('}');
   if (start < 0 || end <= start) throw new Error('response is not valid JSON');
@@ -111,8 +111,14 @@ export function assignmentsToGroups(raw, labels, idMap) {
   const stats = { unknown: [], duplicates: [], missing: [], unknownLabels: [] };
   for (const a of Array.isArray(data?.assignments) ? data.assignments : []) {
     const id = toIntId(a?.id);
-    if (id === null || id < 0 || id >= n) { stats.unknown.push(a?.id); continue; }
-    if (groupOfId[id] !== null) { stats.duplicates.push(id); continue; }
+    if (id === null || id < 0 || id >= n) {
+      stats.unknown.push(a?.id);
+      continue;
+    }
+    if (groupOfId[id] !== null) {
+      stats.duplicates.push(id);
+      continue;
+    }
     const g = typeof a.group === 'string' ? a.group.trim() : '';
     let label = canon.get(g.toLowerCase());
     if (!label) {
@@ -121,8 +127,15 @@ export function assignmentsToGroups(raw, labels, idMap) {
     }
     groupOfId[id] = label;
   }
-  for (let i = 0; i < n; i++) if (groupOfId[i] === null) { stats.missing.push(i); groupOfId[i] = OTHER_LABEL; }
-  return { groups: capGroups(orderAndMerge(groupOfId).map((g) => ({ label: g.label, tabIds: g.ids.map((i) => idMap[i]) }))), stats };
+  for (let i = 0; i < n; i++)
+    if (groupOfId[i] === null) {
+      stats.missing.push(i);
+      groupOfId[i] = OTHER_LABEL;
+    }
+  return {
+    groups: capGroups(orderAndMerge(groupOfId).map((g) => ({ label: g.label, tabIds: g.ids.map((i) => idMap[i]) }))),
+    stats,
+  };
 }
 
 /** groupOfId[shortId] = label -> [{label, ids}] in first-appearance order; singletons + Other last. */

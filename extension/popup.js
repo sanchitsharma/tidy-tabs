@@ -25,8 +25,14 @@ function addProgress(step) {
 function renderGroups(rec) {
   const box = $('groups');
   box.replaceChildren();
-  if (rec.noChanges) { box.append(el('span', 'No changes made.', 'host')); return; }
-  if (!rec.groups?.length) { box.append(el('span', rec.status === 'noop' ? 'Nothing to tidy.' : 'No groups.', 'host')); return; }
+  if (rec.noChanges) {
+    box.append(el('span', 'No changes made.', 'host'));
+    return;
+  }
+  if (!rec.groups?.length) {
+    box.append(el('span', rec.status === 'noop' ? 'Nothing to tidy.' : 'No groups.', 'host'));
+    return;
+  }
   for (const g of rec.groups) {
     const d = el('div', null, 'group');
     d.append(el('b', `${g.label} (${g.tabs ? g.tabs.length : g.size})`));
@@ -54,7 +60,16 @@ function renderStrategies(rec) {
   table.append(head);
   for (const r of results) {
     const tr = el('tr');
-    for (const v of [r.name, r.calls, r.threwCount, r.ignored, `${r.onMovedEvents} (missing ${r.onMovedMissing})`, r.verified ? 'yes' : 'NO', r.ms]) tr.append(el('td', String(v)));
+    for (const v of [
+      r.name,
+      r.calls,
+      r.threwCount,
+      r.ignored,
+      `${r.onMovedEvents} (missing ${r.onMovedMissing})`,
+      r.verified ? 'yes' : 'NO',
+      r.ms,
+    ])
+      tr.append(el('td', String(v)));
     table.append(tr);
   }
   box.append(table);
@@ -68,16 +83,32 @@ function render(rec) {
   if (rec.progress?.length && !$('progress').children.length) for (const p of rec.progress) addProgress(p.step);
   renderGroups(rec);
   renderStrategies(rec);
-  const errs = [...(rec.errors || []), ...(rec.swErrors || []).map((e) => ({ where: `sw:${e.where}`, message: e.message }))];
+  const errs = [
+    ...(rec.errors || []),
+    ...(rec.swErrors || []).map((e) => ({ where: `sw:${e.where}`, message: e.message })),
+  ];
   if (rec.moves && !rec.moves.verified) errs.unshift({ where: 'verify', message: rec.moves.message });
   const list = $('errorList');
-  list.replaceChildren(...(rec.hints || []).map((h) => el('li', `→ ${h}`, 'hint')), ...errs.map((e) => el('li', `[${e.where}] ${e.message}`)));
-  if (rec.nativeLog && !rec.nativeLog.ok) list.append(el('li', `[nativeLog] diagnostics file NOT written: ${rec.nativeLog.error}`));
-  const env = { ...(rec.env || statusInfo?.env || {}), counts: rec.counts, tabGroups: rec.tabGroups,
-    backend: rec.backend?.name, attemptedBackend: rec.backend?.attempted, strategy: rec.backend?.strategy,
-    nativeLog: rec.nativeLog };
+  list.replaceChildren(
+    ...(rec.hints || []).map((h) => el('li', `→ ${h}`, 'hint')),
+    ...errs.map((e) => el('li', `[${e.where}] ${e.message}`)),
+  );
+  if (rec.nativeLog && !rec.nativeLog.ok)
+    list.append(el('li', `[nativeLog] diagnostics file NOT written: ${rec.nativeLog.error}`));
+  const env = {
+    ...(rec.env || statusInfo?.env || {}),
+    counts: rec.counts,
+    tabGroups: rec.tabGroups,
+    backend: rec.backend?.name,
+    attemptedBackend: rec.backend?.attempted,
+    strategy: rec.backend?.strategy,
+    nativeLog: rec.nativeLog,
+  };
   $('envBox').textContent = JSON.stringify(env, null, 2);
-  const show = errs.length > 0 || (rec.nativeLog && !rec.nativeLog.ok) || (rec.status && rec.status !== 'verified' && rec.status !== 'noop');
+  const show =
+    errs.length > 0 ||
+    (rec.nativeLog && !rec.nativeLog.ok) ||
+    (rec.status && rec.status !== 'verified' && rec.status !== 'noop');
   $('errors').style.display = show ? 'block' : 'none';
 }
 
@@ -92,7 +123,12 @@ async function tidyNow() {
     if (rec?.status === 'busy') addProgress('another run is in progress; showing it when done');
     else if (rec) render(rec);
   } catch (e) {
-    render({ status: 'error', error: String(e?.message || e), summary: `Popup error: ${e?.message || e}`, errors: [{ where: 'popup', message: String(e) }] });
+    render({
+      status: 'error',
+      error: String(e?.message || e),
+      summary: `Popup error: ${e?.message || e}`,
+      errors: [{ where: 'popup', message: String(e) }],
+    });
   } finally {
     $('tidy').disabled = false;
   }
@@ -100,7 +136,10 @@ async function tidyNow() {
 
 chrome.runtime.onMessage.addListener((msg) => {
   if (msg?.type === 'progress') addProgress(msg.step);
-  if (msg?.type === 'done' && msg.record) { render(msg.record); $('tidy').disabled = false; }
+  if (msg?.type === 'done' && msg.record) {
+    render(msg.record);
+    $('tidy').disabled = false;
+  }
 });
 
 $('tidy').addEventListener('click', tidyNow);
@@ -110,7 +149,9 @@ $('copy').addEventListener('click', async () => {
   try {
     const { lastRunFull } = await chrome.storage.session.get('lastRunFull');
     if (lastRunFull && (!current || lastRunFull.id === current.id)) record = lastRunFull;
-  } catch { /* session storage unavailable: copy what is shown */ }
+  } catch {
+    /* session storage unavailable: copy what is shown */
+  }
   const payload = JSON.stringify({ record, status: statusInfo, popup: { ua: navigator.userAgent } }, null, 2);
   try {
     await navigator.clipboard.writeText(payload);
@@ -151,8 +192,13 @@ checkHelper().catch(() => {});
 (async () => {
   try {
     statusInfo = await chrome.runtime.sendMessage({ type: 'status' });
-    if (statusInfo?.running) { $('status').textContent = 'A run is in progress…'; $('tidy').disabled = true; }
-  } catch { /* service worker starting */ }
+    if (statusInfo?.running) {
+      $('status').textContent = 'A run is in progress…';
+      $('tidy').disabled = true;
+    }
+  } catch {
+    /* service worker starting */
+  }
   const { lastRun } = await chrome.storage.local.get('lastRun');
   if (lastRun) render(lastRun);
 })();
