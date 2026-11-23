@@ -3,11 +3,11 @@
 import { spawn } from 'node:child_process';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, isAbsolute, join } from 'node:path';
 
 export const DEFAULT_MODEL = 'haiku';
 export const DEFAULT_TIMEOUT_MS = 60000;
-const MODEL_RE = /^[A-Za-z0-9][A-Za-z0-9._:[\]-]{0,63}$/; // must not start with '-'
+export const MODEL_RE = /^[A-Za-z0-9][A-Za-z0-9._:[\]-]{0,63}$/; // must not start with '-'
 
 /** Validate an inbound chat request. Returns a normalized request or throws. */
 export function normalizeRequest(msg) {
@@ -48,13 +48,19 @@ export function buildClaudeArgs(req) {
   ];
 }
 
-/** Minimal env: no API key (forces the logged-in subscription), no project/cmux leakage. */
-export function buildEnv(base = process.env) {
+/**
+ * Minimal env: no API key (forces the logged-in subscription), no project/cmux leakage.
+ * `binDirs` (absolute) go in front of the system PATH: the helper passes the folder of the node it
+ * runs on and of the claude binary, so an npm-installed Claude Code (a `#!/usr/bin/env node`
+ * script) finds node under nvm, Homebrew or /usr/local.
+ */
+export function buildEnv(base = process.env, binDirs = []) {
+  const dirs = [...new Set(binDirs.filter((d) => d && isAbsolute(d)))];
   const env = {
     HOME: base.HOME,
     USER: base.USER,
     LOGNAME: base.LOGNAME,
-    PATH: '/usr/bin:/bin:/usr/sbin:/sbin',
+    PATH: [...dirs, '/usr/bin', '/bin', '/usr/sbin', '/sbin'].join(':'),
     LANG: base.LANG || 'en_US.UTF-8',
   };
   if (base.TMPDIR) env.TMPDIR = base.TMPDIR;
@@ -89,7 +95,10 @@ export function mapClaudeResult(stdout, wallMs) {
 }
 
 /** Spawn claude in an empty temp dir; resolves to the mapped response. */
-export function runClaude(req, { claudeBin, env = buildEnv() }) {
+export function runClaude(
+  req,
+  { claudeBin, env = buildEnv(process.env, [dirname(process.execPath), dirname(claudeBin)]) },
+) {
   const cwd = mkdtempSync(join(tmpdir(), 'tidy-tabs-claude-'));
   const t0 = Date.now();
   return new Promise((resolve, reject) => {
@@ -122,6 +131,9 @@ export function runClaude(req, { claudeBin, env = buildEnv() }) {
         }
       }),
     );
+    // If claude exits before reading its input, the write fails with EPIPE. The 'close' handler
+    // reports the exit code; without this listener the error would crash the whole helper.
+    child.stdin.on('error', () => {});
     child.stdin.end(req.user);
   });
 }

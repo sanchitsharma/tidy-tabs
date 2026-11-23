@@ -62,6 +62,11 @@ test('buildEnv drops API keys and other env so the subscription login is used', 
   assert.equal(env.PATH, '/usr/bin:/bin:/usr/sbin:/sbin');
 });
 
+test('buildEnv puts the given absolute bin dirs (deduped) before the system PATH, ignores relative ones', () => {
+  const env = buildEnv({ HOME: '/h' }, ['/opt/node/bin', 'relative/bin', '', '/opt/node/bin', '/home/u/.local/bin']);
+  assert.equal(env.PATH, '/opt/node/bin:/home/u/.local/bin:/usr/bin:/bin:/usr/sbin:/sbin');
+});
+
 test('mapClaudeResult uses structured_output, reports resolved model, errors when absent', () => {
   const ok = JSON.stringify({
     type: 'result',
