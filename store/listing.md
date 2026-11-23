@@ -83,7 +83,7 @@ Shows a notification when a tidy run had to fall back (the model failed) or tabs
 **nativeMessaging:**
 
 ```
-Talks to the optional Tidy Tabs AI helper that the user installs on their own computer (macOS or Linux, documented at https://sanchitsharma.github.io/tidy-tabs/setup.html). The helper runs the user's own Claude Code CLI to group tab titles with the Claude model the user picked, and writes run logs to a local folder. The extension works without it (Ollama, Gemini Nano, or grouping by website).
+Talks to the optional Tidy Tabs AI helper that the user installs on their own computer (macOS or Linux, documented at https://sanchitsharma.github.io/tidy-tabs/setup.html). The helper runs the user's own Claude Code CLI to group tab titles with the Claude model the user picked, and, only if the user turns on "Save run logs to a file", writes run logs to a local folder. The extension works without it (Ollama, Gemini Nano, or grouping by website).
 ```
 
 **Host permission justification:**
