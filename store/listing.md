@@ -111,11 +111,13 @@ Free · Public · All regions.
 
 ## Tab: Test instructions (Additional instructions)
 
+Max 500 characters.
+
 ```
-No account is needed to review the basic flow. The Claude backend needs Claude Code plus a helper installed on macOS or Linux, so reviewers will most likely test without it:
-1. Install the extension and open about 8 tabs where at least two websites have two or more tabs each (e.g. two Wikipedia articles, two GitHub pages, plus a few others).
-2. Click the toolbar icon. Because the Claude helper isn't installed, the popup shows "Set up the Claude helper" with the one-line install command and a setup guide link.
-3. Press "Tidy now": the model is unavailable, so tabs are grouped by website into named tab groups, with an explanation in the popup.
-4. To see AI grouping without Claude: Options → Backend → Gemini Nano (Chrome with built-in AI enabled) or Ollama (with a local Ollama server), Save, then Tidy now.
-Full Claude setup (optional): https://sanchitsharma.github.io/tidy-tabs/setup.html
+No account needed. Claude needs a local helper (macOS/Linux), so test without it:
+1. Open ~8 tabs where 2+ sites have 2+ tabs each (e.g. 2 Wikipedia, 2 GitHub pages).
+2. Click the toolbar icon: the popup shows "Set up the Claude helper" with the install command.
+3. Press "Tidy now": tabs are grouped by website into named tab groups.
+4. AI grouping without Claude: Options > Backend > Gemini Nano or Ollama, Save, Tidy now.
+Setup: https://sanchitsharma.github.io/tidy-tabs/setup.html
 ```
