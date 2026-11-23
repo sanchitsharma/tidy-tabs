@@ -92,6 +92,12 @@ export function hintsFor(rec) {
         'Or pick Ollama / Gemini Nano in Options.',
     );
   }
+  if (/native host has exited|error when communicating with the native messaging host/i.test(msgs)) {
+    hints.push(
+      'The Claude helper started but stopped unexpectedly (for example, Node or Claude Code was moved or upgraded). ' +
+        "Re-run the helper installer, then restart the browser; details are in host-stderr.log in the helper's log folder.",
+    );
+  }
   if (/Access to the specified native messaging host is forbidden/i.test(msgs)) {
     hints.push(
       `The Claude helper is installed, but not for this extension id (${rec.env?.extensionId || '?'}). ` +
@@ -130,11 +136,42 @@ export function errorEntry(where, e) {
  * Privacy: unless debug logging is on, stored history and disk logs keep status, errors, timings,
  * counts, backend, move results and group labels + sizes, but no tab titles or hosts.
  */
+// Error messages that embed the model's reply, which can quote tab titles.
+const REPLY_MARKERS = [
+  /claude output is not JSON:/,
+  /claude returned no structured_output \(result:/,
+  /claude error \([^)]*\):/,
+  /Ollama HTTP \d+:/,
+];
+const REPLY_OMITTED = ' [model reply omitted; enable Debug logging to keep it]';
+
+/** Cut the model-reply part out of an error message, keeping the failure kind and exit code. */
+export function redactReplyText(message) {
+  if (typeof message !== 'string') return message;
+  for (const re of REPLY_MARKERS) {
+    const m = re.exec(message);
+    if (!m) continue;
+    const exit = /\(exit (\d+)/.exec(message.slice(m.index));
+    return message.slice(0, m.index + m[0].length) + REPLY_OMITTED + (exit ? ` (exit ${exit[1]})` : '');
+  }
+  return message;
+}
+
 export function redactRecord(rec, { debugLogging = false } = {}) {
   if (debugLogging) return rec;
   const { before: _before, llm, ...rest } = rec; // titles/hosts in `before` are dropped
+  const reason = rec.backend?.fallbackReason;
+  const safeReason = redactReplyText(reason);
   return {
     ...rest,
+    // Failed model replies can quote tab titles: keep the failure kind, drop the reply text.
+    summary:
+      typeof rec.summary === 'string' && reason && rec.summary.includes(reason)
+        ? rec.summary.split(reason).join(safeReason)
+        : redactReplyText(rec.summary),
+    error: redactReplyText(rec.error),
+    errors: (rec.errors || []).map((e) => ({ ...e, message: redactReplyText(e.message) })),
+    backend: rec.backend ? { ...rec.backend, fallbackReason: safeReason } : rec.backend,
     llm: llm
       ? `${llm.length} model call(s) omitted (Copy diagnostics includes them; or enable Debug logging)`
       : undefined,
