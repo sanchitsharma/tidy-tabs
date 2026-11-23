@@ -12,8 +12,12 @@ import { runHost } from '../test-support/helpers.js';
 const LIVE = process.env.TIDY_CLAUDE_LIVE === '1';
 const RUNS = Number(process.env.TIDY_RUNS || 3);
 const MODEL = process.env.TIDY_CLAUDE_MODEL || 'haiku';
-// install.sh copies the host to Application Support (TCC blocks browser-spawned reads of ~/Documents).
-const WRAPPER = join(homedir(), 'Library/Application Support/tidy-tabs/native-host/tidy-tabs-host');
+// Where install.sh puts the helper: Application Support on macOS (TCC blocks browser-spawned reads of
+// ~/Documents), $XDG_DATA_HOME or ~/.local/share on Linux.
+const WRAPPER =
+  process.platform === 'darwin'
+    ? join(homedir(), 'Library/Application Support/tidy-tabs/native-host/tidy-tabs-host')
+    : join(process.env.XDG_DATA_HOME || join(homedir(), '.local/share'), 'tidy-tabs/native-host/tidy-tabs-host');
 const tabs = JSON.parse(readFileSync(new URL('./fixtures/tabs-40.json', import.meta.url)));
 const expected = JSON.parse(readFileSync(new URL('./fixtures/expected-40.json', import.meta.url)));
 const skip = !LIVE

@@ -10,6 +10,36 @@
 # Nothing is installed system-wide and no sudo is needed. Undo with uninstall.sh.
 set -euo pipefail
 
+usage() {
+  cat <<'USAGE'
+Install the Tidy Tabs AI helper (macOS, Linux).
+  curl -fsSL https://github.com/sanchitsharma/tidy-tabs/releases/latest/download/install.sh | bash
+  ./install.sh [--claude /abs/path/to/claude] [--node /abs/path/to/node] [--extension-id ID]
+With curl | bash, pass options after "bash -s --".
+USAGE
+}
+
+# First real executable named $1: login shells (zsh, bash) first, then this shell's PATH, skipping
+# wrapper shims that live in temp dirs (e.g. cmux).
+resolve() {
+  local name="$1" p
+  while IFS= read -r p; do
+    [[ -z "$p" || "$p" == */cmux-cli-shims/* || "$p" == /var/folders/* || "$p" == /private/var/folders/* ]] && continue
+    [[ -x "$p" ]] && { echo "$p"; return 0; }
+  done < <(
+    {
+      command -v zsh >/dev/null && zsh -lc "whence -ap $name" </dev/null
+      bash -lc "type -ap $name" </dev/null
+      type -ap "$name"
+    } 2>/dev/null
+  )
+  return 1
+}
+
+# Everything runs inside main(), called on the last line, so a cut-off `curl | bash`
+# download runs nothing instead of half a script.
+main() {
+
 HOST_NAME="dev.tidytabs.claude"
 # Chrome Web Store ID of Tidy Tabs AI. extension/manifest.json carries the store's public key, so an
 # unpacked copy of extension/ gets this same ID.
@@ -23,7 +53,7 @@ while [[ $# -gt 0 ]]; do
     --claude) CLAUDE_BIN="$2"; shift 2 ;;
     --node) NODE_BIN="$2"; shift 2 ;;
     --extension-id) EXTRA_IDS+=("$2"); shift 2 ;;
-    -h|--help) sed -n '2,12p' "$0" 2>/dev/null || true; exit 0 ;;
+    -h|--help) usage; exit 0 ;;
     *) echo "unknown arg: $1" >&2; exit 2 ;;
   esac
 done
@@ -76,22 +106,6 @@ else
   [[ -f "$SRC/host.js" ]] || { echo "download did not contain native-host/host.js" >&2; exit 1; }
 fi
 
-# First real executable named $1: login shells (zsh, bash) first, then this shell's PATH, skipping
-# wrapper shims that live in temp dirs (e.g. cmux).
-resolve() {
-  local name="$1" p
-  while IFS= read -r p; do
-    [[ -z "$p" || "$p" == */cmux-cli-shims/* || "$p" == /var/folders/* || "$p" == /private/var/folders/* ]] && continue
-    [[ -x "$p" ]] && { echo "$p"; return 0; }
-  done < <(
-    {
-      command -v zsh >/dev/null && zsh -lc "whence -ap $name"
-      bash -lc "type -ap $name"
-      type -ap "$name"
-    } 2>/dev/null
-  )
-  return 1
-}
 [[ -n "$CLAUDE_BIN" ]] || CLAUDE_BIN="$(resolve claude || true)"
 [[ -n "$CLAUDE_BIN" ]] || { [[ -x "$HOME/.local/bin/claude" ]] && CLAUDE_BIN="$HOME/.local/bin/claude"; } || true
 [[ -n "$NODE_BIN" ]] || NODE_BIN="$(resolve node || true)"
@@ -148,6 +162,12 @@ TIDY_LOG_DIR=$Q_LOGS
 export TIDY_CLAUDE_BIN TIDY_LOG_DIR
 LOGS=\$TIDY_LOG_DIR
 mkdir -p "\$LOGS" 2>/dev/null
+for bin in $Q_NODE "\$TIDY_CLAUDE_BIN"; do
+  if [ ! -x "\$bin" ]; then
+    echo "\$(date -u +%FT%TZ) missing \$bin: node or Claude Code moved (upgrade/uninstall?). Re-run the Tidy Tabs AI installer." >> "\$LOGS/host-stderr.log"
+    exit 1
+  fi
+done
 # Keep the launcher's own logs small: past 1000 lines, keep the last 500.
 for f in "\$LOGS/host-starts.log" "\$LOGS/host-stderr.log"; do
   if [ -f "\$f" ] && [ "\$(wc -l < "\$f")" -gt 1000 ]; then
@@ -180,6 +200,14 @@ for browser_dir in "${BROWSER_DIRS[@]}"; do
   fi
 done
 
+# Sandboxed Linux browsers (snap, Flatpak) can't start helpers outside their sandbox.
+for sandboxed in "$HOME/snap/chromium" "$HOME/snap/brave" "$HOME/.var/app/com.google.Chrome" \
+  "$HOME/.var/app/org.chromium.Chromium" "$HOME/.var/app/com.brave.Browser"; do
+  if [[ -d "$sandboxed" ]]; then
+    echo "note: $sandboxed is a snap/Flatpak browser; it can't run the helper. Use a regular (deb/rpm) install of Chrome, Chromium or Brave."
+  fi
+done
+
 # Arc is no longer supported (macOS): remove only our own manifest there, nothing else.
 ARC_OURS="$HOME/Library/Application Support/Arc/User Data/NativeMessagingHosts/$HOST_NAME.json"
 if [[ -f "$ARC_OURS" ]]; then rm -f "$ARC_OURS"; echo "removed old Arc manifest: $ARC_OURS"; fi
@@ -197,3 +225,6 @@ fi
 echo
 echo "Done. Fully quit and reopen your browser so it picks up the helper,"
 echo "then click the Tidy Tabs AI toolbar icon and press Tidy now."
+}
+
+main "$@"

@@ -19,7 +19,10 @@ mkdirSync(STAGE, { recursive: true });
 const manifest = JSON.parse(readFileSync(join(ROOT, 'extension/manifest.json'), 'utf8'));
 cpSync(join(ROOT, 'extension'), join(STAGE, 'extension'), {
   recursive: true,
-  filter: (src) => !EXCLUDE.has(src.split('/').at(-1)),
+  filter: (src) => {
+    const name = src.split('/').at(-1);
+    return !EXCLUDE.has(name) && !name.startsWith('.'); // no .DS_Store and other dotfiles
+  },
 });
 const storeManifest = { ...manifest };
 delete storeManifest.key;
@@ -64,5 +67,11 @@ const install = readFileSync(join(DIST, 'install.sh'), 'utf8');
 const storeId = /STORE_EXTENSION_ID="([^"]*)"/.exec(install)?.[1];
 console.log(`built ${zip} (${listing.trim().split('\n').length} files, version ${manifest.version})`);
 console.log(`built ${join(DIST, 'native-host.tar.gz')}, install.sh, uninstall.sh`);
-if (!/^[a-p]{32}$/.test(storeId || ''))
-  console.warn(`warning: install.sh STORE_EXTENSION_ID is not set yet (${storeId})`);
+const { extensionIdFromKey } = await import(join(ROOT, 'native-host/extension-id.js'));
+const keyId = manifest.key ? extensionIdFromKey(manifest.key) : null;
+if (!/^[a-p]{32}$/.test(storeId || '')) throw new Error(`install.sh STORE_EXTENSION_ID is not a valid id: ${storeId}`);
+if (keyId !== storeId) {
+  throw new Error(
+    `install.sh STORE_EXTENSION_ID (${storeId}) != id from manifest key (${keyId}); store users' helper would refuse them`,
+  );
+}

@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
-# Remove only what install.sh created: our helper registration in each browser and the helper's
-# runtime folder. Logs are kept; delete the log folder yourself if you want them gone. macOS and Linux.
+# Remove what install.sh created: our helper registration in each browser and the tidy-tabs runtime
+# folder (it holds only the helper). Logs are kept; delete the log folder yourself if you want them
+# gone. macOS and Linux.
 #
 #   curl -fsSL https://github.com/sanchitsharma/tidy-tabs/releases/latest/download/uninstall.sh | bash
 set -euo pipefail
+
+# Runs inside main(), called on the last line, so a cut-off `curl | bash` download runs nothing.
+main() {
 HOST_NAME="dev.tidytabs.claude"
 case "$(uname -s)" in
   Darwin)
@@ -33,3 +37,6 @@ for dir in "${DIRS[@]}"; do
 done
 if [[ -d "$RUNTIME" ]]; then rm -rf "$RUNTIME"; echo "removed: $RUNTIME"; fi
 echo "Logs (if any) remain in $LOG_DIR"
+}
+
+main "$@"

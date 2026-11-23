@@ -11,10 +11,11 @@
   "scripts": {
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write . && eslint --fix .",
-    "test": "npm run test:unit && npm run test:e2e",
+    "test": "npm run test:unit && npm run test:installer && npm run test:e2e",
     "test:unit": "cd extension && node --test && cd ../native-host && node --test",
     "test:e2e": "node --test --test-concurrency=1 tests/e2e/*.test.mjs",
-    "package": "node scripts/package.mjs"
+    "package": "node scripts/package.mjs",
+    "test:installer": "node --test tests/installer.test.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

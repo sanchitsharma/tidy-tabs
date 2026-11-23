@@ -42,7 +42,11 @@ export const SITES = [
  */
 export async function launch({ helper = 'fake', deviceScaleFactor = 1 } = {}) {
   const home = mkdtempSync(join(tmpdir(), 'tidy-e2e-home-'));
-  const profile = join(home, '.config', 'chromium'); // Chromium reads NativeMessagingHosts/ from here
+  // Chromium reads NativeMessagingHosts/ from its profile dir; use the dir install.sh registers in.
+  const profile =
+    process.platform === 'darwin'
+      ? join(home, 'Library', 'Application Support', 'Chromium')
+      : join(home, '.config', 'chromium');
   mkdirSync(profile, { recursive: true });
   const claudeLog = join(home, 'claude-args.jsonl');
 
