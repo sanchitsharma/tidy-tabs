@@ -156,7 +156,13 @@
       <option value="opus">Opus: most capable, slowest, uses the most of your limits</option>
       <option value="custom">Custom model ID…</option>
     </select>
-    <input id="claudeModel" type="text" placeholder="e.g. claude-sonnet-4-5" hidden />
+    <input
+      id="claudeModel"
+      type="text"
+      placeholder="e.g. claude-sonnet-4-5"
+      aria-label="Custom Claude model ID"
+      hidden
+    />
     <p class="hint">Any model your Claude Code CLI accepts: an alias like <code>sonnet</code> or a full model ID.</p>
 
     <h2>Ollama</h2>
@@ -199,6 +205,10 @@
       files)</label
     >
     <label class="check"><input id="notify" type="checkbox" /> Show a notification on fallback or failed moves</label>
+    <label class="check"
+      ><input id="saveLogFile" type="checkbox" /> Save run logs to a file on this computer (needs the Claude
+      helper)</label
+    >
 
     <div>
       <button id="save" class="primary">Save</button>
@@ -225,9 +235,9 @@
     <h2>Last run (full record)</h2>
     <pre id="report">No runs yet.</pre>
     <p class="hint">
-      With the Claude helper installed, the same record is written to <code>last-run.json</code> in the helper's log
-      folder (<code>~/Library/Logs/tidy-tabs</code> on macOS, <code>~/.local/state/tidy-tabs</code> on Linux), and
-      appended to <code>runs.jsonl</code>) by the native host.
+      With <b>Save run logs to a file</b> on, the same record is written to <code>last-run.json</code> in the helper's
+      log folder (<code>~/Library/Logs/tidy-tabs</code> on macOS, <code>~/.local/state/tidy-tabs</code> on Linux), and
+      appended to <code>runs.jsonl</code> by the native host.
     </p>
 
     <script src="dev-reload.js"></script>

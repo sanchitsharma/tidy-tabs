@@ -114,6 +114,24 @@ test('No helper installed: popup shows setup instructions; Tidy falls back to gr
   }
 });
 
+test('"Save run logs to a file" off: no helper log attempt, so no helper error after a tidy', async () => {
+  const b = await launch({ helper: 'none' });
+  try {
+    await openSites(b.ctx);
+    const errorsAfterTidy = async (saveLogFile) => {
+      await b.sw.evaluate((v) => chrome.storage.sync.set({ saveLogFile: v }), saveLogFile);
+      const popup = await tidyFromPopup(b.ctx, b.extId);
+      const text = await popup.textContent('#errorList');
+      await popup.close();
+      return text;
+    };
+    assert.match(await errorsAfterTidy(true), /nativeLog/, 'on: the helper log is attempted (and fails here)');
+    assert.doesNotMatch(await errorsAfterTidy(false), /nativeLog/, 'off: no helper log attempt');
+  } finally {
+    await b.close();
+  }
+});
+
 test('Re-tidy reuses its own groups instead of piling up duplicates', async () => {
   const b = await launch({ helper: 'fake' });
   try {

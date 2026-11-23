@@ -134,7 +134,8 @@
         When you click <strong>Tidy now</strong> (or press the shortcut), it reads the
         <strong>title and web address</strong> of each tab in that window, so it can group and reorder them.
         Browser-internal pages (<code>chrome://</code>, extension pages and similar) are skipped. It does not read page
-        content, form data, cookies, passwords or your browsing history.
+        content, form data, cookies or passwords, and it does not look through your past browsing history: only the tabs
+        open in the window you tidy.
       </p>
       <h2>What is sent, and where</h2>
       <p>
@@ -173,10 +174,9 @@
           the browser closes.
         </li>
         <li>
-          <strong>Log files</strong>, if the Claude helper is installed, in a folder on your computer (<code
-            >~/Library/Logs/tidy-tabs</code
-          >
-          on macOS, <code>~/.local/state/tidy-tabs</code> on Linux), with the same content rules as run history.
+          <strong>Log files</strong>, only if you turn on <strong>Save run logs to a file</strong> in Options (it needs
+          the Claude helper), in a folder on your computer (<code>~/Library/Logs/tidy-tabs</code> on macOS,
+          <code>~/.local/state/tidy-tabs</code> on Linux), with the same content rules as run history.
         </li>
       </ul>
       <h2>What the extension does not do</h2>

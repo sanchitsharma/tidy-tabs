@@ -93,7 +93,7 @@ function render(rec) {
     ...(rec.hints || []).map((h) => el('li', `→ ${h}`, 'hint')),
     ...errs.map((e) => el('li', `[${e.where}] ${e.message}`)),
   );
-  if (rec.nativeLog && !rec.nativeLog.ok)
+  if (rec.nativeLog && !rec.nativeLog.ok && !rec.nativeLog.skipped)
     list.append(el('li', `[nativeLog] diagnostics file NOT written: ${rec.nativeLog.error}`));
   const env = {
     ...(rec.env || statusInfo?.env || {}),
@@ -107,7 +107,7 @@ function render(rec) {
   $('envBox').textContent = JSON.stringify(env, null, 2);
   const show =
     errs.length > 0 ||
-    (rec.nativeLog && !rec.nativeLog.ok) ||
+    (rec.nativeLog && !rec.nativeLog.ok && !rec.nativeLog.skipped) ||
     (rec.status && rec.status !== 'verified' && rec.status !== 'noop');
   $('errors').style.display = show ? 'block' : 'none';
 }

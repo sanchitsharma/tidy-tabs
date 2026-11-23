@@ -2,6 +2,9 @@
 import { DEFAULT_ENDPOINT, DEFAULT_MODEL } from './ollama-request.js';
 import { DEFAULT_CLAUDE_MODEL } from './claude-native.js';
 
+// Store installs have an update_url; unpacked development copies don't.
+const isStoreBuild = typeof chrome !== 'undefined' && !!chrome.runtime?.getManifest?.().update_url;
+
 export const DEFAULTS = {
   endpoint: DEFAULT_ENDPOINT,
   model: DEFAULT_MODEL,
@@ -13,6 +16,9 @@ export const DEFAULTS = {
   createTabGroups: true, // named + colored groups per cluster (Chrome/Dia)
   collapseGroups: false, // collapse the groups after creating them
   notify: true,
+  // Write each run's record to a log file on disk. Needs the Claude helper, so it is off for store
+  // installs (most store users use no helper) and on for unpacked development copies.
+  saveLogFile: !isStoreBuild,
   debugLogging: false, // include tab titles/hosts in stored run history and the disk log
 };
 

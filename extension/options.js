@@ -22,6 +22,7 @@ const FIELDS = [
   'collapseGroups',
   'debugLogging',
   'notify',
+  'saveLogFile',
 ];
 
 function status(msg) {
@@ -39,6 +40,8 @@ function readForm() {
   out.endpoint = out.endpoint.replace(/\/+$/, '');
   const choice = $('claudeModelChoice').value;
   out.claudeModel = choice === 'custom' ? $('claudeModel').value.trim() : choice;
+  // Another backend in use: don't let an unfinished custom Claude ID block saving the rest.
+  if (out.backend !== 'claude-haiku' && !CLAUDE_MODEL_RE.test(out.claudeModel)) out.claudeModel = DEFAULTS.claudeModel;
   return out;
 }
 
@@ -118,7 +121,7 @@ async function showReport() {
 $('save').addEventListener('click', async () => {
   try {
     const s = readForm();
-    if (!CLAUDE_MODEL_RE.test(s.claudeModel)) {
+    if (s.backend === 'claude-haiku' && !CLAUDE_MODEL_RE.test(s.claudeModel)) {
       return status(`"${s.claudeModel}" isn't a valid Claude model ID (letters, digits, . _ : - [ ]; max 64).`);
     }
     if (s.backend === 'ollama' && !(await ensureOriginPermission(s.endpoint))) {

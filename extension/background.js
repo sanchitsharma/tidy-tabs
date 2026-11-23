@@ -90,8 +90,12 @@ async function tidy(windowId, trigger) {
     });
     rec.swErrors = swErrors;
     swErrors = [];
-    rec.nativeLog = await nativeLog(redactRecord(rec, settings));
-    if (!rec.nativeLog.ok) rec.errors.push({ where: 'nativeLog', message: rec.nativeLog.error });
+    if (settings.saveLogFile) {
+      rec.nativeLog = await nativeLog(redactRecord(rec, settings));
+      if (!rec.nativeLog.ok) rec.errors.push({ where: 'nativeLog', message: rec.nativeLog.error });
+    } else {
+      rec.nativeLog = { ok: false, skipped: 'Save run logs to a file is off (Options)' };
+    }
     rec.hints = hintsFor(rec);
     await setBadge(rec.badge, rec.summary);
     if (rec.status === 'moves-failed') notify(settings, 'Tidy Tabs AI: tabs not reordered', rec.summary);

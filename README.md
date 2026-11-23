@@ -83,7 +83,8 @@ Claude (your Claude subscription)  →  {groups:[{label, tabIds}], ungrouped:[�
   `ANTHROPIC_API_KEY`, so your subscription login is used. Model IDs are validated (letters, digits, `. _ : - [ ]`).
 - **Logs keep no titles by default:** run history (last 10) and the helper's log folder (`~/Library/Logs/tidy-tabs`
   on macOS, `~/.local/state/tidy-tabs` on Linux) keep status, errors, timings, counts and group labels. Titles and
-  hosts are stored only with **Debug logging** on. **Copy diagnostics** copies the last run in full from memory only.
+  hosts are stored only with **Debug logging** on. Writing the record to that log folder is the **Save run logs to a
+  file** option (off for store installs). **Copy diagnostics** copies the last run in full from memory only.
 - **Permissions:** `tabs`, `tabGroups`, `storage`, `nativeMessaging`, `notifications`, and host access to
   `http://localhost:11434` only (Ollama). Any other Ollama endpoint is an optional permission you grant when you click
   Save. The extension is disabled in incognito.
@@ -97,6 +98,8 @@ Start with the popup's red error panel, or `last-run.json` in the helper's log f
 - **"The Claude helper isn't installed for this browser"**: run the installer above, then fully quit and reopen the
   browser.
 - **"…installed, but not for this extension id"**: re-run the installer (it allows the store ID).
+- **"The Claude helper started but stopped unexpectedly"**: Node or Claude Code moved (an upgrade, or an nvm version
+  removed). Re-run the installer; it records absolute paths.
 - **Badge `!` / "Browser ignored tab moves"**: `moves.results` shows, per strategy, which calls threw or were ignored.
 - **"Claude unavailable → domain fallback found nothing to group; no changes made"**: the model failed, and no two
   websites had 2+ tabs each.

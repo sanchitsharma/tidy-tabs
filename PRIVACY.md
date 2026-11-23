@@ -9,7 +9,7 @@ the extension. This page explains exactly what the extension reads, where it sen
 
 When you click **Tidy now** (or press the shortcut), it reads the **title and web address** of each tab in that
 window, so it can group and reorder them. Browser-internal pages (`chrome://`, extension pages and similar) are
-skipped. It does not read page content, form data, cookies, passwords or your browsing history.
+skipped. It does not read page content, form data, cookies or passwords, and it does not look through your past browsing history: only the tabs open in the window you tidy.
 
 ## What is sent, and where
 
@@ -32,7 +32,7 @@ Nothing is sent until you start a tidy.
   names. Tab titles and hosts are stored only if you turn on **Debug logging**.
 - **The full last run** (including the titles sent and the model's answer) in memory only (`chrome.storage.session`),
   for the **Copy diagnostics** button. It is cleared when the browser closes.
-- **Log files**, if the Claude helper is installed, in a folder on your computer (`~/Library/Logs/tidy-tabs` on
+- **Log files**, only if you turn on **Save run logs to a file** in Options (it needs the Claude helper), in a folder on your computer (`~/Library/Logs/tidy-tabs` on
   macOS, `~/.local/state/tidy-tabs` on Linux), with the same content rules as run history.
 
 ## What the extension does not do
