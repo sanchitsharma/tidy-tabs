@@ -9,3 +9,4 @@ native-host/test/fixtures
 **/*.md
 *.json
 !package.json
+.gstack

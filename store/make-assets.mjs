@@ -1,5 +1,5 @@
 // Renders store/assets.html into Chrome Web Store images (24-bit PNG, no alpha).
-// Run: node store/capture-popup.mjs && node store/make-assets.mjs
+// Run: node store/capture-ui.mjs && node store/make-assets.mjs
 import { chromium } from 'playwright';
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';

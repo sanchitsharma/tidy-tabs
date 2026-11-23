@@ -30,5 +30,5 @@ export default [
     ],
     languageOptions: { globals: { ...globals.node } },
   },
-  { ignores: ['node_modules/**', 'dist/**', 'bench/runs/**', 'bench/snapshot/**', '**/fixtures/**'] },
+  { ignores: ['node_modules/**', 'dist/**', '.gstack/**', 'bench/runs/**', 'bench/snapshot/**', '**/fixtures/**'] },
 ];
