@@ -27,6 +27,9 @@ CHOOSE YOUR MODEL
 • Gemini Nano: Chrome's built-in model, where available
 Without any model, it groups tabs by website.
 
+YOUR OWN PROMPT
+Rewrite the grouping instructions in Options, e.g. "Keep work and personal tabs apart" or "Label groups in Spanish". Preview the full prompt, or reset to the default any time.
+
 PRIVACY
 Only each tab's title (up to 80 characters) and hostname are sent, and only to the model you choose, when you start a tidy. No server of ours, no analytics, no tracking.
 Privacy policy: https://sanchitsharma.github.io/tidy-tabs/privacy.html
@@ -71,7 +74,7 @@ Creates, names and colors one tab group per task (optionally collapsed), and fin
 **storage:**
 
 ```
-Stores the user's settings (model choice, Ollama endpoint, options) in chrome.storage.sync, a short history of recent runs (status, counts, group names; no tab titles unless the user enables debug logging) in chrome.storage.local, and the last run's full diagnostics in memory-only chrome.storage.session for the "Copy diagnostics" button.
+Stores the user's settings (model choice, Ollama endpoint, optional custom grouping instructions, options) in chrome.storage.sync, a short history of recent runs (status, counts, group names; no tab titles unless the user enables debug logging) in chrome.storage.local, and the last run's full diagnostics in memory-only chrome.storage.session for the "Copy diagnostics" button.
 ```
 
 **notifications:**

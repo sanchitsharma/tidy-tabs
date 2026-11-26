@@ -20,6 +20,7 @@ export const DEFAULTS = {
   // installs (most store users use no helper) and on for unpacked development copies.
   saveLogFile: !isStoreBuild,
   debugLogging: false, // include tab titles/hosts in stored run history and the disk log
+  groupingInstructions: '', // custom "how to group" prompt text; '' = the built-in prompt
 };
 
 export async function loadSettings() {

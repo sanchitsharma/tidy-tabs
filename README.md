@@ -17,6 +17,12 @@ Pick the model in Options:
 - **Ollama**: a local or self-hosted model (`http://localhost:11434` by default, or any endpoint you approve).
 - **Gemini Nano**: Chrome's built-in model, where your Chrome has it.
 
+**Your own prompt:** Options > **Prompt** lets you rewrite the grouping instructions, e.g. "Keep work and personal
+tabs apart" or "Label groups in Spanish". `{groups}` is replaced by the suggested group count for the window and
+`{maxGroups}` by the limit (8). The rules the extension relies on (every tab exactly once, at least 2 tabs per group,
+the JSON reply) are always added, so a custom prompt can't break parsing. **Show full prompt** previews exactly what
+the model gets; **Reset to default** goes back to the built-in, benchmarked prompt.
+
 If the model fails, it falls back to grouping by website, and only when that finds at least 2 real groups.
 
 ## Install

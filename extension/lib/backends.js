@@ -3,6 +3,7 @@
 import { ollamaChat } from './ollama-request.js';
 import { claudeChat } from './claude-native.js';
 import { clusterTabs } from './strategies.js';
+import { normalizeInstructions } from './core.js';
 
 export const BACKENDS = ['claude-haiku', 'ollama', 'gemini-nano'];
 export const DEFAULT_BACKEND = 'claude-haiku';
@@ -101,6 +102,19 @@ export async function runCluster(tabs, settings, deps = {}) {
       throw e;
     }
   };
-  const res = await clusterTabs(tabs, { chat: recorded, strategy, idEnum: settings.idEnum !== false });
-  return { ...res, exchanges, backend: res.fallback ? 'domain-fallback' : label, attemptedBackend: label, strategy };
+  const instructions = normalizeInstructions(settings.groupingInstructions);
+  const res = await clusterTabs(tabs, {
+    chat: recorded,
+    strategy,
+    idEnum: settings.idEnum !== false,
+    instructions,
+  });
+  return {
+    ...res,
+    exchanges,
+    backend: res.fallback ? 'domain-fallback' : label,
+    attemptedBackend: label,
+    strategy,
+    customInstructions: !!instructions,
+  };
 }

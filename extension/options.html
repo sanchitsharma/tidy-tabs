@@ -49,6 +49,7 @@
       }
       input[type='text'],
       input[type='number'],
+      textarea,
       select {
         width: 100%;
         box-sizing: border-box;
@@ -57,6 +58,14 @@
         border-radius: 6px;
         background: var(--card);
         color: var(--fg);
+      }
+      textarea {
+        font:
+          13px/1.45 ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          monospace;
+        resize: vertical;
       }
       .check {
         display: flex;
@@ -193,6 +202,20 @@
       After this, the extension falls back to grouping by domain. Covers both passes. Claude Haiku: ~5–10 s per call.
       CPU Ollama single-pass: 20–40 s for qwen3:1.7b, ~75 s for gemma3:4b.
     </p>
+
+    <h2>Prompt</h2>
+    <label for="groupingInstructions">Grouping instructions</label>
+    <textarea id="groupingInstructions" rows="7" maxlength="2000" spellcheck="true"></textarea>
+    <p class="hint">
+      Tell the model how to group your tabs, e.g. "Keep work and personal tabs apart" or "Label groups in Spanish".
+      <code>{groups}</code> becomes the suggested number of groups for the window (about one per 4 tabs) and
+      <code>{maxGroups}</code> the limit (8). The rules that keep the answer usable (every tab exactly once, at least 2
+      tabs per group, at most 8 groups, the JSON reply) are always added. This text is sent to your chosen model along
+      with the tab titles. <span id="instructionsCount"></span>
+    </p>
+    <button id="resetInstructions">Reset to default</button>
+    <button id="previewPrompt">Show full prompt</button>
+    <pre id="promptPreview" hidden></pre>
 
     <h2>Behavior</h2>
     <label class="check"

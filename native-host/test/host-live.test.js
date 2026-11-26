@@ -97,6 +97,22 @@ test('sample-10 titles (over-split regression), one run', { skip }, async () => 
   assert.equal(groups.flatMap((g) => g.tabIds).length, sample.length);
 });
 
+test('custom grouping instructions change the grouping (Options > Prompt)', { skip }, async () => {
+  const sample = JSON.parse(readFileSync(new URL('../../extension/test/fixtures/sample-10.json', import.meta.url)));
+  const instructions = 'Split the tabs into exactly two groups labelled "Work" and "Personal". Use no other labels.';
+  const prompt = buildPrompt(sample, undefined, instructions);
+  const { reply, wallMs } = await hostChat(prompt, GROUPS_SCHEMA);
+  assert.equal(reply.ok, true, JSON.stringify(reply));
+  const { groups } = repairGroups(reply.content, prompt.idMap);
+  const labels = groups.map((g) => g.label).filter((l) => l !== 'Other');
+  console.log('CUSTOM', JSON.stringify({ wallMs, labels, raw: JSON.parse(reply.content) }));
+  assert.ok(labels.length >= 1, 'at least one group');
+  assert.ok(
+    labels.every((l) => l === 'Work' || l === 'Personal'),
+    `labels follow the instructions: ${labels}`,
+  );
+});
+
 test('claude -p startup overhead (trivial prompt, same flags)', { skip }, async () => {
   const schema = { type: 'object', properties: { ok: { type: 'boolean' } }, required: ['ok'] };
   const runs = [];

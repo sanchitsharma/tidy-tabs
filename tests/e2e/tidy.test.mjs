@@ -77,6 +77,54 @@ test('Model picker: Sonnet, then a custom model ID, are passed to claude', async
   }
 });
 
+test('Prompt: custom grouping instructions reach claude; the default text and Reset keep the built-in prompt', async () => {
+  const b = await launch({ helper: 'fake' });
+  const systemOf = (argv) => argv[argv.indexOf('--system-prompt') + 1];
+  try {
+    const options = await b.ctx.newPage();
+    await options.goto(`chrome-extension://${b.extId}/options.html`);
+    const def = await options.inputValue('#groupingInstructions');
+    assert.match(def, /^Group the tabs by the task/, 'textarea shows the default instructions');
+    assert.match(await options.textContent('#instructionsCount'), /\(default\)/);
+
+    // Saving the untouched default stores '' so the built-in prompt is used.
+    await options.click('#save');
+    await waitFor(async () => (await options.textContent('#status')) === 'Saved.', { msg: 'saved' });
+    assert.equal((await b.sw.evaluate(() => chrome.storage.sync.get('groupingInstructions'))).groupingInstructions, '');
+    await openSites(b.ctx);
+    await tidyFromPopup(b.ctx, b.extId);
+    assert.match(systemOf(b.claudeCalls().at(-1)), /not a product or site/);
+
+    const custom = 'Keep work and personal tabs apart. Label groups in Spanish, about {groups} groups.';
+    await options.fill('#groupingInstructions', custom);
+    assert.match(await options.textContent('#instructionsCount'), /\(custom\)/);
+    await options.click('#previewPrompt');
+    const preview = await options.textContent('#promptPreview');
+    assert.match(preview, /Label groups in Spanish, about 5 groups\./, 'preview fills {groups} for 20 tabs');
+    assert.match(preview, /exactly once/, 'preview shows the fixed rules');
+    await options.click('#save');
+    await waitFor(async () => (await options.textContent('#status')) === 'Saved.', { msg: 'saved custom' });
+    await tidyFromPopup(b.ctx, b.extId);
+    const sys = systemOf(b.claudeCalls().at(-1));
+    assert.match(sys, /Keep work and personal tabs apart\. Label groups in Spanish, about \d groups\./);
+    assert.doesNotMatch(sys, /not a product or site/);
+    assert.match(sys, /Reply with JSON/);
+    const { lastRun } = await b.sw.evaluate(() => chrome.storage.local.get('lastRun'));
+    assert.equal(lastRun.backend.customInstructions, true, 'run record notes custom instructions');
+
+    // Reopening shows the saved text; Reset + Save goes back to the built-in prompt.
+    await options.reload();
+    assert.equal(await options.inputValue('#groupingInstructions'), custom);
+    await options.click('#resetInstructions');
+    assert.equal(await options.inputValue('#groupingInstructions'), def);
+    await options.click('#save');
+    await waitFor(async () => (await options.textContent('#status')) === 'Saved.', { msg: 'saved reset' });
+    assert.equal((await b.sw.evaluate(() => chrome.storage.sync.get('groupingInstructions'))).groupingInstructions, '');
+  } finally {
+    await b.close();
+  }
+});
+
 test('No helper installed: popup shows setup instructions; Tidy falls back to grouping by website', async () => {
   const b = await launch({ helper: 'none' });
   try {

@@ -1,6 +1,6 @@
 # Tidy Tabs AI privacy policy
 
-_Last updated: 22 November 2026_
+_Last updated: 26 November 2026_
 
 Tidy Tabs AI groups the tabs in your browser window by task. The developer runs no server and receives no data from
 the extension. This page explains exactly what the extension reads, where it sends it, and what it keeps.
@@ -14,7 +14,8 @@ skipped. It does not read page content, form data, cookies or passwords, and it 
 ## What is sent, and where
 
 Only each tab's **title (cut to 80 characters) and hostname** (for example `docs.python.org`) are sent, never the full
-web address or page content. Where they go depends on the backend you choose in Options:
+web address or page content. If you write your own **grouping instructions** (Options > Prompt), that text is
+sent along with them. Where they go depends on the backend you choose in Options:
 
 - **Claude (default):** sent to the small helper program on your own computer, which passes them to the Claude Code
   CLI you installed. Claude Code sends them to **Anthropic** under **your own Claude account** to get the grouping
@@ -26,7 +27,7 @@ Nothing is sent until you start a tidy.
 
 ## What is stored
 
-- **Settings** (backend, model, options) in `chrome.storage.sync`. If you use Chrome Sync, Chrome syncs them between
+- **Settings** (backend, model, options, your grouping instructions) in `chrome.storage.sync`. If you use Chrome Sync, Chrome syncs them between
   your own browsers.
 - **Run history** (last 10 runs) in `chrome.storage.local` on your device: status, errors, timings, counts and group
   names. Tab titles and hosts are stored only if you turn on **Debug logging**.

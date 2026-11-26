@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Tidy Tabs AI",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqIaFLBhhSBPsdI5bH7SHASwEH3Ku/HVe/2s86D2l8moIFNAh1SKU5tp18faBmg6XrBEFtRGW9Kl9fhJM3FANBHTuwJO005rIhyojW8GK0dEep0rfpQJsMmkS5AKS0/Ph5OEAPZcajYY7mnY70mIDh3VDFQWoV7LGby1HxfLvDY2LYp5XaZZNg5J+1iOB4CqFzIGagtBZMvy1115GRWMs7egtBiXq4ZO0mkb3pOThVnFqZm836OzIxLAPUFRopDX6S4lVv8FcpnqYPU5Pn9IqW0J2YM6h7iH8JR3gw6uen33HFWJ3nJq0eBKWvJkIMRxz7iWEvIyTbqMpS2etzsCUlQIDAQAB",
   "description": "Groups your tabs by the task you're on into named tab groups with AI: Claude via Claude Code, Ollama, or Chrome's built-in model.",
   "minimum_chrome_version": "116",
@@ -52,6 +52,6 @@
     "http://*/*",
     "https://*/*"
   ],
-  "version_name": "0.3.0",
+  "version_name": "0.4.0",
   "incognito": "not_allowed"
 }

@@ -1,6 +1,16 @@
 // Two-pass clustering, pure logic (no chrome.*, no fetch).
 // Pass 1 proposes labels; pass 2 assigns every tab id to one label via an enum-constrained schema.
-import { OTHER_LABEL, buildTabLines, TITLE_MAX, targetGroups, capGroups, LABEL_MAX, truncate } from './core.js';
+import {
+  OTHER_LABEL,
+  buildTabLines,
+  TITLE_MAX,
+  targetGroups,
+  capGroups,
+  LABEL_MAX,
+  truncate,
+  normalizeInstructions,
+  renderInstructions,
+} from './core.js';
 
 export const LABELS_MIN = 2;
 export const LABELS_MAX = 8;
@@ -24,6 +34,20 @@ export function labelsSystem(n) {
   ].join(' ');
 }
 export const LABELS_SYSTEM = labelsSystem(20);
+
+/** Pass-1 prompt: the built-in one, or the user's grouping instructions plus the fixed rules. */
+export function labelsSystemFor(n, instructions = '') {
+  const custom = normalizeInstructions(instructions);
+  if (!custom) return labelsSystem(n);
+  return [
+    'You tidy a browser window. Propose one short label (at most 3 words) per group of tabs, grouping them',
+    'following these instructions from the user:',
+    renderInstructions(custom, n),
+    `Rules that always apply: at most ${LABELS_MAX} labels. Each label must fit at least 2 tabs. Do not include "Other".`,
+    'Input: one tab per line as id|host|title.',
+    'Reply with JSON: {"labels":[string]}.',
+  ].join('\n');
+}
 
 export const ASSIGN_SYSTEM = [
   'You organize browser tabs. Assign every tab id exactly once to exactly one of the given labels.',
@@ -53,14 +77,18 @@ export function assignSchema(labels, n, { idEnum = true } = {}) {
   };
 }
 
-export function buildLabelsPrompt(tabs, maxTitle = TITLE_MAX) {
+export function buildLabelsPrompt(tabs, maxTitle = TITLE_MAX, instructions = '') {
   const { lines, idMap } = buildTabLines(tabs, maxTitle);
-  return { system: labelsSystem(tabs.length), user: `Tabs:\n${lines.join('\n')}`, idMap, lines };
+  return { system: labelsSystemFor(tabs.length, instructions), user: `Tabs:\n${lines.join('\n')}`, idMap, lines };
 }
 
-export function buildAssignPrompt(lines, labels) {
+export function buildAssignPrompt(lines, labels, instructions = '') {
   const all = [...labels.filter((l) => l !== OTHER_LABEL), OTHER_LABEL];
-  return { system: ASSIGN_SYSTEM, user: `Labels: ${JSON.stringify(all)}\nTabs:\n${lines.join('\n')}` };
+  const custom = normalizeInstructions(instructions);
+  const system = custom
+    ? `${ASSIGN_SYSTEM}\nThe labels were made following these instructions from the user:\n${renderInstructions(custom, lines.length)}`
+    : ASSIGN_SYSTEM;
+  return { system, user: `Labels: ${JSON.stringify(all)}\nTabs:\n${lines.join('\n')}` };
 }
 
 export function parseJson(raw) {

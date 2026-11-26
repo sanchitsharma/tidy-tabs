@@ -1,5 +1,5 @@
 import { DEFAULTS, loadSettings, saveSettings } from './lib/settings.js';
-import { nanoAvailable, chromeNativeSend } from './lib/backends.js';
+import { nanoAvailable, chromeNativeSend, resolveStrategy } from './lib/backends.js';
 import {
   NATIVE_HOST,
   CLAUDE_MODEL_ALIASES,
@@ -9,6 +9,8 @@ import {
   isHelperMissing,
 } from './lib/claude-native.js';
 import { probeSettles } from './lib/timeout.js';
+import { DEFAULT_INSTRUCTIONS, INSTRUCTIONS_MAX, normalizeInstructions, systemPromptFor } from './lib/core.js';
+import { labelsSystemFor } from './lib/two-pass.js';
 
 const $ = (id) => document.getElementById(id);
 const FIELDS = [
@@ -42,7 +44,28 @@ function readForm() {
   out.claudeModel = choice === 'custom' ? $('claudeModel').value.trim() : choice;
   // Another backend in use: don't let an unfinished custom Claude ID block saving the rest.
   if (out.backend !== 'claude-haiku' && !CLAUDE_MODEL_RE.test(out.claudeModel)) out.claudeModel = DEFAULTS.claudeModel;
+  // The default text is stored as '' so future improvements to the built-in prompt still reach you.
+  out.groupingInstructions = normalizeInstructions($('groupingInstructions').value);
   return out;
+}
+
+function syncInstructions() {
+  const text = $('groupingInstructions').value;
+  const custom = !!normalizeInstructions(text);
+  $('instructionsCount').textContent =
+    `${text.length}/${INSTRUCTIONS_MAX} characters${custom ? ' (custom)' : ' (default)'}.`;
+  if (!$('promptPreview').hidden) showPromptPreview();
+}
+
+/** The system prompt the model gets for a 20-tab window with the current text and strategy. */
+function showPromptPreview() {
+  const { backend, strategy } = readForm();
+  const twoPass = resolveStrategy(strategy, backend) === 'two-pass';
+  const text = $('groupingInstructions').value;
+  $('promptPreview').textContent = twoPass
+    ? `Two-pass, pass 1 (labels), for a 20-tab window:\n\n${labelsSystemFor(20, text)}`
+    : `Single-pass, for a 20-tab window:\n\n${systemPromptFor(20, text)}`;
+  $('promptPreview').hidden = false;
 }
 
 /** Show the custom model field only for "Custom model ID…". */
@@ -76,6 +99,8 @@ async function init() {
     else el.value = s[f];
   }
   showClaudeModel(s.claudeModel || DEFAULTS.claudeModel);
+  $('groupingInstructions').value = s.groupingInstructions || DEFAULT_INSTRUCTIONS;
+  syncInstructions();
   $('installCmd').textContent = HELPER_INSTALL_CMD;
   $('setupLink').href = SETUP_URL;
   const env = {
@@ -175,6 +200,19 @@ $('run').addEventListener('click', async () => {
 });
 
 $('claudeModelChoice').addEventListener('change', syncModelChoice);
+$('groupingInstructions').addEventListener('input', syncInstructions);
+$('resetInstructions').addEventListener('click', () => {
+  $('groupingInstructions').value = DEFAULT_INSTRUCTIONS;
+  syncInstructions();
+  status('Default instructions restored. Click Save to keep them.');
+});
+$('previewPrompt').addEventListener('click', () => {
+  if ($('promptPreview').hidden) showPromptPreview();
+  else $('promptPreview').hidden = true;
+  $('previewPrompt').textContent = $('promptPreview').hidden ? 'Show full prompt' : 'Hide full prompt';
+});
+$('strategy').addEventListener('change', () => !$('promptPreview').hidden && showPromptPreview());
+$('backend').addEventListener('change', () => !$('promptPreview').hidden && showPromptPreview());
 
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === 'local' && (changes.lastRun || changes.recentRuns)) showReport();

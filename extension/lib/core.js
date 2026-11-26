@@ -151,9 +151,54 @@ export function systemPrompt(n) {
 
 export const SYSTEM_PROMPT = systemPrompt(20);
 
-export function buildPrompt(tabs, maxTitle = TITLE_MAX) {
+// ---- Custom grouping instructions (Options > Prompt) ----
+// The user can replace the "how to group" part of the prompt. The rules the parser depends on
+// (ids, "ungrouped", input format, JSON reply) are always appended and can't be edited away.
+export const INSTRUCTIONS_MAX = 2000;
+/** What the Options textarea shows by default: the "how to group" sentences of systemPrompt(). */
+export const DEFAULT_INSTRUCTIONS = [
+  'Group the tabs by the task or activity the user is in the middle of:',
+  'one group per thing they are working on, not one group per website, product, or brand.',
+  'Prefer fewer, broader groups: aim for about {groups} groups.',
+  'Labels are at most 3 words and name the task (e.g. "Extension setup", "Vietnam trip", "Code review"),',
+  'not a product or site (not "Password Management", not "GitHub Tools").',
+].join('\n');
+
+/** '' when the text is empty or the default (so the built-in, benchmarked prompt is used). */
+export function normalizeInstructions(text) {
+  const t = String(text ?? '')
+    .replace(/\r\n?/g, '\n')
+    .trim()
+    .slice(0, INSTRUCTIONS_MAX);
+  return t === DEFAULT_INSTRUCTIONS ? '' : t;
+}
+
+/** Fill the {groups} (target count for this window) and {maxGroups} placeholders. */
+export function renderInstructions(text, n) {
+  return String(text)
+    .replaceAll('{groups}', String(targetGroups(n)))
+    .replaceAll('{maxGroups}', String(MAX_GROUPS));
+}
+
+/** System prompt for n tabs: the built-in one, or the user's instructions plus the fixed rules. */
+export function systemPromptFor(n, instructions = '') {
+  const custom = normalizeInstructions(instructions);
+  if (!custom) return systemPrompt(n);
+  return [
+    'You tidy a browser window. Group the tabs following these instructions from the user:',
+    renderInstructions(custom, n),
+    `Rules that always apply: never more than ${MAX_GROUPS} groups.`,
+    'Every group must contain at least 2 tabs. Put tabs that do not fit any group in "ungrouped".',
+    'Every tab id must appear exactly once: in one group or in "ungrouped". Use only the ids given.',
+    'Labels are short (at most 40 characters).',
+    'Input: one tab per line as id|host|title.',
+    'Reply with JSON: {"groups":[{"label":string,"tabIds":[int]}],"ungrouped":[int]}.',
+  ].join('\n');
+}
+
+export function buildPrompt(tabs, maxTitle = TITLE_MAX, instructions = '') {
   const { lines, idMap } = buildTabLines(tabs, maxTitle);
-  return { system: systemPrompt(tabs.length), user: `Tabs:\n${lines.join('\n')}`, idMap };
+  return { system: systemPromptFor(tabs.length, instructions), user: `Tabs:\n${lines.join('\n')}`, idMap };
 }
 
 function parseMaybeJson(raw) {
