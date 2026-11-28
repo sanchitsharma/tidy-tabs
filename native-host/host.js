@@ -4,7 +4,7 @@ import { encodeMessage, createDecoder } from './framing.js';
 import { normalizeRequest, runClaude } from './claude.js';
 import { writeRunLog } from './logfile.js';
 
-export const VERSION = '0.4.0';
+export const VERSION = '0.4.1';
 const claudeBin = process.env.TIDY_CLAUDE_BIN || `${process.env.HOME}/.local/bin/claude`;
 
 function send(obj) {

@@ -284,7 +284,7 @@ test('single-pass strategy still works through clusterTabs', async () => {
 test('two-pass on the 30-tab fixture with a perfect mock covers every tab once', async () => {
   const topics = [...new Set(tabs30.map((t) => t.topic))].slice(0, 8);
   const chat = async (_p, schema) =>
-    schema === LABELS_SCHEMA
+    schema.properties.labels
       ? { content: json({ labels: topics }) }
       : {
           content: json({

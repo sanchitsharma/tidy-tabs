@@ -3,7 +3,7 @@
 import { ollamaChat } from './ollama-request.js';
 import { claudeChat } from './claude-native.js';
 import { clusterTabs } from './strategies.js';
-import { normalizeInstructions } from './core.js';
+import { normalizeInstructions, normalizeLimits } from './core.js';
 
 export const BACKENDS = ['claude-haiku', 'ollama', 'gemini-nano'];
 export const DEFAULT_BACKEND = 'claude-haiku';
@@ -108,6 +108,7 @@ export async function runCluster(tabs, settings, deps = {}) {
     strategy,
     idEnum: settings.idEnum !== false,
     instructions,
+    limits: normalizeLimits(settings),
   });
   return {
     ...res,

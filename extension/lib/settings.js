@@ -21,6 +21,8 @@ export const DEFAULTS = {
   saveLogFile: !isStoreBuild,
   debugLogging: false, // include tab titles/hosts in stored run history and the disk log
   groupingInstructions: '', // custom "how to group" prompt text; '' = the built-in prompt
+  tabsPerGroup: 4, // {groups} = about 1 group per this many tabs
+  maxGroups: 8, // {maxGroups}: the most tab groups a tidy creates (Other included)
 };
 
 export async function loadSettings() {

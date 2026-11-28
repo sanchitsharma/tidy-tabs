@@ -18,8 +18,8 @@ Pick the model in Options:
 - **Gemini Nano**: Chrome's built-in model, where your Chrome has it.
 
 **Your own prompt:** Options > **Prompt** lets you rewrite the grouping instructions, e.g. "Keep work and personal
-tabs apart" or "Label groups in Spanish". `{groups}` is replaced by the suggested group count for the window and
-`{maxGroups}` by the limit (8). The rules the extension relies on (every tab exactly once, at least 2 tabs per group,
+tabs apart" or "Label groups in Spanish". Two numbers set the group count: **about 1 group per N tabs** (default
+4) fills `{groups}`, and **Maximum groups** (default 8, up to 16) fills `{maxGroups}` and caps the result. The rules the extension relies on (every tab exactly once, at least 2 tabs per group,
 the JSON reply) are always added, so a custom prompt can't break parsing. **Show full prompt** previews exactly what
 the model gets; **Reset to default** goes back to the built-in, benchmarked prompt.
 
@@ -67,7 +67,7 @@ Claude (your Claude subscription)  →  {groups:[{label, tabIds}], ungrouped:[�
 - **Strategies:** single-pass for Claude, where one call returns the groups. Two-pass for small local models: first
   propose labels, then assign every tab against a per-run enum schema.
 - **Safety net on every path:** unknown or duplicate ids are dropped; single-tab groups and leftovers go to "Other",
-  which is never made a tab group; labels are capped at 40 chars; at most 8 groups. Browser-internal pages
+  which is never made a tab group; labels are capped at 40 chars; at most 8 groups (the Maximum groups setting). Browser-internal pages
   (`chrome://`, `chrome-extension://`, …) are never sent or grouped. Tabs parked by a suspender extension are grouped
   by their real URL.
 - **Moves are verified:** after reordering, the extension re-reads the window and compares it with the plan,

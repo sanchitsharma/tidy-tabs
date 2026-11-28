@@ -10,24 +10,30 @@ import {
   truncate,
   normalizeInstructions,
   renderInstructions,
+  normalizeLimits,
 } from './core.js';
 
 export const LABELS_MIN = 2;
 export const LABELS_MAX = 8;
 
-export const LABELS_SCHEMA = {
-  type: 'object',
-  properties: {
-    labels: { type: 'array', items: { type: 'string' }, minItems: LABELS_MIN, maxItems: LABELS_MAX },
-  },
-  required: ['labels'],
-};
+/** Pass-1 schema for at most `max` labels (the "Maximum groups" setting). */
+export function labelsSchema(max = LABELS_MAX) {
+  return {
+    type: 'object',
+    properties: {
+      labels: { type: 'array', items: { type: 'string' }, minItems: LABELS_MIN, maxItems: max },
+    },
+    required: ['labels'],
+  };
+}
+export const LABELS_SCHEMA = labelsSchema();
 
-export function labelsSystem(n) {
+export function labelsSystem(n, limits) {
+  const max = normalizeLimits(limits).maxGroups;
   return [
     'You tidy a browser window. Propose short labels (at most 3 words) for the tasks or activities the',
     'user is in the middle of: one label per thing they are working on, not per website, product, or brand.',
-    `Prefer fewer, broader labels: about ${targetGroups(n)}, at most ${LABELS_MAX}. Each label must fit at least 2 tabs.`,
+    `Prefer fewer, broader labels: about ${targetGroups(n, limits)}, at most ${max}. Each label must fit at least 2 tabs.`,
     'Name the task (e.g. "Extension setup", "Vietnam trip"), not a product. Do not include "Other".',
     'Input: one tab per line as id|host|title.',
     'Reply with JSON: {"labels":[string]}.',
@@ -36,14 +42,14 @@ export function labelsSystem(n) {
 export const LABELS_SYSTEM = labelsSystem(20);
 
 /** Pass-1 prompt: the built-in one, or the user's grouping instructions plus the fixed rules. */
-export function labelsSystemFor(n, instructions = '') {
+export function labelsSystemFor(n, instructions = '', limits) {
   const custom = normalizeInstructions(instructions);
-  if (!custom) return labelsSystem(n);
+  if (!custom) return labelsSystem(n, limits);
   return [
     'You tidy a browser window. Propose one short label (at most 3 words) per group of tabs, grouping them',
     'following these instructions from the user:',
-    renderInstructions(custom, n),
-    `Rules that always apply: at most ${LABELS_MAX} labels. Each label must fit at least 2 tabs. Do not include "Other".`,
+    renderInstructions(custom, n, limits),
+    `Rules that always apply: at most ${normalizeLimits(limits).maxGroups} labels. Each label must fit at least 2 tabs. Do not include "Other".`,
     'Input: one tab per line as id|host|title.',
     'Reply with JSON: {"labels":[string]}.',
   ].join('\n');
@@ -77,16 +83,21 @@ export function assignSchema(labels, n, { idEnum = true } = {}) {
   };
 }
 
-export function buildLabelsPrompt(tabs, maxTitle = TITLE_MAX, instructions = '') {
+export function buildLabelsPrompt(tabs, maxTitle = TITLE_MAX, instructions = '', limits) {
   const { lines, idMap } = buildTabLines(tabs, maxTitle);
-  return { system: labelsSystemFor(tabs.length, instructions), user: `Tabs:\n${lines.join('\n')}`, idMap, lines };
+  return {
+    system: labelsSystemFor(tabs.length, instructions, limits),
+    user: `Tabs:\n${lines.join('\n')}`,
+    idMap,
+    lines,
+  };
 }
 
-export function buildAssignPrompt(lines, labels, instructions = '') {
+export function buildAssignPrompt(lines, labels, instructions = '', limits) {
   const all = [...labels.filter((l) => l !== OTHER_LABEL), OTHER_LABEL];
   const custom = normalizeInstructions(instructions);
   const system = custom
-    ? `${ASSIGN_SYSTEM}\nThe labels were made following these instructions from the user:\n${renderInstructions(custom, lines.length)}`
+    ? `${ASSIGN_SYSTEM}\nThe labels were made following these instructions from the user:\n${renderInstructions(custom, lines.length, limits)}`
     : ASSIGN_SYSTEM;
   return { system, user: `Labels: ${JSON.stringify(all)}\nTabs:\n${lines.join('\n')}` };
 }
@@ -103,7 +114,7 @@ export function parseJson(raw) {
 }
 
 /** Trim, drop empties, cap at 3 words, de-dupe case-insensitively, drop "Other", cap count. */
-export function normalizeLabels(raw) {
+export function normalizeLabels(raw, max = LABELS_MAX) {
   const data = parseJson(raw);
   const seen = new Set();
   const out = [];
@@ -116,7 +127,7 @@ export function normalizeLabels(raw) {
     out.push(label);
   }
   if (!out.length) throw new Error('pass 1 returned no usable labels');
-  return out.slice(0, LABELS_MAX);
+  return out.slice(0, max);
 }
 
 function toIntId(v) {
@@ -131,7 +142,7 @@ function toIntId(v) {
  * first appearance of their tabs in the current tab order (short id order), with Other last. Single-tab
  * groups always merge into Other (never a tab group).
  */
-export function assignmentsToGroups(raw, labels, idMap) {
+export function assignmentsToGroups(raw, labels, idMap, maxGroups = LABELS_MAX) {
   const data = parseJson(raw);
   const n = idMap.length;
   const canon = new Map(labels.map((l) => [l.toLowerCase(), l]));
@@ -161,7 +172,10 @@ export function assignmentsToGroups(raw, labels, idMap) {
       groupOfId[i] = OTHER_LABEL;
     }
   return {
-    groups: capGroups(orderAndMerge(groupOfId).map((g) => ({ label: g.label, tabIds: g.ids.map((i) => idMap[i]) }))),
+    groups: capGroups(
+      orderAndMerge(groupOfId).map((g) => ({ label: g.label, tabIds: g.ids.map((i) => idMap[i]) })),
+      maxGroups,
+    ),
     stats,
   };
 }

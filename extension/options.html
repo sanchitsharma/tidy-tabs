@@ -204,14 +204,38 @@
     </p>
 
     <h2>Prompt</h2>
+    <label for="tabsPerGroup">Suggested groups: about 1 group per this many tabs</label>
+    <input id="tabsPerGroup" type="number" min="2" max="20" step="1" />
+    <p class="hint">
+      Sets <code>{groups}</code>. Lower means more, smaller groups; higher means fewer, bigger ones. Default 4 (<span
+        class="groupsExample"
+      ></span
+      >).
+    </p>
+    <label for="maxGroups">Maximum groups</label>
+    <input id="maxGroups" type="number" min="2" max="16" step="1" />
+    <p class="hint">
+      Sets <code>{maxGroups}</code>, and is enforced: if the model returns more, the smallest groups go into "Other".
+      Counts "Other". Default 8, up to 16.
+    </p>
+
     <label for="groupingInstructions">Grouping instructions</label>
     <textarea id="groupingInstructions" rows="7" maxlength="2000" spellcheck="true"></textarea>
+    <p class="hint" id="instructionsCount"></p>
     <p class="hint">
-      Tell the model how to group your tabs, e.g. "Keep work and personal tabs apart" or "Label groups in Spanish".
-      <code>{groups}</code> becomes the suggested number of groups for the window (about one per 4 tabs) and
-      <code>{maxGroups}</code> the limit (8). The rules that keep the answer usable (every tab exactly once, at least 2
-      tabs per group, at most 8 groups, the JSON reply) are always added. This text is sent to your chosen model along
-      with the tab titles. <span id="instructionsCount"></span>
+      Describe how you want your tabs grouped, in plain words. For example: "Keep work and personal tabs apart" or
+      "Label groups in Spanish".
+    </p>
+    <p class="hint">
+      <b>Optional placeholders</b> (filled in each time you tidy, from the two numbers above):<br />
+      <code>{groups}</code> → the suggested number of groups for that window (<span class="groupsExample"></span
+      >).<br />
+      <code>{maxGroups}</code> → the maximum groups: <span class="maxGroupsValue"></span>.
+    </p>
+    <p class="hint">
+      <b>Always added after your text</b>, so tidying keeps working: use every tab once, at least 2 tabs per group, at
+      most <span class="maxGroupsValue"></span> groups, and the reply format. Your text is sent to your chosen model
+      along with the tab titles.
     </p>
     <button id="resetInstructions">Reset to default</button>
     <button id="previewPrompt">Show full prompt</button>

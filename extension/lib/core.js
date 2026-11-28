@@ -3,7 +3,10 @@
 export const TITLE_MAX = 80;
 export const OTHER_LABEL = 'Other';
 export const MIN_GROUPS = 2;
-export const MAX_GROUPS = 8;
+export const MAX_GROUPS = 8; // default for the "Maximum groups" setting
+export const TABS_PER_GROUP = 4; // default for the "About 1 group per N tabs" setting
+export const MAX_GROUPS_RANGE = [2, 16];
+export const TABS_PER_GROUP_RANGE = [2, 20];
 export const LABEL_MAX = 40;
 
 export const GROUPS_SCHEMA = {
@@ -129,17 +132,32 @@ export function buildTabLines(tabs, maxTitle = TITLE_MAX) {
   return { lines, idMap };
 }
 
-/** Target group count: about one group per 4 tabs, between 1 and MAX_GROUPS. */
-export function targetGroups(n) {
-  return Math.max(1, Math.min(MAX_GROUPS, Math.round(n / 4)));
+function clampInt(v, [lo, hi], dflt) {
+  const x = Math.round(Number(v));
+  return Number.isFinite(x) && v !== '' && v !== null ? Math.max(lo, Math.min(hi, x)) : dflt;
+}
+
+/** User group-count settings, clamped: { tabsPerGroup, maxGroups }. */
+export function normalizeLimits({ tabsPerGroup, maxGroups } = {}) {
+  return {
+    tabsPerGroup: clampInt(tabsPerGroup, TABS_PER_GROUP_RANGE, TABS_PER_GROUP),
+    maxGroups: clampInt(maxGroups, MAX_GROUPS_RANGE, MAX_GROUPS),
+  };
+}
+
+/** Target group count: about one group per tabsPerGroup tabs (default 4), between 1 and maxGroups. */
+export function targetGroups(n, limits) {
+  const { tabsPerGroup, maxGroups } = normalizeLimits(limits);
+  return Math.max(1, Math.min(maxGroups, Math.round(n / tabsPerGroup)));
 }
 
 /** Task-oriented clustering prompt (one group per thing the user is in the middle of). */
-export function systemPrompt(n) {
+export function systemPrompt(n, limits) {
+  const { maxGroups } = normalizeLimits(limits);
   return [
     'You tidy a browser window. Group the tabs by the task or activity the user is in the middle of:',
     'one group per thing they are working on, not one group per website, product, or brand.',
-    `Prefer fewer, broader groups: aim for about ${targetGroups(n)} groups, never more than ${MAX_GROUPS}.`,
+    `Prefer fewer, broader groups: aim for about ${targetGroups(n, limits)} groups, never more than ${maxGroups}.`,
     'Every group must contain at least 2 tabs. Put tabs that do not share a task with any other tab in "ungrouped".',
     'Every tab id must appear exactly once: in one group or in "ungrouped". Use only the ids given.',
     'Labels are at most 3 words and name the task (e.g. "Extension setup", "Vietnam trip", "Code review"),',
@@ -174,20 +192,20 @@ export function normalizeInstructions(text) {
 }
 
 /** Fill the {groups} (target count for this window) and {maxGroups} placeholders. */
-export function renderInstructions(text, n) {
+export function renderInstructions(text, n, limits) {
   return String(text)
-    .replaceAll('{groups}', String(targetGroups(n)))
-    .replaceAll('{maxGroups}', String(MAX_GROUPS));
+    .replaceAll('{groups}', String(targetGroups(n, limits)))
+    .replaceAll('{maxGroups}', String(normalizeLimits(limits).maxGroups));
 }
 
 /** System prompt for n tabs: the built-in one, or the user's instructions plus the fixed rules. */
-export function systemPromptFor(n, instructions = '') {
+export function systemPromptFor(n, instructions = '', limits) {
   const custom = normalizeInstructions(instructions);
-  if (!custom) return systemPrompt(n);
+  if (!custom) return systemPrompt(n, limits);
   return [
     'You tidy a browser window. Group the tabs following these instructions from the user:',
-    renderInstructions(custom, n),
-    `Rules that always apply: never more than ${MAX_GROUPS} groups.`,
+    renderInstructions(custom, n, limits),
+    `Rules that always apply: never more than ${normalizeLimits(limits).maxGroups} groups.`,
     'Every group must contain at least 2 tabs. Put tabs that do not fit any group in "ungrouped".',
     'Every tab id must appear exactly once: in one group or in "ungrouped". Use only the ids given.',
     'Labels are short (at most 40 characters).',
@@ -196,9 +214,9 @@ export function systemPromptFor(n, instructions = '') {
   ].join('\n');
 }
 
-export function buildPrompt(tabs, maxTitle = TITLE_MAX, instructions = '') {
+export function buildPrompt(tabs, maxTitle = TITLE_MAX, instructions = '', limits) {
   const { lines, idMap } = buildTabLines(tabs, maxTitle);
-  return { system: systemPromptFor(tabs.length, instructions), user: `Tabs:\n${lines.join('\n')}`, idMap };
+  return { system: systemPromptFor(tabs.length, instructions, limits), user: `Tabs:\n${lines.join('\n')}`, idMap };
 }
 
 function parseMaybeJson(raw) {
@@ -219,7 +237,7 @@ function parseMaybeJson(raw) {
 }
 
 /** Strict check of the raw model output against the contract. Returns { ok, errors }. */
-export function checkSchema(raw, n) {
+export function checkSchema(raw, n, maxGroups = MAX_GROUPS) {
   const errors = [];
   let data;
   try {
@@ -248,8 +266,8 @@ export function checkSchema(raw, n) {
   data.groups.forEach((g, gi) => {
     if (Array.isArray(g?.tabIds) && g.tabIds.length === 1) errors.push(`group ${gi} has a single tab`);
   });
-  if (data.groups.length > MAX_GROUPS) {
-    errors.push(`group count ${data.groups.length} above ${MAX_GROUPS}`);
+  if (data.groups.length > maxGroups) {
+    errors.push(`group count ${data.groups.length} above ${maxGroups}`);
   }
   const missing = [];
   for (let i = 0; i < n; i++) if (!seen.has(i)) missing.push(i);
@@ -269,7 +287,7 @@ function toIntId(v) {
  * one "Other" at the end, which is never turned into a tab group. Maps short ids to real tab ids.
  * Returns { groups: [{label, tabIds:[realId]}], stats: {unknown, duplicates, missing} }.
  */
-export function repairGroups(raw, idMap) {
+export function repairGroups(raw, idMap, maxGroups = MAX_GROUPS) {
   const data = parseMaybeJson(raw);
   const groupsIn = Array.isArray(data?.groups) ? data.groups : [];
   const n = idMap.length;
@@ -326,13 +344,16 @@ export function repairGroups(raw, idMap) {
     }
   if (leftovers.length) kept.push({ label: OTHER_LABEL, ids: leftovers.sort((x, y) => x - y) });
   return {
-    groups: capGroups(kept.map((g) => ({ label: g.label, tabIds: g.ids.map((i) => idMap[i]) }))),
+    groups: capGroups(
+      kept.map((g) => ({ label: g.label, tabIds: g.ids.map((i) => idMap[i]) })),
+      maxGroups,
+    ),
     stats,
   };
 }
 
 /** Fallback: group by registrable domain, in order of first appearance; singletons go to "Other". */
-export function groupByDomain(tabs) {
+export function groupByDomain(tabs, maxGroups = MAX_GROUPS) {
   const byDomain = new Map();
   for (const tab of tabs) {
     const host = hostOf(tab.url || tab.pendingUrl || '');
@@ -347,7 +368,7 @@ export function groupByDomain(tabs) {
     else other.push(...ids);
   }
   if (other.length) groups.push({ label: OTHER_LABEL, tabIds: other });
-  return capGroups(groups);
+  return capGroups(groups, maxGroups);
 }
 
 /**

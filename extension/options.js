@@ -9,7 +9,14 @@ import {
   isHelperMissing,
 } from './lib/claude-native.js';
 import { probeSettles } from './lib/timeout.js';
-import { DEFAULT_INSTRUCTIONS, INSTRUCTIONS_MAX, normalizeInstructions, systemPromptFor } from './lib/core.js';
+import {
+  DEFAULT_INSTRUCTIONS,
+  INSTRUCTIONS_MAX,
+  normalizeInstructions,
+  normalizeLimits,
+  systemPromptFor,
+  targetGroups,
+} from './lib/core.js';
 import { labelsSystemFor } from './lib/two-pass.js';
 
 const $ = (id) => document.getElementById(id);
@@ -20,6 +27,8 @@ const FIELDS = [
   'model',
   'strategy',
   'timeoutMs',
+  'tabsPerGroup',
+  'maxGroups',
   'createTabGroups',
   'collapseGroups',
   'debugLogging',
@@ -36,9 +45,11 @@ function readForm() {
   for (const f of FIELDS) {
     const el = $(f);
     if (el.type === 'checkbox') out[f] = el.checked;
-    else if (el.type === 'number') out[f] = Math.max(2000, Number(el.value) || DEFAULTS[f]);
+    else if (el.type === 'number') out[f] = el.value;
     else out[f] = el.value.trim() || DEFAULTS[f];
   }
+  out.timeoutMs = Math.max(2000, Number(out.timeoutMs) || DEFAULTS.timeoutMs);
+  Object.assign(out, normalizeLimits(out));
   out.endpoint = out.endpoint.replace(/\/+$/, '');
   const choice = $('claudeModelChoice').value;
   out.claudeModel = choice === 'custom' ? $('claudeModel').value.trim() : choice;
@@ -49,22 +60,33 @@ function readForm() {
   return out;
 }
 
+/** Show the current group-count numbers in the Prompt hints. */
+function syncLimits() {
+  const limits = normalizeLimits({ tabsPerGroup: $('tabsPerGroup').value, maxGroups: $('maxGroups').value });
+  const example = `e.g. ${targetGroups(20, limits)} for 20 tabs, ${targetGroups(40, limits)} for 40`;
+  for (const el of document.querySelectorAll('.groupsExample')) el.textContent = example;
+  for (const el of document.querySelectorAll('.maxGroupsValue')) el.textContent = String(limits.maxGroups);
+  if (!$('promptPreview').hidden) showPromptPreview();
+}
+
 function syncInstructions() {
   const text = $('groupingInstructions').value;
   const custom = !!normalizeInstructions(text);
   $('instructionsCount').textContent =
-    `${text.length}/${INSTRUCTIONS_MAX} characters${custom ? ' (custom)' : ' (default)'}.`;
+    `${text.length.toLocaleString('en')} of ${INSTRUCTIONS_MAX.toLocaleString('en')} characters used · ` +
+    (custom ? 'Your own instructions' : 'Default instructions');
   if (!$('promptPreview').hidden) showPromptPreview();
 }
 
 /** The system prompt the model gets for a 20-tab window with the current text and strategy. */
 function showPromptPreview() {
-  const { backend, strategy } = readForm();
+  const { backend, strategy, tabsPerGroup, maxGroups } = readForm();
+  const limits = { tabsPerGroup, maxGroups };
   const twoPass = resolveStrategy(strategy, backend) === 'two-pass';
   const text = $('groupingInstructions').value;
   $('promptPreview').textContent = twoPass
-    ? `Two-pass, pass 1 (labels), for a 20-tab window:\n\n${labelsSystemFor(20, text)}`
-    : `Single-pass, for a 20-tab window:\n\n${systemPromptFor(20, text)}`;
+    ? `Two-pass, pass 1 (labels), for a 20-tab window:\n\n${labelsSystemFor(20, text, limits)}`
+    : `Single-pass, for a 20-tab window:\n\n${systemPromptFor(20, text, limits)}`;
   $('promptPreview').hidden = false;
 }
 
@@ -101,6 +123,7 @@ async function init() {
   showClaudeModel(s.claudeModel || DEFAULTS.claudeModel);
   $('groupingInstructions').value = s.groupingInstructions || DEFAULT_INSTRUCTIONS;
   syncInstructions();
+  syncLimits();
   $('installCmd').textContent = HELPER_INSTALL_CMD;
   $('setupLink').href = SETUP_URL;
   const env = {
@@ -153,6 +176,11 @@ $('save').addEventListener('click', async () => {
       return status('Permission for that endpoint was denied.');
     }
     await saveSettings(s);
+    // Show the clamped numbers that were actually saved (e.g. 50 groups -> 16).
+    $('tabsPerGroup').value = s.tabsPerGroup;
+    $('maxGroups').value = s.maxGroups;
+    $('timeoutMs').value = s.timeoutMs;
+    syncLimits();
     status('Saved.');
   } catch (e) {
     status(`Error: ${e.message}`);
@@ -201,6 +229,8 @@ $('run').addEventListener('click', async () => {
 
 $('claudeModelChoice').addEventListener('change', syncModelChoice);
 $('groupingInstructions').addEventListener('input', syncInstructions);
+$('tabsPerGroup').addEventListener('input', syncLimits);
+$('maxGroups').addEventListener('input', syncLimits);
 $('resetInstructions').addEventListener('click', () => {
   $('groupingInstructions').value = DEFAULT_INSTRUCTIONS;
   syncInstructions();

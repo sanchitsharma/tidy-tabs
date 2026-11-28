@@ -28,7 +28,7 @@ CHOOSE YOUR MODEL
 Without any model, it groups tabs by website.
 
 YOUR OWN PROMPT
-Rewrite the grouping instructions in Options, e.g. "Keep work and personal tabs apart" or "Label groups in Spanish". Preview the full prompt, or reset to the default any time.
+Rewrite the grouping instructions in Options, e.g. "Keep work and personal tabs apart" or "Label groups in Spanish", and set how many groups you want (about 1 per N tabs, and a maximum). Preview the full prompt, or reset to the default any time.
 
 PRIVACY
 Only each tab's title (up to 80 characters) and hostname are sent, and only to the model you choose, when you start a tidy. No server of ours, no analytics, no tracking.
@@ -62,7 +62,7 @@ Tidy Tabs AI has one purpose: organizing the tabs in the current browser window 
 **tabs:**
 
 ```
-Reads the title and URL of the tabs in the window being tidied, so they can be grouped by task (only the title and hostname are sent to the user's chosen model), and moves tabs so each group's tabs sit next to each other.
+Required to read tab.title and tab.url. The extension's single purpose is grouping the tabs of the current window by task: it calls chrome.tabs.query for that window and reads the title and URL of every tab (Chrome only fills in these two fields when the tabs permission is granted; the extension has no host permissions for websites). Only the title and hostname are sent to the user's chosen model. Without this permission every tab comes back without a title or URL and nothing can be grouped. activeTab would only cover one tab, and host access to all sites would be broader. Tabs are then moved with chrome.tabs.move so each group's tabs sit together.
 ```
 
 **tabGroups:**

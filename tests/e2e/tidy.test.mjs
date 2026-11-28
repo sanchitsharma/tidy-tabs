@@ -85,7 +85,7 @@ test('Prompt: custom grouping instructions reach claude; the default text and Re
     await options.goto(`chrome-extension://${b.extId}/options.html`);
     const def = await options.inputValue('#groupingInstructions');
     assert.match(def, /^Group the tabs by the task/, 'textarea shows the default instructions');
-    assert.match(await options.textContent('#instructionsCount'), /\(default\)/);
+    assert.match(await options.textContent('#instructionsCount'), /of 2,000 characters used · Default instructions/);
 
     // Saving the untouched default stores '' so the built-in prompt is used.
     await options.click('#save');
@@ -97,7 +97,7 @@ test('Prompt: custom grouping instructions reach claude; the default text and Re
 
     const custom = 'Keep work and personal tabs apart. Label groups in Spanish, about {groups} groups.';
     await options.fill('#groupingInstructions', custom);
-    assert.match(await options.textContent('#instructionsCount'), /\(custom\)/);
+    assert.match(await options.textContent('#instructionsCount'), /Your own instructions/);
     await options.click('#previewPrompt');
     const preview = await options.textContent('#promptPreview');
     assert.match(preview, /Label groups in Spanish, about 5 groups\./, 'preview fills {groups} for 20 tabs');
@@ -112,9 +112,26 @@ test('Prompt: custom grouping instructions reach claude; the default text and Re
     const { lastRun } = await b.sw.evaluate(() => chrome.storage.local.get('lastRun'));
     assert.equal(lastRun.backend.customInstructions, true, 'run record notes custom instructions');
 
+    // Group-count settings: hints, preview, clamping on save, and the prompt the model gets.
+    assert.equal(await options.inputValue('#tabsPerGroup'), '4');
+    assert.equal(await options.inputValue('#maxGroups'), '8');
+    await options.fill('#tabsPerGroup', '2');
+    await options.fill('#maxGroups', '50');
+    assert.match(await options.textContent('.groupsExample'), /e\.g\. 10 for 20 tabs/);
+    assert.match(await options.textContent('#promptPreview'), /about 10 groups\.[\s\S]*never more than 16 groups/);
+    await options.click('#save');
+    await waitFor(async () => (await options.textContent('#status')) === 'Saved.', { msg: 'saved limits' });
+    assert.equal(await options.inputValue('#maxGroups'), '16', 'clamped to the 16 limit');
+    const lim = await b.sw.evaluate(() => chrome.storage.sync.get(['tabsPerGroup', 'maxGroups']));
+    assert.deepEqual(lim, { tabsPerGroup: 2, maxGroups: 16 });
+    await tidyFromPopup(b.ctx, b.extId);
+    assert.match(systemOf(b.claudeCalls().at(-1)), /never more than 16 groups/);
+
     // Reopening shows the saved text; Reset + Save goes back to the built-in prompt.
     await options.reload();
     assert.equal(await options.inputValue('#groupingInstructions'), custom);
+    await options.fill('#tabsPerGroup', '4');
+    await options.fill('#maxGroups', '8');
     await options.click('#resetInstructions');
     assert.equal(await options.inputValue('#groupingInstructions'), def);
     await options.click('#save');
